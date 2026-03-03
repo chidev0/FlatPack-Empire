@@ -3,6 +3,9 @@ chIKEA: Smart Stock System 🛒📦
 Welcome to chIKEA, a Java-based backend architecture designed to simulate the inventory, delivery, and point-of-sale logistics of a high-volume retail warehouse.
 
 What started as a foundational exercise in Object-Oriented Programming has evolved into a full-fledged retail management simulation. This project bridges the gap between basic data models and complex algorithmic logistics, built to mirror the actual flow of a fast-paced warehouse floor.
+
+Disclaimer: chIKEA is an independent, educational project and is not affiliated with, endorsed by, or associated with Inter IKEA Systems B.V. or any of its subsidiaries. All product and company names are trademarks or registered trademarks of their respective holders.
+
 🚀 Why This Project?
 
 The goal of chIKEA is to demonstrate a clear progression of software engineering principles. It moves from rigid data storage to dynamic collections, implements custom sorting algorithms from scratch, and utilizes LIFO/FIFO data structures to simulate physical supply chain movement.
