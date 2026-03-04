@@ -1,17 +1,18 @@
-chIKEA: Smart Stock System 🛒📦
+# chIKEA: Smart Stock System 🛒📦
 
 Welcome to chIKEA, a Java-based backend architecture designed to simulate the inventory, delivery, and point-of-sale logistics of a high-volume retail warehouse.
 
 What started as a foundational exercise in Object-Oriented Programming has evolved into a full-fledged retail management simulation. This project bridges the gap between basic data models and complex algorithmic logistics, built to mirror the actual flow of a fast-paced warehouse floor.
 
-Disclaimer: chIKEA is an independent, educational project and is not affiliated with, endorsed by, or associated with Inter IKEA Systems B.V. or any of its subsidiaries. All product and company names are trademarks or registered trademarks of their respective holders.
+    Disclaimer: chIKEA is an independent, educational project and is not affiliated with, endorsed by, or associated with Inter IKEA Systems B.V. or any of its subsidiaries. All product and company names are trademarks or registered trademarks of their respective holders.
 
-🚀 Why This Project?
+## 🚀 Why This Project?
 
 The goal of chIKEA is to demonstrate a clear progression of software engineering principles. It moves from rigid data storage to dynamic collections, implements custom sorting algorithms from scratch, and utilizes LIFO/FIFO data structures to simulate physical supply chain movement.
 
 Ultimately, this project transforms a standard inventory tracker into an interactive, text-based Tycoon management game.
-🛠️ Tech Stack
+
+### 🛠️ Tech Stack
 
     Language: Java
 
@@ -21,8 +22,9 @@ Ultimately, this project transforms a standard inventory tracker into an interac
 
     Algorithms: Selection/Insertion Sort, Binary Search
 
-🗺️ Project Roadmap & Evolution
-Phase 1: The Foundation (v1.0) - Completed
+### 🗺️ Project Roadmap & Evolution
+
+##### Phase 1: The Foundation (v1.0) - Completed
 
     [x] Data Modeling: Built a robust Product class defining core attributes (Name, Price, Stock Level, Aisle Location).
 
@@ -30,17 +32,17 @@ Phase 1: The Foundation (v1.0) - Completed
 
     [x] Business Logic: Created retail-specific methods, including an employee discount calculator.
 
-Phase 2: Dynamic Scaling & Sorting (v2.0) - In Progress
+##### Phase 2: Dynamic Scaling & Sorting (v2.0) - Completed
 
-    [ ] Dynamic Collections: Transition the InventoryManager from static arrays to dynamic ArrayList<Product> structures.
+    [x] Dynamic Collections: Transitioned the InventoryManager from static arrays to dynamic ArrayList<Product> structures.
 
-    [ ] The Comparable Contract: Implement the Comparable<Product> interface to establish a natural sorting framework based on price.
+    [x] The Comparable Contract: Implemented the Comparable<Product> interface to establish a natural sorting framework based on price.
 
-    [ ] Custom Algorithms: Write custom Selection or Insertion sort algorithms to organize inventory without relying on built-in Java sorting utilities.
+    [x] Custom Algorithms: Wrote a custom Selection Sort algorithm to organize inventory without relying on built-in Java sorting utilities.
 
-    [ ] Filter Mechanics: Develop methods to return sub-lists of products bounded by minimum and maximum price thresholds.
+    [x] Filter Mechanics: Developed methods to return sub-lists of products bounded by minimum and maximum price thresholds.
 
-Phase 3: The Logistics Simulation (v3.0)
+##### Phase 3: The Logistics Simulation (v3.0) - In Progress
 
     [ ] Data Structure Constraints: Strictly utilize custom ArrayStack and ArrayQueue classes (avoiding built-in JCF libraries to demonstrate fundamental algorithmic understanding).
 
@@ -48,7 +50,7 @@ Phase 3: The Logistics Simulation (v3.0)
 
     [ ] Checkout Logistics (FIFO): Implement a multi-line ArrayQueue system to simulate the customer checkout process.
 
-Phase 4: The Tycoon Economy Engine (v4.0)
+##### Phase 4: The Tycoon Economy Engine (v4.0) - Planned
 
     [ ] Game Loop: Introduce a continuous while loop with a Scanner interface, allowing the user to manage the warehouse floor in real-time.
 
@@ -58,7 +60,6 @@ Phase 4: The Tycoon Economy Engine (v4.0)
 
     [ ] Randomized Chaos: Utilize Math.random() during the unloading phase to simulate real-world logistics issues (e.g., damaged flat-packs), requiring the player to manage shrink and loss.
 
-👨‍💻 Author
+###### 👨‍💻 Author
 
-Emmanuel Damptey
-Computer Science Student & Software Developer
+Emmanuel Damptey - Computer Science Student & Software Developer

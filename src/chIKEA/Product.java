@@ -9,6 +9,33 @@ public class Product implements Comparable<Product> {
     private String aisleLocation;
     private String color;
 
+    // Product Constructor
+
+    public Product(String productName, String productType, double price, String color) {
+        this.productName = productName;
+        this.productType = productType;
+        this.price = price;
+        this.color = color;
+    }
+
+    // Product Constructor w/o price variable declaration
+
+    public Product(String productName, String productType, String color) {
+        this.productName = productName;
+        this.productType = productType;
+        this.color = color;
+    }
+
+    // Product Constructor w/o color String declaration.
+    public Product(String productName, String productType, double price) {
+        this.productName = productName;
+        this.productType = productType;
+        this.price = price;
+    }
+
+    // Default Product Constructor
+    public Product() {}
+
     // Create Getter Setter for Color (WIP - Check to see if Color matches list of accepted Colors)
 
     public String getColor() { return color; }

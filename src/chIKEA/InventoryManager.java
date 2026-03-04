@@ -18,7 +18,7 @@ public class InventoryManager {
         for (int i = 0; i < Quantity; i++) {
             this.inventory.add(p);
         }
-        System.out.println("chIKEA Inventory: Successfully added " + Quantity + p.getProduct() + p.getType() +"'s to the database.");
+        System.out.println("chIKEA Inventory: Successfully added " + Quantity + " " +p.getProduct() + " " + p.getType() +"'s to the database.");
     }
 
     // Method for finding Low Stock Items
@@ -42,16 +42,19 @@ public class InventoryManager {
         return temp_item_range;
     }
 
+    // Method for sorting products in Inventory from lowest to highest price.
     public void sortInventory() {
         for(int i = 0; i < this.inventory.size(); i++) {
-            Product temp = this.inventory.get(i);
+            int currentItem = i;
             for (int n = i + 1; n < this.inventory.size(); n++) {
-               if (temp.compareTo(this.inventory.get(n)) < 0) {
-                   temp = this.inventory.get(n);
+               if (this.inventory.get(currentItem).compareTo(this.inventory.get(n)) > 0) {
+                   currentItem = n;
                }
             }
-            this.inventory.remove(temp);
-            this.inventory.add(i, temp);
+            Product temp = this.inventory.get(i);
+            this.inventory.set(i, this.inventory.get(currentItem));
+            this.inventory.set(currentItem, temp);
         }
+        System.out.println("chIKEA Inventory: All items have been successfully sorted (low-high)");
     }
 }
