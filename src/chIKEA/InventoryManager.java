@@ -41,4 +41,17 @@ public class InventoryManager {
         }
         return temp_item_range;
     }
+
+    public void sortInventory() {
+        for(int i = 0; i < this.inventory.size(); i++) {
+            Product temp = this.inventory.get(i);
+            for (int n = i + 1; n < this.inventory.size(); n++) {
+               if (temp.compareTo(this.inventory.get(n)) < 0) {
+                   temp = this.inventory.get(n);
+               }
+            }
+            this.inventory.remove(temp);
+            this.inventory.add(i, temp);
+        }
+    }
 }
