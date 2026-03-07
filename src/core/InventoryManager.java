@@ -1,4 +1,6 @@
-package chIKEA;
+package core;
+
+import models.Product;
 
 import java.util.ArrayList;
 import java.util.List;

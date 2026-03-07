@@ -1,4 +1,4 @@
-package chIKEA;
+package models;
 
 public class FurnitureItem extends Product {
 
@@ -8,9 +8,7 @@ public class FurnitureItem extends Product {
 
     // Initialize our Product
     public FurnitureItem(String productName, String productType, Double price, String color, String dimensions, boolean assemblyRequired) {
-        super();
-        super.setProduct(productName);
-        super.setPrice(price);
+        super(productName, productType, price, color);
         this.dimensions = dimensions;
         this.assemblyRequired = assemblyRequired;
     }

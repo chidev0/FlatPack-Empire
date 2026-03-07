@@ -1,7 +1,11 @@
-package chIKEA;
+package core;
+
+import models.FoodItem;
+import models.FurnitureItem;
+import models.Product;
 
 public class Main {
-    static void main(String[] args) {
+    public static void main(String[] args) {
         System.out.println("Welcome to chIKEA Pre-Alpha (v2.0)");
         InventoryManager manager = new InventoryManager();
         System.out.println("Store Inventory created, creating products.");

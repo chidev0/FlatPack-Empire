@@ -1,4 +1,4 @@
-package chIKEA;
+package models;
 
 public class FoodItem extends Product {
 
