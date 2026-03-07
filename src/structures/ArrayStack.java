@@ -6,6 +6,7 @@ public class ArrayStack<T> {
     private T[] stack;
     private int top;
     private int capacity;
+    private T[] newStack;
 
     // Default constructor: size 100
     @SuppressWarnings("unchecked")
@@ -39,7 +40,7 @@ public class ArrayStack<T> {
 
     public T peek() {
         if (isEmpty()) {
-            throw new RuntimeException("Stack is Empty");
+            throw new EmptyStructureException();
         }
         return stack[top];
     }
@@ -50,5 +51,19 @@ public class ArrayStack<T> {
 
     public int size() {
         return top + 1;
+    }
+
+    public void upgradeCapacity(int newCapacity) {
+        if (newCapacity < capacity) {
+            throw new RuntimeException("Capacity size cannot be less than current capacity.");
+        }
+        newStack = (T[]) new Object[newCapacity];
+        for (int i = 0; i < top; i++) {
+            newStack[i] = stack[i];
+        }
+
+        this.capacity = newCapacity;
+        stack = newStack;
+
     }
 }

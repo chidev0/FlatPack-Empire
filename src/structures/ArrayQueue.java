@@ -1,5 +1,8 @@
 package structures;
 
+import exceptions.CapacityExceededException;
+import exceptions.EmptyStructureException;
+
 class ArrayQueue<T> {
     private T[] queue;
     private int front;
@@ -30,7 +33,7 @@ class ArrayQueue<T> {
     // Enqueue: add an element to the rear
     public void enqueue(T item) {
         if (isFull()) {
-            throw new RuntimeException("Queue Overflow");
+            throw new CapacityExceededException(capacity);
         }
         rear = (rear + 1) % capacity;
         queue[rear] = item;
@@ -40,7 +43,7 @@ class ArrayQueue<T> {
     // Dequeue: remove and return the element from the front
     public T dequeue() {
         if (isEmpty()) {
-            throw new RuntimeException("Queue Underflow");
+            throw new EmptyStructureException();
         }
         T item = queue[front];
         front = (front + 1) % capacity;
@@ -51,7 +54,7 @@ class ArrayQueue<T> {
     // Peek: get the element at the front without removing
     public T peek() {
         if (isEmpty()) {
-            throw new RuntimeException("Queue is Empty");
+            throw new EmptyStructureException();
         }
         return queue[front];
     }
@@ -59,7 +62,7 @@ class ArrayQueue<T> {
     // Front: return the front element (without removing it)
     public T front() {
         if (isEmpty()) {
-            throw new RuntimeException("Queue is Empty");
+            throw new EmptyStructureException();
         }
         return queue[front];
     }
@@ -67,7 +70,7 @@ class ArrayQueue<T> {
     // Back: return the back element (without removing it)
     public T back() {
         if (isEmpty()) {
-            throw new RuntimeException("Queue is Empty");
+            throw new EmptyStructureException();
         }
         return queue[rear];
     }
