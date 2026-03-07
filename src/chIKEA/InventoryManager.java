@@ -13,12 +13,21 @@ public class InventoryManager {
         System.out.println("chIKEA Inventory: Successfully added a " + p.getProduct() + " " + p.getType() + " to the database.");
     }
 
-    // Method for adding multiple Products to Store Inventory
+    // Method for adding duplicate Products to Store Inventory
     public void addProduct(Product p, int Quantity) {
         for (int i = 0; i < Quantity; i++) {
             this.inventory.add(p);
         }
         System.out.println("chIKEA Inventory: Successfully added " + Quantity + " " +p.getProduct() + " " + p.getType() +"'s to the database.");
+    }
+
+    // Method for adding multiple Products to Store Inventory
+
+    public void addProducts(Product... items) {
+        for (Product p : items) {
+            this.inventory.add(p);
+            System.out.println("chIKEA Inventory: Successfully added "  + p.getProduct() + " " + p.getType() +" to the database.");
+        }
     }
 
     // Method for finding Low Stock Items

@@ -5,21 +5,20 @@ public class Main {
         System.out.println("Welcome to chIKEA Pre-Alpha (v2.0)");
         InventoryManager manager = new InventoryManager();
         System.out.println("Store Inventory created, creating products.");
-        Product Alex_WD = new Product("Alex", "Desk",74.99, "White");
-        Product Alex_BD = new Product("Alex", "Desk",64.99, "Black");
-        Product Alex_WDR = new Product("Alex", "Dresser",54.99, "White");
-        Product Alex_BDR = new Product("Alex", "Dresser",57.99, "Black");
-        Product Swedish_Meatballs = new Product("Meatball", "Food",5.99);
+        FurnitureItem Alex_WD = new FurnitureItem("Alex", "Desk",74.99, "White");
+        FurnitureItem Alex_BD = new FurnitureItem("Alex", "Desk",64.99, "Black");
+        FurnitureItem Alex_WDR = new FurnitureItem("Alex", "Dresser",54.99, "White");
+        FurnitureItem Alex_BDR = new FurnitureItem("Alex", "Dresser",57.99, "Black");
+        FoodItem Swedish_Meatballs = new FoodItem("Meatball", "Food", 5.99, false, 30, 4, "Chicken");
 
         System.out.println("Adding products to inventory");
-        manager.addProduct(Alex_WD); manager.addProduct(Alex_BD); manager.addProduct(Alex_WDR); manager.addProduct(Alex_BDR); manager.addProduct(Swedish_Meatballs);
-
+        manager.addProducts(Alex_WD, Alex_BD, Alex_WDR, Alex_BDR, Swedish_Meatballs);
         // Sort Inventory
         manager.sortInventory();
 
         System.out.println("\n\n----------- chIKEA Store Inventory -----------\n");
         for (Product p : manager.inventory) {
-            System.out.println(p.getProduct() + " " + p.getType() + ": $" + p.getPrice());
+            System.out.println(p.toString());
         }
 
     }
