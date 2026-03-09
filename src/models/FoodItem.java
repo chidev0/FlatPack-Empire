@@ -21,7 +21,10 @@ public class FoodItem extends Product {
     // Override Javas toString method to FoodProduct tailored output.
     @Override
     public String toString() {
-        return "[ Cafeteria ] - " + this.base + " " + this.getProduct();
+
+        String skuString = super.getSku().toString();
+        skuString = skuString.substring(0,7);
+        return "[ Cafeteria ] - [" + skuString + "] " + this.base + " " + this.getProduct();
     }
 
 }

@@ -20,7 +20,10 @@ public class FurnitureItem extends Product {
 
     // Override Java toString with custom FurnitureItem output
     public String toString() {
-        return "[ Warehouse ] - " + getProduct() + " " + getType() + " (" + getColor() + ")";
+        String skuString = super.getSku().toString();
+        skuString = skuString.substring(0,7);
+        return "[ Warehouse ] - [" + skuString + "] " + getProduct() + " " + getType() + " (" + getColor() + ")";
+
     }
 
 

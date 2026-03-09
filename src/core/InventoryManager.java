@@ -4,6 +4,7 @@ import models.Product;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class InventoryManager {
     // Initializes Store Inventory via ArrayList
@@ -30,6 +31,33 @@ public class InventoryManager {
             this.inventory.add(p);
             System.out.println("chIKEA Inventory: Successfully added "  + p.getProduct() + " " + p.getType() +" to the database.");
         }
+    }
+
+    // Method for removing Products.
+
+    public void removeProduct(Product p) {
+        if (this.inventory.contains(p)) {
+            this.inventory.remove(p);
+            System.out.println("[ chIKEA Inventory ] ~ Removed a " + p.getProduct() + " " + p.getType() + "from the database.");
+            return;
+        }
+        throw new RuntimeException("Couldn't find any Product matching the one provided");
+    }
+
+    public void removeProduct(String Sku) {
+        if (Sku.length() < 7) {
+            throw new RuntimeException("SKU Invalid: Must be 7 symbols long");
+        }
+        for (int i = 0; i < this.inventory.size(); i++){
+            Product p = this.inventory.get(i);
+            String skuString = p.getSku().toString();
+            if (skuString.startsWith(Sku)) {
+                this.inventory.remove(p);
+                System.out.println("[ chIKEA Inventory ] ~ Removed [" + Sku + "] " + p.getProduct() + " " + p.getType() + " from the database." );
+                return;
+            }
+        }
+    throw new RuntimeException("Couldn't find any Products with that SKU");
     }
 
     // Method for finding Low Stock Items
