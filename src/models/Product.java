@@ -1,4 +1,5 @@
 package models;
+import java.util.UUID;
 
 public class Product implements Comparable<Product> {
 
@@ -8,6 +9,7 @@ public class Product implements Comparable<Product> {
     private int stockLevel;
     private String aisleLocation;
     private String color;
+    private UUID Sku;
 
     // Product Constructor
     public Product(String productName, String productType, double price, String color) {
@@ -15,6 +17,7 @@ public class Product implements Comparable<Product> {
         this.productType = productType;
         this.price = price;
         this.color = color;
+        this.Sku = UUID.randomUUID();
     }
 
     // Product Constructor w/o price variable declaration
@@ -22,6 +25,7 @@ public class Product implements Comparable<Product> {
         this.productName = productName;
         this.productType = productType;
         this.color = color;
+        this.Sku = UUID.randomUUID();
     }
 
     // Product Constructor w/o color String declaration.
@@ -29,10 +33,11 @@ public class Product implements Comparable<Product> {
         this.productName = productName;
         this.productType = productType;
         this.price = price;
+        this.Sku = UUID.randomUUID();
     }
 
     // Default Product Constructor
-    public Product() {}
+    public Product() {this.Sku = UUID.randomUUID();}
 
     // Create Getter Setter for Color (WIP - Check to see if Color matches list of accepted Colors)
     public String getColor() { return color; }
@@ -46,6 +51,11 @@ public class Product implements Comparable<Product> {
 
     public void setProduct(String productName) {
         this.productName = productName;
+    }
+
+    // Create Getter for SKU
+    public UUID getSku() {
+        return Sku;
     }
 
     // Create Getter Setter for Product Type

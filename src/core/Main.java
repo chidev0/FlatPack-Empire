@@ -3,6 +3,7 @@ package core;
 import models.FoodItem;
 import models.FurnitureItem;
 import models.Product;
+import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
@@ -23,6 +24,21 @@ public class Main {
         System.out.println("\n\n----------- chIKEA Store Inventory -----------\n");
         for (Product p : manager.inventory) {
             System.out.println(p.toString());
+        }
+        System.out.println("\n\n");
+
+        boolean verifyRemoval = false;
+
+        while (!verifyRemoval) {
+            try {
+                Scanner input = new Scanner(System.in);
+                System.out.println("Enter a SKU to remove: ");
+                String SKU = input.nextLine();
+                manager.removeProduct(SKU);
+                verifyRemoval = true;
+            } catch (RuntimeException e) {
+                System.out.println("Ran into an error trying to remove the SKU. Please try again.\n");
+            }
         }
 
     }
