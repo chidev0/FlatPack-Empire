@@ -37,7 +37,8 @@ public class Main {
                 manager.removeProduct(SKU);
                 verifyRemoval = true;
             } catch (RuntimeException e) {
-                System.out.println("Ran into an error trying to remove the SKU. Please try again.\n");
+                System.out.println("Ran into an error trying to remove the SKU. Please try again.");
+                System.out.println(e.toString() + "\n");
             }
         }
 

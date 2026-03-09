@@ -7,7 +7,7 @@ public class Product implements Comparable<Product> {
     private String productType;
     private double price;
     private int stockLevel;
-    private String aisleLocation;
+    private Location aisleLocation;
     private String color;
     private UUID Sku;
 
@@ -93,11 +93,14 @@ public class Product implements Comparable<Product> {
 
     // Create Getter Setter for aisleLocation
     public String getAisleLocation() {
-        return aisleLocation;
+        if (aisleLocation == null) {
+            throw new RuntimeException("Aisle Location has not been assigned yet.");
+        }
+        return aisleLocation.toTagFormat();
     }
 
-    public void setAisleLocation(String aisleLocation) {
-        this.aisleLocation = aisleLocation;
+    public void setAisleLocation(int Aisle, int Bin) {
+        this.aisleLocation = new Location(Aisle, Bin);
     }
 
     // Create (applyEmployeeDiscount) method
