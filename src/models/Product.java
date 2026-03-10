@@ -11,6 +11,7 @@ public class Product implements Comparable<Product> {
     private String color;
     private UUID Sku;
     private String productModel;
+    private String state;
 
     // Product Constructor
     public Product(String productName, String productType, double price, String color) {
@@ -114,6 +115,14 @@ public class Product implements Comparable<Product> {
         this.aisleLocation = new Location(Aisle, Bin);
     }
 
+    // Getter Setter Methods for product state
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
     // Create (applyEmployeeDiscount) method
     public double applyEmployeeDiscount(double percent) {
         double employee_price = this.price * (1.00 - percent);

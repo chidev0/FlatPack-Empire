@@ -1,24 +1,106 @@
 package logistics;
 
+import core.DamagesManager;
 import core.InventoryManager;
 import structures.ArrayStack;
 import models.Product;
-import core.InventoryManager.*;
+import java.util.Random;
 
 public class DeliveryTruck {
+    private ArrayStack<Product> Truck;
+    int truckTier = 1;
+    int truckCapacity;
     InventoryManager inventoryController;
+    DamagesManager damageController;
+    double damageChance;
 
-    public DeliveryTruck(InventoryManager manager) {
+    public DeliveryTruck(InventoryManager manager, DamagesManager damageController) {
         this.inventoryController = manager;
+        this.damageController = damageController;
+        // Logic for determining features (Truck size, Damage chance) based on Tier (Default: 1)
+        if (truckTier == 1) {
+            truckCapacity = 50;
+            damageChance = 15;
+        } else if (truckTier == 2) {
+            truckCapacity = 100;
+            damageChance = 7.5;
+        } else {
+            throw new RuntimeException("Illegal Truck Tier");
+        }
+        this.Truck = new ArrayStack<Product>(truckCapacity);
     }
 
-    ArrayStack<Product> Truck = new ArrayStack<Product>(50);
-
-    public void unloadTruck() {
+    // Method for unloading Truck into Inventory Array List
+    public String unloadTruck() {
+        int damageCount = 0;
+        int inventoryCount = 0;
+        if (Truck.isEmpty()) {
+            return "Truck arrived empty. Not sure if this was intentional";
+        }
         while (!Truck.isEmpty()) {
             Product productInTransit = Truck.pop();
+            // Set Product ownership to ON_TRUCK
+            productInTransit.setState("ON_TRUCK");
+            // Check if Product is damaged, move to Damages if it is, otherwise move to Inventory.
+            boolean checkDamage = isDamaged();
+            if (isDamaged()) {
+                // TO DO: Update generic message.
+                System.out.println("Looks like " + productInTransit.getProduct() + " " + productInTransit.getType() + " didn't make it in one piece. Adding to damages.");
+                damageController.addProduct(productInTransit);
+                damageCount++;
+            } else if (!isDamaged()) {
+                inventoryController.addProduct(productInTransit);
+                inventoryCount++;
+            }
             inventoryController.addProduct(productInTransit);
+            productInTransit.setState("IN_INVENTORY");
         }
+        return "\n\n      [chIKEA Truck]      \n\nProducts added to inventory: " + inventoryCount + ".\nProducts damaged: " + damageCount + "\nTotal: " +  (inventoryCount + damageCount);
+    }
+
+    // Method for Upgrading Truck Capacity
+    public String upgradeTruck() {
+        if (truckTier == 2) {
+            System.out.println("You are at the maximum Truck Tier (WIP)");
+        }
+        // To DO: Create 2D array mapping Truck Tiers to maximum Truck capacity. Will help once we add more tiers.
+        // To DO: Deduct cost from storeBalance once Economy is created.
+        if (truckTier == 1) {
+            truckTier++;
+            Truck.upgradeCapacity(100);
+            return "[ chIKEA Logistics ] Tier Upgrade: You have upgraded your Truck tier.\n New Box Capacity: 100";
+        }
+        throw new RuntimeException("Expected a truckTier of 1 but received " + truckTier);
+    }
+
+    // Method for calculating damage chance based on tier modifiers.
+    public boolean isDamaged() {
+        Random damageChance = new Random();
+        double damageRoll = damageChance.nextDouble(0, 100);
+        if (truckTier < 1 || truckTier > 2) {
+            throw new RuntimeException("Illegal Truck Tier");
+        }
+        if (truckTier == 1) {
+            if (damageRoll <= 15) {
+                return true;
+            } else { return false; }
+        } else if (truckTier == 2) {
+            if (damageRoll <= 7.5) {
+                return true;
+            }
+        }
+        throw new RuntimeException("Something went wrong calculating damage chance.");
+    }
+
+    public boolean isEmpty() {
+        return Truck.isEmpty();
+    }
+
+    public boolean isFull() {
+        if (Truck.size() == truckCapacity) {
+            return true;
+        }
+        return false;
     }
 
 }

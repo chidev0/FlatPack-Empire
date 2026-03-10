@@ -9,6 +9,7 @@ public class Main {
     public static void main(String[] args) {
         System.out.println("Welcome to chIKEA Pre-Alpha (v2.0)");
         InventoryManager manager = new InventoryManager();
+        DamagesManager damageControl = new DamagesManager();
         System.out.println("Store Inventory created, creating products.");
         FurnitureItem Alex_WD = new FurnitureItem("Alex", "Desk",74.99, "White");
         FurnitureItem Alex_BD = new FurnitureItem("Alex", "Desk",64.99, "Black");

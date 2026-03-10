@@ -12,9 +12,11 @@ public class InventoryManager {
     // Initializes Store Inventory via ArrayList
     List<Product> inventory = new ArrayList<>();
 
+
     // Method for adding a single Product to Store Inventory
     public void addProduct(Product p) {
         this.inventory.add(p);
+        p.setState("IN_INVENTORY");
         System.out.println("chIKEA Inventory: Successfully added a " + p.getProduct() + " " + p.getType() + " to the database.");
     }
 
@@ -22,6 +24,7 @@ public class InventoryManager {
     public void addProduct(Product p, int Quantity) {
         for (int i = 0; i < Quantity; i++) {
             p = rebuildProduct(p, p.getProductModel());
+            p.setState("IN_INVENTORY");
             this.inventory.add(p);
         }
         System.out.println("chIKEA Inventory: Successfully added " + Quantity + " " +p.getProduct() + " " + p.getType() +"'s to the database.");
@@ -33,6 +36,7 @@ public class InventoryManager {
     public void addProducts(Product... items) {
         for (Product p : items) {
             p = rebuildProduct(p, p.getProductModel());
+            p.setState("IN_INVENTORY");
             this.inventory.add(p);
             String skuString = p.getSku().toString();
             skuString = skuString.substring(0,7);
@@ -45,6 +49,7 @@ public class InventoryManager {
     public void removeProduct(Product p) {
         if (this.inventory.contains(p)) {
             this.inventory.remove(p);
+            p.setState("LIMBO");
             System.out.println("[ chIKEA Inventory ] ~ Removed a " + p.getProduct() + " " + p.getType() + "from the database.");
             return;
         }
@@ -60,6 +65,7 @@ public class InventoryManager {
             String skuString = p.getSku().toString();
             if (skuString.startsWith(Sku)) {
                 this.inventory.remove(p);
+                p.setState("LIMBO");
                 System.out.println("[ chIKEA Inventory ] ~ Removed [" + Sku + "] " + p.getProduct() + " " + p.getType() + " from the database." );
                 return;
             }
