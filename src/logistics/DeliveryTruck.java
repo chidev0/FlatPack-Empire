@@ -6,11 +6,18 @@ import models.Product;
 import core.InventoryManager.*;
 
 public class DeliveryTruck {
+    InventoryManager inventoryController;
+
+    public DeliveryTruck(InventoryManager manager) {
+        this.inventoryController = manager;
+    }
+
     ArrayStack<Product> Truck = new ArrayStack<Product>(50);
 
     public void unloadTruck() {
-        for (int i = 0; i < Truck.size(); i++) {
-            System.out.println("WIP");
+        while (!Truck.isEmpty()) {
+            Product productInTransit = Truck.pop();
+            inventoryController.addProduct(productInTransit);
         }
     }
 
