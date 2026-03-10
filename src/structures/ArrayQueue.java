@@ -46,6 +46,7 @@ class ArrayQueue<T> {
             throw new EmptyStructureException();
         }
         T item = queue[front];
+        queue[front] = null;
         front = (front + 1) % capacity;
         size--;
         return item;

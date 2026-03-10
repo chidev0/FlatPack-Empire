@@ -11,10 +11,12 @@ public class FurnitureItem extends Product {
         super(productName, productType, price, color);
         this.dimensions = dimensions;
         this.assemblyRequired = assemblyRequired;
+        super.setProductModel("Furniture");
     }
 
     public FurnitureItem(String productName, String productType, Double price, String color) {
         super(productName, productType, price, color);
+        super.setProductModel("Furniture");
     }
 
 

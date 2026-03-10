@@ -31,11 +31,15 @@ public class ArrayStack<T> {
         stack[++top] = item;
     }
 
+
     public T pop() {
         if (isEmpty()) {
             throw new EmptyStructureException();
         }
-        return stack[top--];
+        T temp = stack[top];
+        stack[top] = null;
+        top--;
+        return temp;
     }
 
     public T peek() {
@@ -53,12 +57,14 @@ public class ArrayStack<T> {
         return top + 1;
     }
 
+    // TO DO : Fix stack resize boundary copy issue
+
     public void upgradeCapacity(int newCapacity) {
         if (newCapacity < capacity) {
             throw new RuntimeException("Capacity size cannot be less than current capacity.");
         }
         newStack = (T[]) new Object[newCapacity];
-        for (int i = 0; i < top; i++) {
+        for (int i = 0; i <= top; i++) {
             newStack[i] = stack[i];
         }
 

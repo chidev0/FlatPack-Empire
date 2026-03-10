@@ -10,6 +10,7 @@ public class Product implements Comparable<Product> {
     private Location aisleLocation;
     private String color;
     private UUID Sku;
+    private String productModel;
 
     // Product Constructor
     public Product(String productName, String productType, double price, String color) {
@@ -58,10 +59,20 @@ public class Product implements Comparable<Product> {
         return Sku;
     }
 
+    public void generateSku() {
+        this.Sku = UUID.randomUUID();
+    }
+
     // Create Getter Setter for Product Type
     public String getType() { return productType; }
 
     public void setType(String productType) { this.productType = productType; }
+
+    // Create Getter for Product Model Type
+    public String getProductModel() { return productModel; }
+    public void setProductModel(String model) {
+        this.productModel = model;
+    }
 
     // Create Getter Setter for Price (Cannot be negative)
     public Double getPrice() {
@@ -115,6 +126,7 @@ public class Product implements Comparable<Product> {
     public int compareTo(Product other) {
         return Double.compare(this.price, other.price);
     }
+
 
 
 

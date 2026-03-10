@@ -1,5 +1,7 @@
 package core;
 
+import models.FoodItem;
+import models.FurnitureItem;
 import models.Product;
 
 import java.util.ArrayList;
@@ -19,17 +21,22 @@ public class InventoryManager {
     // Method for adding duplicate Products to Store Inventory
     public void addProduct(Product p, int Quantity) {
         for (int i = 0; i < Quantity; i++) {
+            p = rebuildProduct(p, p.getProductModel());
             this.inventory.add(p);
         }
         System.out.println("chIKEA Inventory: Successfully added " + Quantity + " " +p.getProduct() + " " + p.getType() +"'s to the database.");
     }
 
     // Method for adding multiple Products to Store Inventory
+    // TO DO: Stop bulk add from duplicating the same object reference
 
     public void addProducts(Product... items) {
         for (Product p : items) {
+            p = rebuildProduct(p, p.getProductModel());
             this.inventory.add(p);
-            System.out.println("chIKEA Inventory: Successfully added "  + p.getProduct() + " " + p.getType() +" to the database.");
+            String skuString = p.getSku().toString();
+            skuString = skuString.substring(0,7);
+            System.out.println("chIKEA Inventory: Added [" + skuString + "] "  + p.getProduct() + " " + p.getType() +" to the database.");
         }
     }
 
@@ -58,6 +65,18 @@ public class InventoryManager {
             }
         }
     throw new RuntimeException("Couldn't find any Products with that SKU");
+    }
+
+    public Product rebuildProduct(Product p, String model) {
+        if (model.equals("Furniture")) {
+            FurnitureItem tempProduct = new FurnitureItem(p.getProduct(), p.getType(), p.getPrice(), p.getColor());
+            return tempProduct;
+        } else if (model.equals("Food")) {
+            FoodItem tempProduct = new FoodItem(p.getProduct(), p.getType(), p.getPrice());
+            return tempProduct;
+        }
+        throw new RuntimeException("Illegal Product Type");
+
     }
 
     // Method for finding Low Stock Items

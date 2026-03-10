@@ -16,6 +16,12 @@ public class FoodItem extends Product {
         this.calories = calories;
         this.proteinAmount = proteinAmount;
         this.base = base;
+        super.setProductModel("Food");
+    }
+
+    public FoodItem(String productName, String productType, Double price) {
+        super(productName, productType, price);
+        super.setProductModel("Food");
     }
 
     // Override Javas toString method to FoodProduct tailored output.
@@ -26,5 +32,7 @@ public class FoodItem extends Product {
         skuString = skuString.substring(0,7);
         return "[ Cafeteria ] - [" + skuString + "] " + this.base + " " + this.getProduct();
     }
+
+    public boolean isVegan() {return isVegan;}
 
 }
