@@ -30,6 +30,20 @@ public class DeliveryTruck {
         this.Truck = new ArrayStack<Product>(truckCapacity);
     }
 
+    // Basic method for loading Truck
+    public void loadTruck(Product ...item) {
+        for (Product p : item) {
+            if (isFull()) {
+                System.out.println("[chIKEA Truck]: Truck has reached maximum capacity, consider upgrading to add more items");
+                return;
+            }
+            p = inventoryController.rebuildProduct(p, p.getProductModel());
+            this.Truck.push(p);
+            p.setState("ON_TRUCK");
+            System.out.println("[chIKEA Truck]: Added " + p.getProduct() + " " + p.getType() + " to the Truck." );
+        }
+    }
+
     // Method for unloading Truck into Inventory Array List
     public String unloadTruck() {
         int damageCount = 0;
@@ -66,6 +80,7 @@ public class DeliveryTruck {
         if (truckTier == 1) {
             truckTier++;
             truckCapacity = 100;
+            damageChance = 7.5;
             Truck.upgradeCapacity(truckCapacity);
             return "[ chIKEA Logistics ] Tier Upgrade: You have upgraded your Truck tier.\n New Box Capacity: 100";
         }
@@ -74,22 +89,12 @@ public class DeliveryTruck {
 
     // Method for calculating damage chance based on tier modifiers.
     public boolean isDamaged() {
-        Random damageChance = new Random();
-        double damageRoll = damageChance.nextDouble(0, 100);
+        Random damageOdds = new Random();
+        double damageRoll = damageOdds.nextDouble(0, 100);
         if (truckTier < 1 || truckTier > 2) {
             throw new RuntimeException("Illegal Truck Tier");
         }
-        if (truckTier == 1) {
-            if (damageRoll <= 15) {
-                return true;
-            } else { return false; }
-        } else if (truckTier == 2) {
-            if (damageRoll <= 7.5) {
-                return true;
-            } else { return false; }
-
-        }
-        throw new RuntimeException("Something went wrong calculating damage chance.");
+        return damageRoll <= damageChance;
     }
 
     public boolean isEmpty() {
