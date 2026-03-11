@@ -35,7 +35,6 @@ public class InventoryManager {
 
     public void addProducts(Product... items) {
         for (Product p : items) {
-            p = rebuildProduct(p, p.getProductModel());
             p.setState("IN_INVENTORY");
             this.inventory.add(p);
             String skuString = p.getSku().toString();
@@ -139,5 +138,12 @@ public class InventoryManager {
             this.inventory.set(currentItem, temp);
         }
         System.out.println("chIKEA Inventory: All items have been successfully sorted (low-high)");
+    }
+
+    public void displayInventory() {
+        System.out.println("\n\n----------- chIKEA Store Inventory -----------\n");
+        for (Product p : this.inventory) {
+            System.out.println(p.toString());
+        }
     }
 }
