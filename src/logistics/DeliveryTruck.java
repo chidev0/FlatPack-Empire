@@ -43,17 +43,15 @@ public class DeliveryTruck {
             productInTransit.setState("ON_TRUCK");
             // Check if Product is damaged, move to Damages if it is, otherwise move to Inventory.
             boolean checkDamage = isDamaged();
-            if (isDamaged()) {
+            if (checkDamage) {
                 // TO DO: Update generic message.
                 System.out.println("Looks like " + productInTransit.getProduct() + " " + productInTransit.getType() + " didn't make it in one piece. Adding to damages.");
                 damageController.addProduct(productInTransit);
                 damageCount++;
-            } else if (!isDamaged()) {
+            } else {
                 inventoryController.addProduct(productInTransit);
                 inventoryCount++;
             }
-            inventoryController.addProduct(productInTransit);
-            productInTransit.setState("IN_INVENTORY");
         }
         return "\n\n      [chIKEA Truck]      \n\nProducts added to inventory: " + inventoryCount + ".\nProducts damaged: " + damageCount + "\nTotal: " +  (inventoryCount + damageCount);
     }
@@ -61,13 +59,14 @@ public class DeliveryTruck {
     // Method for Upgrading Truck Capacity
     public String upgradeTruck() {
         if (truckTier == 2) {
-            System.out.println("You are at the maximum Truck Tier (WIP)");
+            return "You are at the maximum Truck Tier (WIP)";
         }
         // To DO: Create 2D array mapping Truck Tiers to maximum Truck capacity. Will help once we add more tiers.
         // To DO: Deduct cost from storeBalance once Economy is created.
         if (truckTier == 1) {
             truckTier++;
-            Truck.upgradeCapacity(100);
+            truckCapacity = 100;
+            Truck.upgradeCapacity(truckCapacity);
             return "[ chIKEA Logistics ] Tier Upgrade: You have upgraded your Truck tier.\n New Box Capacity: 100";
         }
         throw new RuntimeException("Expected a truckTier of 1 but received " + truckTier);
@@ -87,7 +86,8 @@ public class DeliveryTruck {
         } else if (truckTier == 2) {
             if (damageRoll <= 7.5) {
                 return true;
-            }
+            } else { return false; }
+
         }
         throw new RuntimeException("Something went wrong calculating damage chance.");
     }

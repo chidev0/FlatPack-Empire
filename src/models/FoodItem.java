@@ -8,6 +8,9 @@ public class FoodItem extends Product {
     int proteinAmount;
     String flavor;
     String base;
+    boolean hasProtein = false;
+    boolean hasBase = false;
+    boolean hasFlavor;
 
     // Initializing Product
     public FoodItem(String productName, String productType, Double price, boolean isVegan, int calories, int proteinAmount, String base) {
@@ -17,6 +20,8 @@ public class FoodItem extends Product {
         this.proteinAmount = proteinAmount;
         this.base = base;
         super.setProductModel("Food");
+        this.hasProtein = true;
+        this.hasBase = true;
     }
 
     public FoodItem(String productName, String productType, Double price) {
@@ -34,5 +39,39 @@ public class FoodItem extends Product {
     }
 
     public boolean isVegan() {return isVegan;}
+
+    // Methods for evaluating if FoodItem object has additional attributes.
+    public boolean hasProtein() {
+        return this.hasProtein;
+    }
+
+    public void setProtein(int proteinAmount) {
+        this.proteinAmount = proteinAmount;
+    }
+
+    public int getProteinAmount() {
+        return this.proteinAmount;
+    }
+
+    public boolean hasBase() {
+        return this.hasBase;
+    }
+
+    public void setBase(String base) {
+        this.base = base;
+    }
+
+    public String getBase() {
+        return this.base;
+    }
+
+    public boolean veganStatus() {
+        return this.isVegan;
+    }
+
+    public void setVegan(boolean vegan) {
+        this.isVegan = vegan;
+    }
+
 
 }

@@ -73,17 +73,36 @@ public class InventoryManager {
     throw new RuntimeException("Couldn't find any Products with that SKU");
     }
 
-    public Product rebuildProduct(Product p, String model) {
-        if (model.equals("Furniture")) {
+    public FurnitureItem rebuildFurniture(FurnitureItem p) {
             FurnitureItem tempProduct = new FurnitureItem(p.getProduct(), p.getType(), p.getPrice(), p.getColor());
             return tempProduct;
-        } else if (model.equals("Food")) {
-            FoodItem tempProduct = new FoodItem(p.getProduct(), p.getType(), p.getPrice());
-            return tempProduct;
         }
-        throw new RuntimeException("Illegal Product Type");
+
+
+    public FoodItem rebuildFood(FoodItem p) {
+
+            FoodItem tempProduct = new FoodItem(p.getProduct(), p.getType(), p.getPrice());
+            if (p.hasProtein()) {
+                int proteinAmount = p.getProteinAmount();
+                tempProduct.setProtein(proteinAmount);
+            } if (p.veganStatus()) {
+                tempProduct.setVegan(true);
+            } if (p.hasBase()) {
+                tempProduct.setBase(p.getBase());
+            }
+        return tempProduct;
 
     }
+    
+    public Product rebuildProduct(Object p, String model) {
+        if (model.equals("Furniture")) {
+            return rebuildFurniture((FurnitureItem) p);
+        } else if (model.equals("Food")) {
+            return rebuildFood((FoodItem) p);
+        }
+        throw new RuntimeException("Illegal Model Type");
+    }
+
 
     // Method for finding Low Stock Items
     public void findLowStockItems(int threshold) {
