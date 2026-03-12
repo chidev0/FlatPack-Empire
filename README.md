@@ -1,65 +1,82 @@
-# core: Smart Stock System 🛒📦
+# chIKEA
 
-Welcome to core, a Java-based backend architecture designed to simulate the inventory, delivery, and point-of-sale logistics of a high-volume retail warehouse.
+Java warehouse simulation, built from scratch. The goal is a full retail tycoon engine — but I'm building the backend first and the gameplay loop after the foundation earns it.
 
-What started as a foundational exercise in Object-Oriented Programming has evolved into a full-fledged retail management simulation. This project bridges the gap between basic data models and complex algorithmic logistics, built to mirror the actual flow of a fast-paced warehouse floor.
+### Why I built this
 
-    Disclaimer: core is an independent, educational project and is not affiliated with, endorsed by, or associated with Inter IKEA Systems B.V. or any of its subsidiaries. All product and company names are trademarks or registered trademarks of their respective holders.
+Most learning projects stop at "here's a class with some methods." I wanted a project where the design decisions actually had consequences — where a bad data structure choice or a leaking object reference would come back to bite me.
 
-## 🚀 Why This Project?
+The JCF ban on stacks and queues is intentional. ArrayStack<T> and ArrayQueue<T> are hand-rolled on primitive generic arrays because I wanted to deal with the edge cases directly: loitering references, circular index math, capacity exceptions, stale slots. Hiding behind the standard library would have defeated the point.
+Current State — v3.0 Logistics Milestone
 
-The goal of core is to demonstrate a clear progression of software engineering principles. It moves from rigid data storage to dynamic collections, implements custom sorting algorithms from scratch, and utilizes LIFO/FIFO data structures to simulate physical supply chain movement.
+The truck works. That's the headline for v3.0.
 
-Ultimately, this project transforms a standard inventory tracker into an interactive, text-based Tycoon management game.
+DeliveryTruck is a real logistics class — dependency-injected, tier-based, LIFO cargo loading via a manual ArrayStack<T>, with per-item damage chance rolling during unload. Products don't just teleport into inventory. They load onto the truck, ride with an ON_TRUCK state, and get routed either into InventoryManager or DamagesManager based on a damage check. Damaged stock is kept completely separate from normal inventory, not mixed in and flagged.
 
-### 🛠️ Tech Stack
+The inventory layer is solid. Full OOP model with Product, FoodItem, and FurnitureItem, UUID-based SKU generation, a Location object tracking aisle, bin, and zone type, and InventoryManager handling add/remove, bulk insert, custom selection sort, low-stock scanning, and price-range filtering.
 
-    Language: Java
+ArrayQueue<T> is fully built as a circular FIFO structure with proper modulo index math and null-clearing on dequeue. It is not yet wired into a running checkout simulation — that comes in v4.
 
-    Concepts: Object-Oriented Programming (OOP), Polymorphism, Encapsulation
+No game loop yet. No economy or store balance yet. Pricing is still double — BigDecimal migration is queued for v3.x polish before the tick engine starts.
 
-    Data Structures: Dynamic Lists (ArrayList), Stacks (ArrayStack), Queues (ArrayQueue)
+## Architecture
 
-    Algorithms: Selection/Insertion Sort, Binary Search
+| Package    | Class                     | Role                                                                                               |
+|------------|---------------------------|----------------------------------------------------------------------------------------------------|
+| core       | InventoryManager          | Main inventory store — add/remove, bulk insert, selection sort, low-stock scan, price-range filter |
+| core       | DamagesManager            | Holds damaged stock separately from sellable inventory                                             |
+| logistics  | DeliveryTruck             | Dependency-injected truck with LIFO cargo, tier-based capacity, damage routing, upgrade support    |
+| models     | Product                   | Base entity — UUID SKU, price, stock level, lifecycle state,Locationdata                           |
+| models     | FoodItem                  | Food subtype with protein and vegan metadata                                                       |
+| models     | FurnitureItem             | Flat-pack subtype for warehouse-facing furniture inventory                                         |
+| models     | Location                  | Aisle/bin coordinate object with zone classification logic                                         |
+| structures | ArrayStack<T>             | Manual LIFO structure — backs truck cargo bay                                                      |
+| structures | ArrayQueue<T>             | Manual circular FIFO structure — built for upcoming checkout simulation                            |
+| exceptions | CapacityExceededException | Thrown when a manual structure hits its initialized bound                                          |
+| exceptions | EmptyStructureException   | Thrown on pop/dequeue from an empty structure                                                      |
 
-### 🗺️ Project Roadmap & Evolution
+## Roadmap
 
-##### Phase 1: The Foundation (v1.0) - Completed
+v3.x — polish before the loop
 
-    [x] Data Modeling: Built a robust Product class defining core attributes (Name, Price, Stock Level, Aisle Location).
+    Decouple System.out.println from core classes entirely — callers handle output, not the engine
 
-    [x] Encapsulation: Implemented strict setter logic to prevent illegal data states (e.g., negative pricing or stock levels).
+    Migrate product lifecycle states from raw String literals to a ProductState enum
 
-    [x] Business Logic: Created retail-specific methods, including an employee discount calculator.
+    Replace hardcoded aisle integer boundaries in Location with a ZoneType enum and a central zone-mapping policy
 
-##### Phase 2: Dynamic Scaling & Sorting (v2.0) - Completed
+    Migrate all money fields from double to BigDecimal before the economy layer starts accumulating rounding errors
 
-    [x] Dynamic Collections: Transitioned the InventoryManager from static arrays to dynamic ArrayList<Product> structures.
+v4 — game loop foundation
 
-    [x] The Comparable Contract: Implemented the Comparable<Product> interface to establish a natural sorting framework based on price.
+    Fixed-step abstract tick engine, decoupled from wall-clock time
 
-    [x] Custom Algorithms: Wrote a custom Selection Sort algorithm to organize inventory without relying on built-in Java sorting utilities.
+    Work-budget pattern: actions like truck unloading cost ticks instead of finishing in one blocking loop
 
-    [x] Filter Mechanics: Developed methods to return sub-lists of products bounded by minimum and maximum price thresholds.
+    Store balance and basic economy
 
-##### Phase 3: The Logistics Simulation (v3.0) - In Progress
+    ArrayQueue<T> wired into a live checkout simulation
 
-    [ ] Data Structure Constraints: Strictly utilize custom ArrayStack and ArrayQueue classes (avoiding built-in JCF libraries to demonstrate fundamental algorithmic understanding).
+    Progressive upgrade systems tied to the economy layer
 
-    [ ] Delivery Logistics (LIFO): Implement an ArrayStack to simulate the unloading of flat-pack furniture delivery trucks (last loaded at the factory = first unloaded at the dock).
+v5+
 
-    [ ] Checkout Logistics (FIFO): Implement a multi-line ArrayQueue system to simulate the customer checkout process.
+    Customer simulation — state-driven, zone-aware, Manhattan distance movement
 
-##### Phase 4: The Tycoon Economy Engine (v4.0) - Planned
+    Employee staffing, task queues, morale
 
-    [ ] Game Loop: Introduce a continuous while loop with a Scanner interface, allowing the user to manage the warehouse floor in real-time.
+    Full P&L, supplier orders, and restock cycles
 
-    [ ] Revenue Tracking: Implement a global economy that tracks storeBalance as the checkout queues process customer carts.
+    Eventually: LibGDX 2D rendering when the backend can actually support it
 
-    [ ] Dynamic Upgrades: Allow users to spend store revenue to open additional checkout queues or upgrade delivery contracts.
+### Design Decisions Worth Noting
 
-    [ ] Randomized Chaos: Utilize Math.random() during the unloading phase to simulate real-world logistics issues (e.g., damaged flat-packs), requiring the player to manage shrink and loss.
+JCF stacks and queues are banned by design, not by accident. ArrayStack<T> and ArrayQueue<T> are manual generic array structures because the point is understanding what the standard library is doing, not skipping past it. The circular queue modulo math, the null-clearing on pop, the capacity exception boundaries — those exist because I wrote them.
 
-###### 👨‍💻 Author
+main stays stable. Volatile work goes on feature branches and merges only when it holds together.
 
-Emmanuel Damptey - Computer Science Student & Software Developer
+The build order is intentional: inventory and logistics before gameplay. A tycoon loop built on a shaky backend is just a shaky tycoon loop. The engine has to earn the game layer.
+
+### Disclaimer
+
+chIKEA is an independent educational project and is not affiliated with, endorsed by, or associated with Inter IKEA Systems B.V. or any of its subsidiaries. All product and company names are trademarks or registered trademarks of their respective owners. The project name will be changed prior to any public release.
