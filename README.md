@@ -2,7 +2,7 @@
 
 Java warehouse simulation, built from scratch. The goal is a full retail tycoon engine — but I'm building the backend first and the gameplay loop after the foundation earns it.
 
-### Why I built this
+## Why I built this
 
 Most learning projects stop at "here's a class with some methods." I wanted a project where the design decisions actually had consequences — where a bad data structure choice or a leaking object reference would come back to bite me.
 
@@ -69,7 +69,7 @@ v5+
 
     Eventually: LibGDX 2D rendering when the backend can actually support it
 
-### Design Decisions Worth Noting
+## Design Decisions Worth Noting
 
 JCF stacks and queues are banned by design, not by accident. ArrayStack<T> and ArrayQueue<T> are manual generic array structures because the point is understanding what the standard library is doing, not skipping past it. The circular queue modulo math, the null-clearing on pop, the capacity exception boundaries — those exist because I wrote them.
 
