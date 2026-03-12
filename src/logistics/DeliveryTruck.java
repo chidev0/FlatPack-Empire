@@ -33,7 +33,7 @@ public class DeliveryTruck {
     // Basic method for loading Truck
     public void loadTruck(Product ...item) {
         for (Product p : item) {
-            if (isFull()) {
+            if (this.Truck.isFull()) {
                 System.out.println("[chIKEA Truck]: Truck has reached maximum capacity, consider upgrading to add more items");
                 return;
             }
@@ -97,15 +97,6 @@ public class DeliveryTruck {
         return damageRoll <= damageChance;
     }
 
-    public boolean isEmpty() {
-        return Truck.isEmpty();
-    }
 
-    public boolean isFull() {
-        if (Truck.size() == truckCapacity) {
-            return true;
-        }
-        return false;
-    }
 
 }
