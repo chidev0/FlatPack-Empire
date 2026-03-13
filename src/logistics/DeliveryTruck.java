@@ -2,6 +2,9 @@ package logistics;
 
 import core.DamagesManager;
 import core.InventoryManager;
+import exceptions.CapacityExceededException;
+import exceptions.EmptyStructureException;
+import models.UnloadManifest;
 import structures.ArrayStack;
 import models.Product;
 import java.util.Random;
@@ -34,8 +37,7 @@ public class DeliveryTruck {
     public void loadTruck(Product ...item) {
         for (Product p : item) {
             if (this.Truck.isFull()) {
-                System.out.println("[chIKEA Truck]: Truck has reached maximum capacity, consider upgrading to add more items");
-                return;
+                throw new CapacityExceededException(this.Truck.size());
             }
             p = inventoryController.rebuildProduct(p, p.getProductModel());
             this.Truck.push(p);
@@ -45,11 +47,11 @@ public class DeliveryTruck {
     }
 
     // Method for unloading Truck into Inventory Array List
-    public String unloadTruck() {
+    public UnloadManifest unloadTruck() {
         int damageCount = 0;
         int inventoryCount = 0;
         if (Truck.isEmpty()) {
-            return "Truck arrived empty. Not sure if this was intentional";
+            throw new EmptyStructureException();
         }
         while (!Truck.isEmpty()) {
             Product productInTransit = Truck.pop();
@@ -67,7 +69,8 @@ public class DeliveryTruck {
                 inventoryCount++;
             }
         }
-        return "\n\n      [chIKEA Truck]      \n\nProducts added to inventory: " + inventoryCount + ".\nProducts damaged: " + damageCount + "\nTotal: " +  (inventoryCount + damageCount);
+        UnloadManifest truckManifest = new UnloadManifest((inventoryCount + damageCount), damageCount, inventoryCount);
+        return truckManifest;
     }
 
     // Method for Upgrading Truck Capacity
