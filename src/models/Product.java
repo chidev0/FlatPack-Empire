@@ -82,7 +82,7 @@ public class Product implements Comparable<Product> {
 
     public void setPrice(double price) {
         if (price < 0) {
-            System.out.println("Invalid. Price cannot be negative");
+            throw new RuntimeException("Illegal Price");
         }
         else {
             this.price = price;
@@ -96,7 +96,7 @@ public class Product implements Comparable<Product> {
 
     public void setStockLevel(int stockLevel) {
         if (stockLevel < 0) {
-            System.out.println("Invalid. Stock level cannot be negative");
+            throw new RuntimeException("Illegal Stock Level");
         }
         else {
             this.stockLevel = stockLevel;

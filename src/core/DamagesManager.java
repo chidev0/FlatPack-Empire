@@ -11,7 +11,7 @@ public class DamagesManager {
     List<Product> damages = new ArrayList<>();
 
 
-    // Method for adding a single Product to Store Inventory
+    // Method for adding a single Product to Damages
     public String addProduct(Product p) {
         this.damages.add(p);
         p.setState("DAMAGED");

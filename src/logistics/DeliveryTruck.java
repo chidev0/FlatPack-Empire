@@ -4,6 +4,7 @@ import core.DamagesManager;
 import core.InventoryManager;
 import exceptions.CapacityExceededException;
 import exceptions.EmptyStructureException;
+import models.TransitManifest;
 import models.UnloadManifest;
 import structures.ArrayStack;
 import models.Product;
@@ -34,16 +35,18 @@ public class DeliveryTruck {
     }
 
     // Basic method for loading Truck
-    public void loadTruck(Product ...item) {
+    public TransitManifest loadTruck(Product ...item) {
+        TransitManifest loadManifest = TransitManifest.createForMovement("TRUCK_ADD");
         for (Product p : item) {
             if (this.Truck.isFull()) {
                 throw new CapacityExceededException(this.Truck.size());
             }
             p = inventoryController.rebuildProduct(p, p.getProductModel());
             this.Truck.push(p);
+            loadManifest.logProduct(p);
             p.setState("ON_TRUCK");
-            System.out.println("[chIKEA Truck]: Added " + p.getProduct() + " " + p.getType() + " to the Truck." );
         }
+        return loadManifest;
     }
 
     // Method for unloading Truck into Inventory Array List
@@ -53,6 +56,7 @@ public class DeliveryTruck {
         if (Truck.isEmpty()) {
             throw new EmptyStructureException();
         }
+        UnloadManifest truckManifest = new UnloadManifest();
         while (!Truck.isEmpty()) {
             Product productInTransit = Truck.pop();
             // Set Product ownership to ON_TRUCK
@@ -61,7 +65,8 @@ public class DeliveryTruck {
             boolean checkDamage = isDamaged();
             if (checkDamage) {
                 // TO DO: Update generic message.
-                System.out.println("Looks like " + productInTransit.getProduct() + " " + productInTransit.getType() + " didn't make it in one piece. Adding to damages.");
+
+                truckManifest.logItemDamaged(productInTransit);
                 damageController.addProduct(productInTransit);
                 damageCount++;
             } else {
@@ -69,7 +74,9 @@ public class DeliveryTruck {
                 inventoryCount++;
             }
         }
-        UnloadManifest truckManifest = new UnloadManifest((inventoryCount + damageCount), damageCount, inventoryCount);
+        truckManifest.setTotalProcessed(inventoryCount + damageCount);
+        truckManifest.setDamageCount(damageCount);
+        truckManifest.setInventoryCount(inventoryCount);
         return truckManifest;
     }
 

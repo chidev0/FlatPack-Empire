@@ -15,12 +15,10 @@ public class Location {
 
     public void setAisle(int aisle) {
         this.aisle = aisle;
-        System.out.println("Updated Aisle");
     }
 
     public void setBin(int bin) {
         this.bin = bin;
-        System.out.println("Updated Bin");
     }
 
 
