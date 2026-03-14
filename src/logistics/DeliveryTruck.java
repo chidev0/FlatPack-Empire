@@ -51,7 +51,6 @@ public class DeliveryTruck {
 
     // Method for unloading Truck into Inventory Array List
     public UnloadManifest unloadTruck() {
-        int damageCount = 0;
         int inventoryCount = 0;
         if (Truck.isEmpty()) {
             throw new EmptyStructureException();
@@ -68,14 +67,12 @@ public class DeliveryTruck {
 
                 truckManifest.logItemDamaged(productInTransit);
                 damageController.addProduct(productInTransit);
-                damageCount++;
             } else {
                 inventoryController.addProduct(productInTransit);
                 inventoryCount++;
             }
         }
-        truckManifest.setTotalProcessed(inventoryCount + damageCount);
-        truckManifest.setDamageCount(damageCount);
+        truckManifest.setTotalProcessed(inventoryCount + truckManifest.getDamageLog().size());
         truckManifest.setInventoryCount(inventoryCount);
         return truckManifest;
     }

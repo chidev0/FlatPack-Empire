@@ -19,6 +19,7 @@ public class InventoryManager {
         TransitManifest logger = TransitManifest.createForMovement("INVENTORY_ADD");
         p.setState("IN_INVENTORY");
         this.inventory.add(p);
+        logger.logProduct(p);
         return logger;
     }
 
@@ -55,6 +56,7 @@ public class InventoryManager {
             this.inventory.remove(p);
             p.setState("LIMBO");
             logger.logProduct(p);
+            return logger;
         }
         throw new RuntimeException("Couldn't find any Product matching the one provided");
     }
@@ -109,13 +111,14 @@ public class InventoryManager {
 
 
     // Method for finding Low Stock Items
-    public void findLowStockItems(int threshold) {
+    public List<Product> findLowStockItems(int threshold) {
+        List<Product> lowInventory = new ArrayList<>();
         for ( Product p : inventory) {
             if (p.getStockLevel() < threshold) {
-                System.out.print("chIKEA Inventory Watchdog: " + p.getProduct() + " " + p.getType() + "is below the set threshold. ");
-                System.out.println("Available Inventory: " + p.getStockLevel());
+                lowInventory.add(p);
             }
         }
+        return lowInventory;
     }
 
     // Method for finding items that fall within a price range.
@@ -142,13 +145,11 @@ public class InventoryManager {
             this.inventory.set(i, this.inventory.get(currentItem));
             this.inventory.set(currentItem, temp);
         }
-        System.out.println("chIKEA Inventory: All items have been successfully sorted (low-high)");
     }
 
-    public void displayInventory() {
-        System.out.println("\n\n----------- chIKEA Store Inventory -----------\n");
-        for (Product p : this.inventory) {
-            System.out.println(p.toString());
-        }
+    public List<Product> getInventorySnapshot() {
+        List<Product> inventorySnapshot = new ArrayList<>();
+        inventorySnapshot.addAll(inventory);
+        return inventorySnapshot;
     }
 }

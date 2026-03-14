@@ -15,6 +15,7 @@ public class TransitManifest {
     private TransitManifest(String transitType, UUID sessionID) {
         this.timestamp = LocalDateTime.now();
         this.sessionID = sessionID;
+        this.transitType = transitType;
     }
 
     public static TransitManifest createForMovement(String transitType) {

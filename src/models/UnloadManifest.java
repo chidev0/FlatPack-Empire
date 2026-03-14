@@ -6,13 +6,11 @@ import java.util.List;
 public class UnloadManifest {
 
     private int totalProcessed;
-    private int damageCount;
     private int inventoryCount;
     private List<Product> damageLog = new ArrayList<>();
 
-    public UnloadManifest(int totalProcessed, int damageCount, int inventoryCount) {
+    public UnloadManifest(int totalProcessed, int inventoryCount) {
         this.totalProcessed = totalProcessed;
-        this.damageCount = damageCount;
         this.inventoryCount = inventoryCount;
     }
 
@@ -23,15 +21,11 @@ public class UnloadManifest {
     }
 
     public int getDamageCount() {
-        return damageCount;
+        return damageLog.size();
     }
 
     public int getInventoryCount() {
         return inventoryCount;
-    }
-
-    public void setDamageCount(int damageCount) {
-        this.damageCount = damageCount;
     }
 
     public void setInventoryCount(int inventoryCount) {
@@ -43,9 +37,11 @@ public class UnloadManifest {
     }
 
     public void logItemDamaged(Product p) {
-        System.out.println("Looks like " + p.getProduct() + " " + p.getType() + " didn't make it in one piece. Adding to damages.");
         damageLog.add(p);
     }
 
-    public String toString() { return "\n\n      [chIKEA Truck]      \n\nProducts added to inventory: " + inventoryCount + ".\nProducts damaged: " + damageCount + "\nTotal: " +  (inventoryCount + damageCount); }
+    public List<Product> getDamageLog() {
+        return damageLog;
+    }
+
 }
