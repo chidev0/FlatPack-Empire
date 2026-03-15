@@ -11,7 +11,7 @@ public class Product implements Comparable<Product> {
     private String color;
     private UUID Sku;
     private String productModel;
-    private String state;
+    private ProductState state = ProductState.LIMBO;
 
     // Product Constructor
     public Product(String productName, String productType, double price, String color) {
@@ -116,12 +116,16 @@ public class Product implements Comparable<Product> {
     }
 
     // Getter Setter Methods for product state
-    public String getState() {
+    public ProductState getState() {
         return state;
     }
 
-    public void setState(String state) {
-        this.state = state;
+    public void setState(ProductState newState) {
+        if (this.state.canTransitionTo(newState)) {
+            this.state = newState;
+            return;
+        }
+        throw new RuntimeException("Illegal Set Modifier: Current State - " + this.state + ". Target State - " + newState);
     }
     // Create (applyEmployeeDiscount) method
     public double applyEmployeeDiscount(double percent) {

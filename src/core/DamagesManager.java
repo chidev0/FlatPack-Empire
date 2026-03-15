@@ -2,6 +2,7 @@ package core;
 
 import models.Product;
 import models.TransitManifest;
+import models.ProductState;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +17,7 @@ public class DamagesManager {
     public TransitManifest addProduct(Product p) {
         TransitManifest damageManifest = TransitManifest.createForMovement("DAMAGE_ADD");
         this.damages.add(p);
-        p.setState("DAMAGED");
+        p.setState(ProductState.DAMAGED);
         damageManifest.logProduct(p);
         return damageManifest;
     }

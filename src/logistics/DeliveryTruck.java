@@ -4,6 +4,7 @@ import core.DamagesManager;
 import core.InventoryManager;
 import exceptions.CapacityExceededException;
 import exceptions.EmptyStructureException;
+import models.ProductState;
 import models.TransitManifest;
 import models.UnloadManifest;
 import structures.ArrayStack;
@@ -44,7 +45,7 @@ public class DeliveryTruck {
             p = inventoryController.rebuildProduct(p, p.getProductModel());
             this.Truck.push(p);
             loadManifest.logProduct(p);
-            p.setState("ON_TRUCK");
+            p.setState(ProductState.ON_TRUCK);
         }
         return loadManifest;
     }
@@ -58,8 +59,6 @@ public class DeliveryTruck {
         UnloadManifest truckManifest = new UnloadManifest();
         while (!Truck.isEmpty()) {
             Product productInTransit = Truck.pop();
-            // Set Product ownership to ON_TRUCK
-            productInTransit.setState("ON_TRUCK");
             // Check if Product is damaged, move to Damages if it is, otherwise move to Inventory.
             boolean checkDamage = isDamaged();
             if (checkDamage) {

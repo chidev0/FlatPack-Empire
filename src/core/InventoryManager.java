@@ -4,6 +4,7 @@ import models.FoodItem;
 import models.FurnitureItem;
 import models.Product;
 import models.TransitManifest;
+import models.ProductState;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +18,7 @@ public class InventoryManager {
     // Method for adding a single Product to Store Inventory
     public TransitManifest addProduct(Product p) {
         TransitManifest logger = TransitManifest.createForMovement("INVENTORY_ADD");
-        p.setState("IN_INVENTORY");
+        p.setState(ProductState.IN_INVENTORY);
         this.inventory.add(p);
         logger.logProduct(p);
         return logger;
@@ -28,7 +29,7 @@ public class InventoryManager {
         TransitManifest logger = TransitManifest.createForMovement("INVENTORY_ADD");
         for (int i = 0; i < Quantity; i++) {
             p = rebuildProduct(p, p.getProductModel());
-            p.setState("IN_INVENTORY");
+            p.setState(ProductState.IN_INVENTORY);
             this.inventory.add(p);
             logger.logProduct(p);
         }
@@ -41,7 +42,7 @@ public class InventoryManager {
     public TransitManifest addProducts(Product... items) {
         TransitManifest logger = TransitManifest.createForMovement("INVENTORY_ADD");
         for (Product p : items) {
-            p.setState("IN_INVENTORY");
+            p.setState(ProductState.IN_INVENTORY);
             this.inventory.add(p);
             logger.logProduct(p);
         }
@@ -54,7 +55,7 @@ public class InventoryManager {
         if (this.inventory.contains(p)) {
             TransitManifest logger = TransitManifest.createForMovement("INVENTORY_REMOVE");
             this.inventory.remove(p);
-            p.setState("LIMBO");
+            p.setState(ProductState.LIMBO);
             logger.logProduct(p);
             return logger;
         }
@@ -71,7 +72,7 @@ public class InventoryManager {
             if (skuString.startsWith(Sku)) {
                 TransitManifest logger = TransitManifest.createForMovement("INVENTORY_REMOVE");
                 this.inventory.remove(p);
-                p.setState("LIMBO");
+                p.setState(ProductState.LIMBO);
                 logger.logProduct(p);
                 return logger;
             }
