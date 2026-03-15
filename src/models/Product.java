@@ -7,11 +7,12 @@ public class Product implements Comparable<Product> {
     private String productType;
     private double price;
     private int stockLevel;
-    private Location aisleLocation;
+    private ZoneType zone;
     private String color;
     private UUID Sku;
     private String productModel;
     private ProductState state = ProductState.LIMBO;
+    private Location warehouseLocation;
 
     // Product Constructor
     public Product(String productName, String productType, double price, String color) {
@@ -104,15 +105,30 @@ public class Product implements Comparable<Product> {
     }
 
     // Create Getter Setter for aisleLocation
-    public String getAisleLocation() {
-        if (aisleLocation == null) {
-            throw new RuntimeException("Aisle Location has not been assigned yet.");
+    public ZoneType getZone() {
+        if (zone == null) {
+            throw new RuntimeException("Zone has not been assigned yet.");
         }
-        return aisleLocation.toTagFormat();
+        return zone;
     }
 
-    public void setAisleLocation(int Aisle, int Bin) {
-        this.aisleLocation = new Location(Aisle, Bin);
+    public void setZone(ZoneType zone) {
+        this.zone = zone;
+    }
+
+    public Location getWarehouseLocation() {
+        if (warehouseLocation == null) {
+            throw new RuntimeException("Location has not been assigned yet.");
+        }
+        return warehouseLocation;
+    }
+
+    public void setWarehouseLocation(int aisle, int bin) {
+        if (getZone() == ZoneType.WAREHOUSE_GRID) {
+            this.warehouseLocation = new Location(aisle, bin);
+            return;
+        }
+        throw new RuntimeException("Cannot set location. Zone Received: " + getZone() + ". Zone required: " + ZoneType.WAREHOUSE_GRID);
     }
 
     // Getter Setter Methods for product state

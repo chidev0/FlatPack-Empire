@@ -11,7 +11,7 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        System.out.println("Welcome to chIKEA Pre-Alpha (v3.2)");
+        System.out.println("Welcome to chIKEA Pre-Alpha (v3.4)");
         InventoryManager manager = new InventoryManager();
         DamagesManager damageControl = new DamagesManager();
         DeliveryTruck Truck = new DeliveryTruck(manager, damageControl);

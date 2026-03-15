@@ -27,16 +27,6 @@ public class Location {
         return "Aisle " + aisle + " : Bin " + bin;
     }
 
-    public String getZoneType() {
-        if (aisle <= 20) {
-            return "Warehouse Grid";
-        } else if (aisle > 20 && aisle <= 35) {
-            return "Market Hall";
-        }
-        else if (aisle == 99) {
-            return "Cafeteria";
-        }
-        return "Something went wrong pulling Zone Type";
-    }
+    // Removed old ZoneType method
 
 }
