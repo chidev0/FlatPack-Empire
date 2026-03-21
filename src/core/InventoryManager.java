@@ -3,6 +3,8 @@ package core;
 import models.FoodItem;
 import models.FurnitureItem;
 import models.Product;
+import models.TransitManifest;
+import models.ProductState;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,48 +16,53 @@ public class InventoryManager {
 
 
     // Method for adding a single Product to Store Inventory
-    public void addProduct(Product p) {
+    public TransitManifest addProduct(Product p) {
+        TransitManifest logger = TransitManifest.createForMovement("INVENTORY_ADD");
+        p.setState(ProductState.IN_INVENTORY);
         this.inventory.add(p);
-        p.setState("IN_INVENTORY");
-        System.out.println("chIKEA Inventory: Successfully added a " + p.getProduct() + " " + p.getType() + " to the database.");
+        logger.logProduct(p);
+        return logger;
     }
 
     // Method for adding duplicate Products to Store Inventory
-    public void addProduct(Product p, int Quantity) {
+    public TransitManifest addProduct(Product p, int Quantity) {
+        TransitManifest logger = TransitManifest.createForMovement("INVENTORY_ADD");
         for (int i = 0; i < Quantity; i++) {
             p = rebuildProduct(p, p.getProductModel());
-            p.setState("IN_INVENTORY");
+            p.setState(ProductState.IN_INVENTORY);
             this.inventory.add(p);
+            logger.logProduct(p);
         }
-        System.out.println("chIKEA Inventory: Successfully added " + Quantity + " " +p.getProduct() + " " + p.getType() +"'s to the database.");
+        return logger;
     }
 
     // Method for adding multiple Products to Store Inventory
     // TO DO: Stop bulk add from duplicating the same object reference
 
-    public void addProducts(Product... items) {
+    public TransitManifest addProducts(Product... items) {
+        TransitManifest logger = TransitManifest.createForMovement("INVENTORY_ADD");
         for (Product p : items) {
-            p.setState("IN_INVENTORY");
+            p.setState(ProductState.IN_INVENTORY);
             this.inventory.add(p);
-            String skuString = p.getSku().toString();
-            skuString = skuString.substring(0,7);
-            System.out.println("chIKEA Inventory: Added [" + skuString + "] "  + p.getProduct() + " " + p.getType() +" to the database.");
+            logger.logProduct(p);
         }
+        return logger;
     }
 
     // Method for removing Products.
 
-    public void removeProduct(Product p) {
+    public TransitManifest removeProduct(Product p) {
         if (this.inventory.contains(p)) {
+            TransitManifest logger = TransitManifest.createForMovement("INVENTORY_REMOVE");
             this.inventory.remove(p);
-            p.setState("LIMBO");
-            System.out.println("[ chIKEA Inventory ] ~ Removed a " + p.getProduct() + " " + p.getType() + "from the database.");
-            return;
+            p.setState(ProductState.LIMBO);
+            logger.logProduct(p);
+            return logger;
         }
         throw new RuntimeException("Couldn't find any Product matching the one provided");
     }
 
-    public void removeProduct(String Sku) {
+    public TransitManifest removeProduct(String Sku) {
         if (Sku.length() < 7) {
             throw new RuntimeException("SKU Invalid: Must be 7 symbols long");
         }
@@ -63,10 +70,11 @@ public class InventoryManager {
             Product p = this.inventory.get(i);
             String skuString = p.getSku().toString();
             if (skuString.startsWith(Sku)) {
+                TransitManifest logger = TransitManifest.createForMovement("INVENTORY_REMOVE");
                 this.inventory.remove(p);
-                p.setState("LIMBO");
-                System.out.println("[ chIKEA Inventory ] ~ Removed [" + Sku + "] " + p.getProduct() + " " + p.getType() + " from the database." );
-                return;
+                p.setState(ProductState.LIMBO);
+                logger.logProduct(p);
+                return logger;
             }
         }
     throw new RuntimeException("Couldn't find any Products with that SKU");
@@ -104,13 +112,14 @@ public class InventoryManager {
 
 
     // Method for finding Low Stock Items
-    public void findLowStockItems(int threshold) {
+    public List<Product> findLowStockItems(int threshold) {
+        List<Product> lowInventory = new ArrayList<>();
         for ( Product p : inventory) {
             if (p.getStockLevel() < threshold) {
-                System.out.print("chIKEA Inventory Watchdog: " + p.getProduct() + " " + p.getType() + "is below the set threshold. ");
-                System.out.println("Available Inventory: " + p.getStockLevel());
+                lowInventory.add(p);
             }
         }
+        return lowInventory;
     }
 
     // Method for finding items that fall within a price range.
@@ -137,13 +146,11 @@ public class InventoryManager {
             this.inventory.set(i, this.inventory.get(currentItem));
             this.inventory.set(currentItem, temp);
         }
-        System.out.println("chIKEA Inventory: All items have been successfully sorted (low-high)");
     }
 
-    public void displayInventory() {
-        System.out.println("\n\n----------- chIKEA Store Inventory -----------\n");
-        for (Product p : this.inventory) {
-            System.out.println(p.toString());
-        }
+    public List<Product> getInventorySnapshot() {
+        List<Product> inventorySnapshot = new ArrayList<>();
+        inventorySnapshot.addAll(inventory);
+        return inventorySnapshot;
     }
 }

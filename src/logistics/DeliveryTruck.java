@@ -2,6 +2,11 @@ package logistics;
 
 import core.DamagesManager;
 import core.InventoryManager;
+import exceptions.CapacityExceededException;
+import exceptions.EmptyStructureException;
+import models.ProductState;
+import models.TransitManifest;
+import models.UnloadManifest;
 import structures.ArrayStack;
 import models.Product;
 import java.util.Random;
@@ -31,43 +36,44 @@ public class DeliveryTruck {
     }
 
     // Basic method for loading Truck
-    public void loadTruck(Product ...item) {
+    public TransitManifest loadTruck(Product ...item) {
+        TransitManifest loadManifest = TransitManifest.createForMovement("TRUCK_ADD");
         for (Product p : item) {
-            if (isFull()) {
-                System.out.println("[chIKEA Truck]: Truck has reached maximum capacity, consider upgrading to add more items");
-                return;
+            if (this.Truck.isFull()) {
+                throw new CapacityExceededException(this.Truck.size());
             }
             p = inventoryController.rebuildProduct(p, p.getProductModel());
             this.Truck.push(p);
-            p.setState("ON_TRUCK");
-            System.out.println("[chIKEA Truck]: Added " + p.getProduct() + " " + p.getType() + " to the Truck." );
+            loadManifest.logProduct(p);
+            p.setState(ProductState.ON_TRUCK);
         }
+        return loadManifest;
     }
 
     // Method for unloading Truck into Inventory Array List
-    public String unloadTruck() {
-        int damageCount = 0;
+    public UnloadManifest unloadTruck() {
         int inventoryCount = 0;
         if (Truck.isEmpty()) {
-            return "Truck arrived empty. Not sure if this was intentional";
+            throw new EmptyStructureException();
         }
+        UnloadManifest truckManifest = new UnloadManifest();
         while (!Truck.isEmpty()) {
             Product productInTransit = Truck.pop();
-            // Set Product ownership to ON_TRUCK
-            productInTransit.setState("ON_TRUCK");
             // Check if Product is damaged, move to Damages if it is, otherwise move to Inventory.
             boolean checkDamage = isDamaged();
             if (checkDamage) {
                 // TO DO: Update generic message.
-                System.out.println("Looks like " + productInTransit.getProduct() + " " + productInTransit.getType() + " didn't make it in one piece. Adding to damages.");
+
+                truckManifest.logItemDamaged(productInTransit);
                 damageController.addProduct(productInTransit);
-                damageCount++;
             } else {
                 inventoryController.addProduct(productInTransit);
                 inventoryCount++;
             }
         }
-        return "\n\n      [chIKEA Truck]      \n\nProducts added to inventory: " + inventoryCount + ".\nProducts damaged: " + damageCount + "\nTotal: " +  (inventoryCount + damageCount);
+        truckManifest.setTotalProcessed(inventoryCount + truckManifest.getDamageLog().size());
+        truckManifest.setInventoryCount(inventoryCount);
+        return truckManifest;
     }
 
     // Method for Upgrading Truck Capacity
@@ -97,15 +103,6 @@ public class DeliveryTruck {
         return damageRoll <= damageChance;
     }
 
-    public boolean isEmpty() {
-        return Truck.isEmpty();
-    }
 
-    public boolean isFull() {
-        if (Truck.size() == truckCapacity) {
-            return true;
-        }
-        return false;
-    }
 
 }

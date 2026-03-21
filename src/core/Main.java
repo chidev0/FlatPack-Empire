@@ -4,11 +4,14 @@ import logistics.DeliveryTruck;
 import models.FoodItem;
 import models.FurnitureItem;
 import models.Product;
+import models.UnloadManifest;
+
+import java.util.List;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        System.out.println("Welcome to chIKEA Pre-Alpha (v2.5)");
+        System.out.println("Welcome to chIKEA Pre-Alpha (v3.4)");
         InventoryManager manager = new InventoryManager();
         DamagesManager damageControl = new DamagesManager();
         DeliveryTruck Truck = new DeliveryTruck(manager, damageControl);
@@ -26,7 +29,7 @@ public class Main {
         manager.sortInventory();
 
         System.out.println("\n\n----------- chIKEA Store Inventory -----------\n");
-        for (Product p : manager.inventory) {
+        for (Product p : manager.getInventorySnapshot()) {
             System.out.println(p.toString());
         }
         System.out.println("\n\n");
@@ -47,14 +50,24 @@ public class Main {
         }
 
         // v2.5 Testing
-        System.out.println("[chIKEA Truck] Received a Truck at the dock, attempting unload now\n\n");
+        System.out.println("[chIKEA Truck] Received a Truck at the dock, attempting unload now\n");
         try {
-            System.out.println(Truck.unloadTruck());
+            UnloadManifest truckManifest = Truck.unloadTruck();
+            if (!truckManifest.getDamageLog().isEmpty()) {
+                for (Product p : truckManifest.getDamageLog()) {
+                    System.out.println("Looks like " + p.getProduct() + " " + p.getType() + " didn't make it in one piece. Added to damages.");
+                }
+            }
+            System.out.println("\n\n      [chIKEA Truck]      \n\nProducts added to inventory: " + truckManifest.getInventoryCount() + ".\nProducts damaged: " + truckManifest.getDamageCount() + "\nTotal: " +  truckManifest.getTotalProcessed());
         } catch (RuntimeException e) {
             throw new RuntimeException(e);
         } finally {
             manager.sortInventory();
-            manager.displayInventory();
+            List<Product> inventory = manager.getInventorySnapshot();
+            System.out.println("\n----------- chIKEA Store Inventory -----------\n");
+            for (Product i : inventory) {
+                System.out.println(i.toString());
+            }
         }
 
     }

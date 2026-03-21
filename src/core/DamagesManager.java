@@ -1,6 +1,8 @@
 package core;
 
 import models.Product;
+import models.TransitManifest;
+import models.ProductState;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,10 +13,12 @@ public class DamagesManager {
     List<Product> damages = new ArrayList<>();
 
 
-    // Method for adding a single Product to Store Inventory
-    public String addProduct(Product p) {
+    // Method for adding a single Product to Damages
+    public TransitManifest addProduct(Product p) {
+        TransitManifest damageManifest = TransitManifest.createForMovement("DAMAGE_ADD");
         this.damages.add(p);
-        p.setState("DAMAGED");
-        return "[chIKEA Inventory]: Added 1x " + p.getProduct() + " " + p.getType() + " to damages.";
+        p.setState(ProductState.DAMAGED);
+        damageManifest.logProduct(p);
+        return damageManifest;
     }
 }

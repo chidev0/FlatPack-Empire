@@ -3,7 +3,7 @@ package structures;
 import exceptions.CapacityExceededException;
 import exceptions.EmptyStructureException;
 
-class ArrayQueue<T> {
+public class ArrayQueue<T> {
     private T[] queue;
     private int front;
     private int rear;
@@ -52,13 +52,6 @@ class ArrayQueue<T> {
         return item;
     }
 
-    // Peek: get the element at the front without removing
-    public T peek() {
-        if (isEmpty()) {
-            throw new EmptyStructureException();
-        }
-        return queue[front];
-    }
 
     // Front: return the front element (without removing it)
     public T front() {

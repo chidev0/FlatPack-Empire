@@ -25,7 +25,7 @@ public class ArrayStack<T> {
     }
 
     public void push(T item) {
-        if (top == capacity - 1) {
+        if (isFull()) {
             throw new CapacityExceededException(capacity);
         }
         stack[++top] = item;
@@ -51,6 +51,10 @@ public class ArrayStack<T> {
 
     public boolean isEmpty() {
         return top == -1;
+    }
+
+    public boolean isFull() {
+        return size() == capacity;
     }
 
     public int size() {
