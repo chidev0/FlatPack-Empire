@@ -6,21 +6,22 @@ import models.FurnitureItem;
 import models.Product;
 import models.UnloadManifest;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        System.out.println("Welcome to chIKEA Pre-Alpha (v3.4)");
+        System.out.println("Welcome to chIKEA Pre-Alpha (v3.5)");
         InventoryManager manager = new InventoryManager();
         DamagesManager damageControl = new DamagesManager();
         DeliveryTruck Truck = new DeliveryTruck(manager, damageControl);
         System.out.println("Store Inventory created, creating products.");
-        FurnitureItem Alex_WD = new FurnitureItem("Alex", "Desk",74.99, "White");
-        FurnitureItem Alex_BD = new FurnitureItem("Alex", "Desk",64.99, "Black");
-        FurnitureItem Alex_WDR = new FurnitureItem("Alex", "Dresser",54.99, "White");
-        FurnitureItem Alex_BDR = new FurnitureItem("Alex", "Dresser",57.99, "Black");
-        FoodItem Swedish_Meatballs = new FoodItem("Meatball", "Food", 5.99, false, 30, 4, "Chicken");
+        FurnitureItem Alex_WD = new FurnitureItem("Alex", "Desk", BigDecimal.valueOf(74.99), "White");
+        FurnitureItem Alex_BD = new FurnitureItem("Alex", "Desk",BigDecimal.valueOf(64.99), "Black");
+        FurnitureItem Alex_WDR = new FurnitureItem("Alex", "Dresser",BigDecimal.valueOf(54.99), "White");
+        FurnitureItem Alex_BDR = new FurnitureItem("Alex", "Dresser",BigDecimal.valueOf(57.99), "Black");
+        FoodItem Swedish_Meatballs = new FoodItem("Meatball", "Food", BigDecimal.valueOf(5.99), false, 30, 4, "Chicken");
 
         System.out.println("Adding products to inventory");
         manager.addProducts(Alex_WD, Alex_BD, Alex_WDR, Alex_BDR, Swedish_Meatballs);

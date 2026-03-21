@@ -6,6 +6,7 @@ import models.Product;
 import models.TransitManifest;
 import models.ProductState;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -123,10 +124,11 @@ public class InventoryManager {
     }
 
     // Method for finding items that fall within a price range.
-    public List<Product> findProductsInPriceRange(double minPrice, double maxPrice) {
+    public List<Product> findProductsInPriceRange(BigDecimal minPrice, BigDecimal maxPrice) {
         List<Product> temp_item_range = new ArrayList<>();
         for ( Product p: inventory) {
-            if(p.getPrice() >= minPrice && p.getPrice() <= maxPrice) {
+            // If price is more than the given minPrice and less than given maxPrice, add to List<Product>
+            if(p.getPrice().compareTo(minPrice) > 0 && p.getPrice().compareTo(maxPrice) < 0) {
                 temp_item_range.add(p);
             }
         }

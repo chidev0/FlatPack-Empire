@@ -1,11 +1,12 @@
 package models;
+import java.math.BigDecimal;
 import java.util.UUID;
 
 public class Product implements Comparable<Product> {
 
     private String productName;
     private String productType;
-    private double price;
+    private BigDecimal price;
     private int stockLevel;
     private ZoneType zone;
     private String color;
@@ -15,7 +16,7 @@ public class Product implements Comparable<Product> {
     private Location warehouseLocation;
 
     // Product Constructor
-    public Product(String productName, String productType, double price, String color) {
+    public Product(String productName, String productType, BigDecimal price, String color) {
         this.productName = productName;
         this.productType = productType;
         this.price = price;
@@ -32,7 +33,7 @@ public class Product implements Comparable<Product> {
     }
 
     // Product Constructor w/o color String declaration.
-    public Product(String productName, String productType, double price) {
+    public Product(String productName, String productType, BigDecimal price) {
         this.productName = productName;
         this.productType = productType;
         this.price = price;
@@ -77,12 +78,12 @@ public class Product implements Comparable<Product> {
     }
 
     // Create Getter Setter for Price (Cannot be negative)
-    public Double getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
-        if (price < 0) {
+    public void setPrice(BigDecimal price) {
+        if (price.compareTo(BigDecimal.ZERO) < 0) {
             throw new RuntimeException("Illegal Price");
         }
         else {
@@ -144,16 +145,17 @@ public class Product implements Comparable<Product> {
         throw new RuntimeException("Illegal Set Modifier: Current State - " + this.state + ". Target State - " + newState);
     }
     // Create (applyEmployeeDiscount) method
-    public double applyEmployeeDiscount(double percent) {
-        double employee_price = this.price * (1.00 - percent);
-        if (employee_price < 0) {
-            employee_price = 0;
+    public BigDecimal applyEmployeeDiscount(BigDecimal percent) {
+        BigDecimal employee_price = this.price.multiply(BigDecimal.valueOf(1.00).subtract(percent));
+        // Checks if new price is less than zero, if it is sets it to be zero.
+        if (employee_price.compareTo(BigDecimal.ZERO) < 0) {
+            employee_price = BigDecimal.ZERO;
         }
         return employee_price;
     }
     // Method for comparing two products to each other.
     public int compareTo(Product other) {
-        return Double.compare(this.price, other.price);
+        return this.price.compareTo(other.price);
     }
 
 
