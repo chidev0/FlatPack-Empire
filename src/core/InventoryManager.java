@@ -4,12 +4,11 @@ import models.FoodItem;
 import models.FurnitureItem;
 import models.Product;
 import models.TransitManifest;
-import models.ProductState;
+import products.ProductState;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public class InventoryManager {
     // Initializes Store Inventory via ArrayList

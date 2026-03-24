@@ -1,11 +1,14 @@
 package models;
+import products.ProductState;
+import products.ProductType;
+
 import java.math.BigDecimal;
 import java.util.UUID;
 
 public class Product implements Comparable<Product> {
 
     private String productName;
-    private String productType;
+    private ProductType productType;
     private BigDecimal price;
     private int stockLevel;
     private ZoneType zone;
@@ -14,18 +17,20 @@ public class Product implements Comparable<Product> {
     private String productModel;
     private ProductState state = ProductState.LIMBO;
     private Location warehouseLocation;
+    private String description;
 
     // Product Constructor
-    public Product(String productName, String productType, BigDecimal price, String color) {
+    public Product(String productName, ProductType productType, BigDecimal price, String color, String description) {
         this.productName = productName;
         this.productType = productType;
         this.price = price;
         this.color = color;
         this.Sku = UUID.randomUUID();
+        this.description = description;
     }
 
     // Product Constructor w/o price variable declaration
-    public Product(String productName, String productType, String color) {
+    public Product(String productName, ProductType productType, String color) {
         this.productName = productName;
         this.productType = productType;
         this.color = color;
@@ -33,7 +38,7 @@ public class Product implements Comparable<Product> {
     }
 
     // Product Constructor w/o color String declaration.
-    public Product(String productName, String productType, BigDecimal price) {
+    public Product(String productName, ProductType productType, BigDecimal price) {
         this.productName = productName;
         this.productType = productType;
         this.price = price;
@@ -67,9 +72,9 @@ public class Product implements Comparable<Product> {
     }
 
     // Create Getter Setter for Product Type
-    public String getType() { return productType; }
+    public ProductType getType() { return productType; }
 
-    public void setType(String productType) { this.productType = productType; }
+    public void setType(ProductType productType) { this.productType = productType; }
 
     // Create Getter for Product Model Type
     public String getProductModel() { return productModel; }

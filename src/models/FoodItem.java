@@ -1,5 +1,7 @@
 package models;
 
+import products.ProductType;
+
 import java.math.BigDecimal;
 
 public class FoodItem extends Product {
@@ -15,7 +17,7 @@ public class FoodItem extends Product {
     boolean hasFlavor;
 
     // Initializing Product
-    public FoodItem(String productName, String productType, BigDecimal price, boolean isVegan, int calories, int proteinAmount, String base) {
+    public FoodItem(String productName, ProductType productType, BigDecimal price, boolean isVegan, int calories, int proteinAmount, String base) {
         super(productName, productType, price);
         this.isVegan = isVegan;
         this.calories = calories;
@@ -26,7 +28,7 @@ public class FoodItem extends Product {
         this.hasBase = true;
     }
 
-    public FoodItem(String productName, String productType, BigDecimal price) {
+    public FoodItem(String productName, ProductType productType, BigDecimal price) {
         super(productName, productType, price);
         super.setProductModel("Food");
     }

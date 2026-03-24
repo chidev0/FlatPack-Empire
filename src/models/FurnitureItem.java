@@ -1,5 +1,8 @@
 package models;
 
+import products.MaterialType;
+import products.ProductType;
+
 import java.math.BigDecimal;
 
 public class FurnitureItem extends Product {
@@ -7,18 +10,20 @@ public class FurnitureItem extends Product {
     // Initialize variables.
     String dimensions;
     boolean assemblyRequired;
+    MaterialType material;
 
     // Initialize our Product
-    public FurnitureItem(String productName, String productType, BigDecimal price, String color, String dimensions, boolean assemblyRequired) {
-        super(productName, productType, price, color);
+    public FurnitureItem(String productName, ProductType productType, BigDecimal price, String color, String description, String dimensions, boolean assemblyRequired) {
+        super(productName, productType, price, color, description);
         this.dimensions = dimensions;
         this.assemblyRequired = assemblyRequired;
         super.setProductModel("Furniture");
     }
 
-    public FurnitureItem(String productName, String productType, BigDecimal price, String color) {
-        super(productName, productType, price, color);
+    public FurnitureItem(String productName, ProductType productType, BigDecimal price, String color, String description, MaterialType material) {
+        super(productName, productType, price, color, description);
         super.setProductModel("Furniture");
+        this.material = material;
     }
 
 

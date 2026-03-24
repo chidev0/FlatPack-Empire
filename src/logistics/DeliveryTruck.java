@@ -4,7 +4,7 @@ import core.DamagesManager;
 import core.InventoryManager;
 import exceptions.CapacityExceededException;
 import exceptions.EmptyStructureException;
-import models.ProductState;
+import products.ProductState;
 import models.TransitManifest;
 import models.UnloadManifest;
 import structures.ArrayStack;

@@ -3,6 +3,8 @@ package engine;
 import java.util.Arrays;
 
 public class GameClock {
+    public GameState GameState;
+
     private int tick;
     private static final int TICKS_PER_DAY = SimConfig.TICKS_PER_DAY;
     private static final int SIMULATION_SPEED = SimConfig.SIMULATION_SPEED;
@@ -11,14 +13,17 @@ public class GameClock {
             {0,60,120,180,240,300,360,420,480,540,600}
     };
 
+    public GameClock(GameState GameState) {
+        this.GameState = GameState;
+    }
+
 
     public void advance() {
-        if (!GameState.isPAUSED()) {
             tick++;
             if (tick % TICKS_PER_DAY == 0) {
                 GameState.setCurrentDay(GameState.getCurrentDay() + 1);
             }
-        }
+
     }
 
     // Getter for Tick & Day
@@ -32,12 +37,12 @@ public class GameClock {
 
     // Method For Evaluating EOD (Last hour of business)
     public boolean endOfDay() {
-        return tick % TICKS_PER_DAY >= 570;
+        return tick % TICKS_PER_DAY >= 540;
     }
 
     // Method for evaluating start of day (First 30 minutes of business)
     public boolean startOfDay() {
-        return tick % TICKS_PER_DAY <= 60;
+        return tick % TICKS_PER_DAY <= 30;
     }
 
     // Getter for SIMULATION_SPEED
@@ -47,7 +52,7 @@ public class GameClock {
 
     // Setter that sets SIMULATION_SPEED
 
-    public static void setSimulationSpeed(int SIMULATION_SPEED) {
+    public void setSimulationSpeed(int SIMULATION_SPEED) {
         int[] APPROVED_SIM_SPEEDS = {1, 2, 4, 8}; // Array of Speed Modifiers (1x, 2x, 4x, 8x)
         if (Arrays.binarySearch(APPROVED_SIM_SPEEDS, SIMULATION_SPEED) >= 0) { // Searches sorted array for SIMULATION_SPEED input
             GameState.setCurrentSimulationSpeed(GameClock.SIMULATION_SPEED / SIMULATION_SPEED); // If int is found, update the speed by dividing default SPEED (100ms) by speed modifier.

@@ -2,7 +2,7 @@ package core;
 
 import models.Product;
 import models.TransitManifest;
-import models.ProductState;
+import products.ProductState;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,5 +1,7 @@
 package engine;
 
+import java.math.BigDecimal;
+
 public class SimConfig {
     public static final int STARTING_TRUCK_TIER = 1;
     public static final int MAX_TRUCK_TIER = 3;
@@ -13,4 +15,5 @@ public class SimConfig {
     public static final double SHRINK_CHANCE = 0.10;
     public static final int TICKS_PER_DAY = 600;
     public static final int SIMULATION_SPEED = 1000; // Default Sim Speed, 1000ms (1s) per Tick.
+    public static final BigDecimal STARTING_BALANCE = BigDecimal.valueOf(1500.00);
 }
