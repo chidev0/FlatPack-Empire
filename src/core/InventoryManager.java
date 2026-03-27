@@ -28,7 +28,7 @@ public class InventoryManager {
     public TransitManifest addProduct(Product p, int Quantity) {
         TransitManifest logger = TransitManifest.createForMovement("INVENTORY_ADD");
         for (int i = 0; i < Quantity; i++) {
-            p = rebuildProduct(p, p.getProductModel());
+            p = p.copy();
             p.setState(ProductState.IN_INVENTORY);
             this.inventory.add(p);
             logger.logProduct(p);
@@ -42,6 +42,7 @@ public class InventoryManager {
     public TransitManifest addProducts(Product... items) {
         TransitManifest logger = TransitManifest.createForMovement("INVENTORY_ADD");
         for (Product p : items) {
+            p = p.copy();
             p.setState(ProductState.IN_INVENTORY);
             this.inventory.add(p);
             logger.logProduct(p);
@@ -80,35 +81,6 @@ public class InventoryManager {
     throw new RuntimeException("Couldn't find any Products with that SKU");
     }
 
-    public FurnitureItem rebuildFurniture(FurnitureItem p) {
-            FurnitureItem tempProduct = new FurnitureItem(p.getProduct(), p.getType(), p.getPrice(), p.getColor());
-            return tempProduct;
-        }
-
-
-    public FoodItem rebuildFood(FoodItem p) {
-
-            FoodItem tempProduct = new FoodItem(p.getProduct(), p.getType(), p.getPrice());
-            if (p.hasProtein()) {
-                int proteinAmount = p.getProteinAmount();
-                tempProduct.setProtein(proteinAmount);
-            } if (p.veganStatus()) {
-                tempProduct.setVegan(true);
-            } if (p.hasBase()) {
-                tempProduct.setBase(p.getBase());
-            }
-        return tempProduct;
-
-    }
-    
-    public Product rebuildProduct(Object p, String model) {
-        if (model.equals("Furniture")) {
-            return rebuildFurniture((FurnitureItem) p);
-        } else if (model.equals("Food")) {
-            return rebuildFood((FoodItem) p);
-        }
-        throw new RuntimeException("Illegal Model Type");
-    }
 
 
     // Method for finding Low Stock Items

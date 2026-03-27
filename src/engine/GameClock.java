@@ -67,7 +67,7 @@ public class GameClock {
         int targetHour = -1;
         boolean isMorning = false;
         String timeType;
-        for (int i = 0; i < time[0].length; i++) { // Loop through each hour in the first row
+        for (int i = 0; i < time[0].length - 1; i++) { // Loop through each hour in the first row
             if (tick % TICKS_PER_DAY >= time[1][i] && tick % TICKS_PER_DAY < time[1][i + 1]) { // Check if current tick is greater than/equal to the tick associated with iterated hour AND less than tick associated with the hour in the column next to it.
                 targetTick = time[1][i]; // If both conditions true, log the hour and the start tick associated with that hour
                 targetHour = time[0][i];

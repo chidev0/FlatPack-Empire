@@ -1,14 +1,27 @@
 package engine;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class GameEngine {
-    public GameState Scottsville = new GameState();
-    public GameClock Time = new GameClock(Scottsville);
+
+    private GameState scottsville;
+    private GameClock Time = new GameClock(scottsville);
+    List<Tickable> gameSystems = new ArrayList<>();
+
+    public GameEngine(GameState gameState) {
+        this.scottsville = gameState;
+    }
+
+    public void registerSystem(Tickable system) {
+        gameSystems.add(system);
+    }
 
     public void advance() {
-        while (Scottsville.getSimulationStatus() == GameStatus.RUNNING) {
+        while (scottsville.getSimulationStatus() == GameStatus.RUNNING) {
             tick();
             try {
-                Thread.sleep(Scottsville.getCurrentSimulationSpeed());
+                Thread.sleep(scottsville.getCurrentSimulationSpeed());
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
@@ -17,6 +30,9 @@ public class GameEngine {
 
     public void tick() {
         Time.advance();
+        for (Tickable i : gameSystems) {
+            i.tick(scottsville);
+        }
     }
 
 

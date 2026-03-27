@@ -17,8 +17,8 @@ public class FoodItem extends Product {
     boolean hasFlavor;
 
     // Initializing Product
-    public FoodItem(String productName, ProductType productType, BigDecimal price, boolean isVegan, int calories, int proteinAmount, String base) {
-        super(productName, productType, price);
+    public FoodItem(String productName, ProductType productType, BigDecimal price, String description, boolean isVegan, int calories, int proteinAmount, String base) {
+        super(productName, productType, price, description);
         this.isVegan = isVegan;
         this.calories = calories;
         this.proteinAmount = proteinAmount;
@@ -28,8 +28,8 @@ public class FoodItem extends Product {
         this.hasBase = true;
     }
 
-    public FoodItem(String productName, ProductType productType, BigDecimal price) {
-        super(productName, productType, price);
+    public FoodItem(String productName, ProductType productType, BigDecimal price, String description) {
+        super(productName, productType, price, description);
         super.setProductModel("Food");
     }
 
@@ -75,6 +75,24 @@ public class FoodItem extends Product {
 
     public void setVegan(boolean vegan) {
         this.isVegan = vegan;
+    }
+
+    // Method for Rebuilding products (replaces old inventory manager method)
+    @Override
+    public FoodItem copy() {
+        FoodItem tempItem = new FoodItem(this.getProduct(), this.getType(), this.getPrice(), this.getDescription());
+        tempItem.setState(this.getState());
+        if (this.hasProtein) {
+            tempItem.setProtein(this.proteinAmount);
+        }
+        if (this.hasBase) {
+            tempItem.setBase(this.base);
+        }
+        if (this.isVegan) {
+            tempItem.setVegan(true);
+        }
+        return tempItem;
+
     }
 
 

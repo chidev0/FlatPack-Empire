@@ -6,15 +6,16 @@ public enum ProductState {
     DAMAGED("Damaged"),
     IN_INVENTORY("Store Inventory"),
     LIMBO("Limbo"),
-    AS_IS("As is");
+    AS_IS("As is"),
+    SOLD("Sold");
 
-    private final String UI_Wrapper;
+    private final String UI_Label;
 
-    private ProductState(String UI_Wrapper) {
-        this.UI_Wrapper = UI_Wrapper;
+    private ProductState(String UI_Label) {
+        this.UI_Label = UI_Label;
     }
 
-    public String getUI_Wrapper() {return UI_Wrapper;}
+    public String getUI_Label() {return UI_Label;}
 
     public boolean canTransitionTo(ProductState newState) {
         switch (this) {
@@ -26,7 +27,7 @@ public enum ProductState {
                 return (newState == LIMBO || newState == DAMAGED);
             case LIMBO:
                 return (newState == ON_TRUCK || newState == DAMAGED || newState == IN_INVENTORY);
-            case AS_IS:
+            case AS_IS, SOLD:
                 return false;
         }
         throw new RuntimeException("Illegal Product State");

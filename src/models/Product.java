@@ -38,10 +38,11 @@ public class Product implements Comparable<Product> {
     }
 
     // Product Constructor w/o color String declaration.
-    public Product(String productName, ProductType productType, BigDecimal price) {
+    public Product(String productName, ProductType productType, BigDecimal price, String description) {
         this.productName = productName;
         this.productType = productType;
         this.price = price;
+        this.description = description;
         this.Sku = UUID.randomUUID();
     }
 
@@ -94,6 +95,15 @@ public class Product implements Comparable<Product> {
         else {
             this.price = price;
         }
+    }
+
+    // Getter and Setter for description
+    public String getDescription() {
+        return this.description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     // Create Getter Setter for stockLevel (Stock cannot be negative)
@@ -163,7 +173,9 @@ public class Product implements Comparable<Product> {
         return this.price.compareTo(other.price);
     }
 
-
+    public Product copy() {
+        return null;
+    }
 
 
 }

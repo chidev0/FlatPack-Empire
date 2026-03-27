@@ -2,6 +2,7 @@ package logistics;
 
 import core.DamagesManager;
 import core.InventoryManager;
+import engine.GameState;
 import exceptions.CapacityExceededException;
 import exceptions.EmptyStructureException;
 import products.ProductState;
@@ -12,17 +13,20 @@ import models.Product;
 import java.util.Random;
 
 public class DeliveryTruck {
-    private ArrayStack<Product> Truck;
-    int truckTier = 1;
-    int truckCapacity;
+    private ArrayStack<Product> truck;
     InventoryManager inventoryController;
     DamagesManager damageController;
+    GameState state;
+    int truckCapacity;
     double damageChance;
+    int truckTier;
 
-    public DeliveryTruck(InventoryManager manager, DamagesManager damageController) {
+    public DeliveryTruck(InventoryManager manager, DamagesManager damageController, GameState state) {
         this.inventoryController = manager;
         this.damageController = damageController;
+        this.state = state;
         // Logic for determining features (Truck size, Damage chance) based on Tier (Default: 1)
+        this.truckTier = state.getCurrentTruckTier();
         if (truckTier == 1) {
             truckCapacity = 50;
             damageChance = 15;
@@ -32,18 +36,18 @@ public class DeliveryTruck {
         } else {
             throw new RuntimeException("Illegal Truck Tier");
         }
-        this.Truck = new ArrayStack<Product>(truckCapacity);
+        this.truck = new ArrayStack<Product>(truckCapacity);
     }
 
     // Basic method for loading Truck
     public TransitManifest loadTruck(Product ...item) {
         TransitManifest loadManifest = TransitManifest.createForMovement("TRUCK_ADD");
         for (Product p : item) {
-            if (this.Truck.isFull()) {
-                throw new CapacityExceededException(this.Truck.size());
+            if (this.truck.isFull()) {
+                throw new CapacityExceededException(this.truck.size());
             }
-            p = inventoryController.rebuildProduct(p, p.getProductModel());
-            this.Truck.push(p);
+            p = p.copy();
+            this.truck.push(p);
             loadManifest.logProduct(p);
             p.setState(ProductState.ON_TRUCK);
         }
@@ -53,12 +57,12 @@ public class DeliveryTruck {
     // Method for unloading Truck into Inventory Array List
     public UnloadManifest unloadTruck() {
         int inventoryCount = 0;
-        if (Truck.isEmpty()) {
+        if (truck.isEmpty()) {
             throw new EmptyStructureException();
         }
         UnloadManifest truckManifest = new UnloadManifest();
-        while (!Truck.isEmpty()) {
-            Product productInTransit = Truck.pop();
+        while (!truck.isEmpty()) {
+            Product productInTransit = truck.pop();
             // Check if Product is damaged, move to Damages if it is, otherwise move to Inventory.
             boolean checkDamage = isDamaged();
             if (checkDamage) {
@@ -87,7 +91,7 @@ public class DeliveryTruck {
             truckTier++;
             truckCapacity = 100;
             damageChance = 7.5;
-            Truck.upgradeCapacity(truckCapacity);
+            truck.upgradeCapacity(truckCapacity);
             return "[ chIKEA Logistics ] Tier Upgrade: You have upgraded your Truck tier.\n New Box Capacity: 100";
         }
         throw new RuntimeException("Expected a truckTier of 1 but received " + truckTier);
