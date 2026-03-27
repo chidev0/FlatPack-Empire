@@ -5,12 +5,13 @@ import java.util.List;
 
 public class GameEngine {
 
-    private GameState scottsville;
-    private GameClock Time = new GameClock(scottsville);
+    private final GameState scottsville;
+    private final GameClock time;
     List<Tickable> gameSystems = new ArrayList<>();
 
     public GameEngine(GameState gameState) {
-        this.scottsville = gameState;
+        scottsville = gameState;
+        this.time = new GameClock(scottsville);
     }
 
     public void registerSystem(Tickable system) {
@@ -29,7 +30,7 @@ public class GameEngine {
     }
 
     public void tick() {
-        Time.advance();
+        time.advance();
         for (Tickable i : gameSystems) {
             i.tick(scottsville);
         }

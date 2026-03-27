@@ -25,9 +25,9 @@ public class InventoryManager {
     }
 
     // Method for adding duplicate Products to Store Inventory
-    public TransitManifest addProduct(Product p, int Quantity) {
+    public TransitManifest addProduct(Product p, int quantity) {
         TransitManifest logger = TransitManifest.createForMovement("INVENTORY_ADD");
-        for (int i = 0; i < Quantity; i++) {
+        for (int i = 0; i < quantity; i++) {
             p = p.copy();
             p.setState(ProductState.IN_INVENTORY);
             this.inventory.add(p);

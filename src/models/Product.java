@@ -1,4 +1,5 @@
 package models;
+import products.ProductModel;
 import products.ProductState;
 import products.ProductType;
 
@@ -13,8 +14,8 @@ public class Product implements Comparable<Product> {
     private int stockLevel;
     private ZoneType zone;
     private String color;
-    private UUID Sku;
-    private String productModel;
+    private UUID sku;
+    private ProductModel productModel;
     private ProductState state = ProductState.LIMBO;
     private Location warehouseLocation;
     private String description;
@@ -25,7 +26,7 @@ public class Product implements Comparable<Product> {
         this.productType = productType;
         this.price = price;
         this.color = color;
-        this.Sku = UUID.randomUUID();
+        this.sku = UUID.randomUUID();
         this.description = description;
     }
 
@@ -34,7 +35,7 @@ public class Product implements Comparable<Product> {
         this.productName = productName;
         this.productType = productType;
         this.color = color;
-        this.Sku = UUID.randomUUID();
+        this.sku = UUID.randomUUID();
     }
 
     // Product Constructor w/o color String declaration.
@@ -43,11 +44,11 @@ public class Product implements Comparable<Product> {
         this.productType = productType;
         this.price = price;
         this.description = description;
-        this.Sku = UUID.randomUUID();
+        this.sku = UUID.randomUUID();
     }
 
     // Default Product Constructor
-    public Product() {this.Sku = UUID.randomUUID();}
+    public Product() {this.sku = UUID.randomUUID();}
 
     // Create Getter Setter for Color (WIP - Check to see if Color matches list of accepted Colors)
     public String getColor() { return color; }
@@ -65,11 +66,11 @@ public class Product implements Comparable<Product> {
 
     // Create Getter for SKU
     public UUID getSku() {
-        return Sku;
+        return sku;
     }
 
     public void generateSku() {
-        this.Sku = UUID.randomUUID();
+        this.sku = UUID.randomUUID();
     }
 
     // Create Getter Setter for Product Type
@@ -78,8 +79,8 @@ public class Product implements Comparable<Product> {
     public void setType(ProductType productType) { this.productType = productType; }
 
     // Create Getter for Product Model Type
-    public String getProductModel() { return productModel; }
-    public void setProductModel(String model) {
+    public ProductModel getProductModel() { return productModel; }
+    public void setProductModel(ProductModel model) {
         this.productModel = model;
     }
 
@@ -174,7 +175,7 @@ public class Product implements Comparable<Product> {
     }
 
     public Product copy() {
-        return null;
+        throw new RuntimeException("Expected a subclass call.");
     }
 
 

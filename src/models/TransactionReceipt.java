@@ -1,5 +1,7 @@
 package models;
 
+import java.math.BigDecimal;
+
 public class TransactionReceipt {
     private int quantity;
     private String productName;
@@ -7,12 +9,12 @@ public class TransactionReceipt {
     private String productModel;
     private double discount;
     private String discountType;
-    private double finalPrice;
+    private BigDecimal finalPrice;
     private String productColorPrimary;
     private String productColorSecondary;
     private String productCondition;
 
-    public TransactionReceipt(String productName, String productType, String productModel, int Quantity, double finalPrice) {
+    public TransactionReceipt(String productName, String productType, String productModel, int Quantity, BigDecimal finalPrice) {
         this.productName = productName;
         this.productType = productType;
         this.productModel = productModel;
@@ -20,7 +22,7 @@ public class TransactionReceipt {
         this.finalPrice = finalPrice;
     }
 
-    public TransactionReceipt(String productName, String productType, String productModel, int Quantity, double finalPrice, double discount, String discountType) {
+    public TransactionReceipt(String productName, String productType, String productModel, int Quantity, BigDecimal finalPrice, double discount, String discountType) {
         this.productName = productName;
         this.productType = productType;
         this.productModel = productModel;
@@ -30,7 +32,7 @@ public class TransactionReceipt {
         this.discountType = discountType;
     }
 
-    public TransactionReceipt(String productName, String productType, String productModel, int Quantity, double finalPrice, String productColorPrimary) {
+    public TransactionReceipt(String productName, String productType, String productModel, int Quantity, BigDecimal finalPrice, String productColorPrimary) {
         this.productName = productName;
         this.productType = productType;
         this.productModel = productModel;
@@ -39,7 +41,7 @@ public class TransactionReceipt {
         this.productColorPrimary = productColorPrimary;
     }
 
-    public TransactionReceipt(String productName, String productType, String productModel, int Quantity, double finalPrice, String productColorPrimary, String productColorSecondary) {
+    public TransactionReceipt(String productName, String productType, String productModel, int Quantity, BigDecimal finalPrice, String productColorPrimary, String productColorSecondary) {
         this.productName = productName;
         this.productType = productType;
         this.productModel = productModel;
@@ -49,7 +51,7 @@ public class TransactionReceipt {
         this.productColorSecondary = productColorSecondary;
     }
 
-    public TransactionReceipt(String productName, String productType, String productModel, int Quantity, double finalPrice, double discount, String discountType, String productColorPrimary) {
+    public TransactionReceipt(String productName, String productType, String productModel, int Quantity, BigDecimal finalPrice, double discount, String discountType, String productColorPrimary) {
         this.productName = productName;
         this.productType = productType;
         this.productModel = productModel;
@@ -60,7 +62,7 @@ public class TransactionReceipt {
         this.productColorPrimary = productColorPrimary;
     }
 
-    public TransactionReceipt(String productName, String productType, String productModel, int Quantity, double finalPrice, double discount, String discountType, String productColorPrimary, String productColorSecondary) {
+    public TransactionReceipt(String productName, String productType, String productModel, int Quantity, BigDecimal finalPrice, double discount, String discountType, String productColorPrimary, String productColorSecondary) {
         this.productName = productName;
         this.productType = productType;
         this.productModel = productModel;
@@ -100,7 +102,7 @@ public class TransactionReceipt {
         return discount;
     }
 
-    public double getFinalPrice() {
+    public BigDecimal getFinalPrice() {
         return finalPrice;
     }
 

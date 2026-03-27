@@ -10,6 +10,8 @@ import models.TransitManifest;
 import models.UnloadManifest;
 import structures.ArrayStack;
 import models.Product;
+import upgrades.UpgradeCatalog;
+
 import java.util.Random;
 
 public class DeliveryTruck {
@@ -28,11 +30,11 @@ public class DeliveryTruck {
         // Logic for determining features (Truck size, Damage chance) based on Tier (Default: 1)
         this.truckTier = state.getCurrentTruckTier();
         if (truckTier == 1) {
-            truckCapacity = 50;
-            damageChance = 15;
+            truckCapacity = UpgradeCatalog.truckTierOne.getCapacity();
+            damageChance = UpgradeCatalog.truckTierOne.getDamageChance();
         } else if (truckTier == 2) {
-            truckCapacity = 100;
-            damageChance = 7.5;
+            truckCapacity = UpgradeCatalog.truckTierTwo.getCapacity();
+            damageChance = UpgradeCatalog.truckTierTwo.getDamageChance();
         } else {
             throw new RuntimeException("Illegal Truck Tier");
         }
@@ -89,8 +91,8 @@ public class DeliveryTruck {
         // To DO: Deduct cost from storeBalance once Economy is created.
         if (truckTier == 1) {
             truckTier++;
-            truckCapacity = 100;
-            damageChance = 7.5;
+            truckCapacity = UpgradeCatalog.truckTierTwo.getCapacity();
+            damageChance = UpgradeCatalog.truckTierTwo.getDamageChance();
             truck.upgradeCapacity(truckCapacity);
             return "[ chIKEA Logistics ] Tier Upgrade: You have upgraded your Truck tier.\n New Box Capacity: 100";
         }
