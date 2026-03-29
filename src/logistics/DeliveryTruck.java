@@ -3,6 +3,7 @@ package logistics;
 import core.DamagesManager;
 import core.InventoryManager;
 import engine.GameState;
+import engine.Tickable;
 import exceptions.CapacityExceededException;
 import exceptions.EmptyStructureException;
 import products.ProductState;
@@ -14,7 +15,7 @@ import upgrades.UpgradeCatalog;
 
 import java.util.Random;
 
-public class DeliveryTruck {
+public class DeliveryTruck implements Tickable {
     private ArrayStack<Product> truck;
     InventoryManager inventoryController;
     DamagesManager damageController;
@@ -22,11 +23,13 @@ public class DeliveryTruck {
     int truckCapacity;
     double damageChance;
     int truckTier;
+    UnloadManifest truckManifest;
 
     public DeliveryTruck(InventoryManager manager, DamagesManager damageController, GameState state) {
         this.inventoryController = manager;
         this.damageController = damageController;
         this.state = state;
+        this.truckManifest = new UnloadManifest();
         // Logic for determining features (Truck size, Damage chance) based on Tier (Default: 1)
         this.truckTier = state.getCurrentTruckTier();
         if (truckTier == 1) {
@@ -57,13 +60,11 @@ public class DeliveryTruck {
     }
 
     // Method for unloading Truck into Inventory Array List
-    public UnloadManifest unloadTruck() {
+    public UnloadManifest advance() {
         int inventoryCount = 0;
         if (truck.isEmpty()) {
             throw new EmptyStructureException();
         }
-        UnloadManifest truckManifest = new UnloadManifest();
-        while (!truck.isEmpty()) {
             Product productInTransit = truck.pop();
             // Check if Product is damaged, move to Damages if it is, otherwise move to Inventory.
             boolean checkDamage = isDamaged();
@@ -73,14 +74,16 @@ public class DeliveryTruck {
                 truckManifest.logItemDamaged(productInTransit);
                 damageController.addProduct(productInTransit);
             } else {
+                // TO DO: Implement pallet logic instead of direct inventory transfer
                 inventoryController.addProduct(productInTransit);
                 inventoryCount++;
             }
-        }
+
         truckManifest.setTotalProcessed(inventoryCount + truckManifest.getDamageLog().size());
         truckManifest.setInventoryCount(inventoryCount);
         return truckManifest;
     }
+
 
     // Method for Upgrading Truck Capacity
     public String upgradeTruck() {
@@ -107,6 +110,11 @@ public class DeliveryTruck {
             throw new RuntimeException("Illegal Truck Tier");
         }
         return damageRoll <= damageChance;
+    }
+
+
+    public void tick(GameState state) {
+
     }
 
 

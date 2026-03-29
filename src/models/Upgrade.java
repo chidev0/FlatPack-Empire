@@ -14,22 +14,24 @@ public class Upgrade {
     private BigDecimal cost;
     private UpgradePrerequisite prerequisite;
     private boolean startingTier = false;
+    private boolean unlocked;
 
     // Truck Specific Upgrade Quirks
     private double damageChance;
     private int capacity;
 
-    public Upgrade(String name, UpgradeType type, BigDecimal cost, UpgradePrerequisite prerequisite, boolean startingTier) {
+    public Upgrade(String name, UpgradeType type, BigDecimal cost, UpgradePrerequisite prerequisite, boolean startingTier, boolean unlocked) {
         this.upgradeName = name;
         this.upgradeType = type;
         this.cost = cost;
         this.prerequisite = prerequisite;
         this.startingTier = startingTier;
+        this.unlocked = unlocked;
     }
 
     // Truck Specific Constructor
 
-    public Upgrade(String name, UpgradeType type, BigDecimal cost, UpgradePrerequisite prerequisite, boolean startingTier, double damageChance, int capacity) {
+    public Upgrade(String name, UpgradeType type, BigDecimal cost, UpgradePrerequisite prerequisite, boolean startingTier, boolean unlocked, double damageChance, int capacity) {
         this.upgradeName = name;
         this.upgradeType = type;
         this.cost = cost;
@@ -37,6 +39,7 @@ public class Upgrade {
         this.startingTier = startingTier;
         this.damageChance = damageChance;
         this.capacity = capacity;
+        this.unlocked = unlocked;
     }
 
     // Getters and Setters for upgrade information
@@ -95,5 +98,13 @@ public class Upgrade {
 
     public void setStartingTier(boolean startingTier) {
         this.startingTier = startingTier;
+    }
+
+    public boolean isUnlocked() {
+        return unlocked;
+    }
+
+    public void setUnlocked(boolean unlocked) {
+        this.unlocked = unlocked;
     }
 }

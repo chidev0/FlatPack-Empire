@@ -1,6 +1,7 @@
 package models;
 
 import products.MaterialType;
+import products.ProductColor;
 import products.ProductModel;
 import products.ProductType;
 
@@ -13,13 +14,13 @@ public class FurnitureItem extends Product {
     private MaterialType material;
 
     // Initialize our Product
-    public FurnitureItem(String productName, ProductType productType, BigDecimal price, String color, String description, String dimensions) {
+    public FurnitureItem(String productName, ProductType productType, BigDecimal price, ProductColor color, String description, String dimensions) {
         super(productName, productType, price, color, description);
         this.dimensions = dimensions;
         super.setProductModel(ProductModel.FURNITURE);
     }
 
-    public FurnitureItem(String productName, ProductType productType, BigDecimal price, String color, String description, MaterialType material) {
+    public FurnitureItem(String productName, ProductType productType, BigDecimal price, ProductColor color, String description, MaterialType material) {
         super(productName, productType, price, color, description);
         super.setProductModel(ProductModel.FURNITURE);
         this.material = material;

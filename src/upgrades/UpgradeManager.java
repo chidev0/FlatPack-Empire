@@ -1,6 +1,8 @@
 package upgrades;
 
 import engine.GameState;
+import models.Product;
+import structures.ArrayStack;
 
 public class UpgradeManager {
 
@@ -19,5 +21,34 @@ public class UpgradeManager {
             return;
         }
         throw new RuntimeException("Illegal UpgradeType");
+    }
+
+    public void setTruckCapacity() {}
+
+    public void upgradeTruck(ArrayStack<Product> truck, int tier) {
+
+    }
+
+    public static int getTruckCapacity() {
+        if (UpgradeCatalog.truckTierTwo.isUnlocked()) {
+            return UpgradeCatalog.truckTierTwo.getCapacity();
+        }
+        return UpgradeCatalog.truckTierOne.getCapacity();
+    }
+
+    public void setTruckDamageChance() {}
+
+    public static double getTruckDamageChance() {
+        if (UpgradeCatalog.truckTierTwo.isUnlocked()) {
+            return UpgradeCatalog.truckTierTwo.getDamageChance();
+        }
+        return UpgradeCatalog.truckTierOne.getDamageChance();
+    }
+
+    public static int getTruckTier() {
+        if (UpgradeCatalog.truckTierTwo.isUnlocked()) {
+            return 2;
+        }
+        return 1;
     }
 }

@@ -1,4 +1,5 @@
 package models;
+import products.ProductColor;
 import products.ProductModel;
 import products.ProductState;
 import products.ProductType;
@@ -13,7 +14,7 @@ public class Product implements Comparable<Product> {
     private BigDecimal price;
     private int stockLevel;
     private ZoneType zone;
-    private String color;
+    private ProductColor color;
     private UUID sku;
     private ProductModel productModel;
     private ProductState state = ProductState.LIMBO;
@@ -21,7 +22,7 @@ public class Product implements Comparable<Product> {
     private String description;
 
     // Product Constructor
-    public Product(String productName, ProductType productType, BigDecimal price, String color, String description) {
+    public Product(String productName, ProductType productType, BigDecimal price, ProductColor color, String description) {
         this.productName = productName;
         this.productType = productType;
         this.price = price;
@@ -31,7 +32,7 @@ public class Product implements Comparable<Product> {
     }
 
     // Product Constructor w/o price variable declaration
-    public Product(String productName, ProductType productType, String color) {
+    public Product(String productName, ProductType productType, ProductColor color) {
         this.productName = productName;
         this.productType = productType;
         this.color = color;
@@ -51,9 +52,9 @@ public class Product implements Comparable<Product> {
     public Product() {this.sku = UUID.randomUUID();}
 
     // Create Getter Setter for Color (WIP - Check to see if Color matches list of accepted Colors)
-    public String getColor() { return color; }
+    public ProductColor getColor() { return color; }
 
-    public void setColor(String color) { this.color = color; }
+    public void setColor(ProductColor color) { this.color = color; }
 
     // Create Getter Setter for Product Name
     public String getProduct() {
