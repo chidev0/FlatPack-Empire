@@ -32,5 +32,5 @@ bin/
 .DS_Store
 
 concat_codebase.sh
-codebase_dump.txt
+codebase_dump_old.txt
 codebase_dump_old.txt

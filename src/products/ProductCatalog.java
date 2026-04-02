@@ -6,7 +6,7 @@ import models.FurnitureItem;
 import java.math.BigDecimal;
 
 public class ProductCatalog {
-    FurnitureItem AlexDeskW = new FurnitureItem("Alex", ProductType.DESK, BigDecimal.valueOf(74.99), ProductColor.WHITE, "The pinnicle of 3000 years of advanced wood carving techniques.", MaterialType.PARTICLE_BOARD);
+    FurnitureItem AlexDeskW = new FurnitureItem("Alex", ProductType.DESK, BigDecimal.valueOf(74.99), ProductColor.WHITE, "Forged in the fires of industrial compression and blessed by three Swedish engineers on their lunch break.", MaterialType.PARTICLE_BOARD);
     FurnitureItem AlexDeskB = new FurnitureItem("Alex", ProductType.DESK,BigDecimal.valueOf(64.99), ProductColor.BLACK, "The pinnicle of 3000 years of advanced wood carving techniques.", MaterialType.PARTICLE_BOARD);
     FurnitureItem AlexDresserW = new FurnitureItem("Alex", ProductType.DRESSER,BigDecimal.valueOf(54.99), ProductColor.WHITE, "The pinnicle of 3000 years of advanced wood carving techniques.", MaterialType.PARTICLE_BOARD);
     FurnitureItem AlexDresserB = new FurnitureItem("Alex", ProductType.DRESSER,BigDecimal.valueOf(57.99), ProductColor.BLACK, "The pinnicle of 3000 years of advanced wood carving techniques.", MaterialType.PARTICLE_BOARD);
