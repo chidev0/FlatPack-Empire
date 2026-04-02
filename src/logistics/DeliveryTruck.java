@@ -6,6 +6,7 @@ import engine.GameState;
 import engine.Tickable;
 import exceptions.CapacityExceededException;
 import exceptions.EmptyStructureException;
+import exceptions.TruckNotAtDockException;
 import products.ProductState;
 import models.TransitManifest;
 import models.UnloadManifest;
@@ -24,6 +25,8 @@ public class DeliveryTruck implements Tickable {
     double damageChance;
     int truckTier;
     UnloadManifest truckManifest;
+    int inventoryCount = 0;
+    boolean truckAtDock = false;
 
     public DeliveryTruck(InventoryManager manager, DamagesManager damageController, GameState state) {
         this.inventoryController = manager;
@@ -61,10 +64,10 @@ public class DeliveryTruck implements Tickable {
 
     // Method for unloading Truck into Inventory Array List
     public UnloadManifest advance() {
-        int inventoryCount = 0;
         if (truck.isEmpty()) {
             throw new EmptyStructureException();
         }
+        if (truckAtDock) {
             Product productInTransit = truck.pop();
             // Check if Product is damaged, move to Damages if it is, otherwise move to Inventory.
             boolean checkDamage = isDamaged();
@@ -79,9 +82,11 @@ public class DeliveryTruck implements Tickable {
                 inventoryCount++;
             }
 
-        truckManifest.setTotalProcessed(inventoryCount + truckManifest.getDamageLog().size());
-        truckManifest.setInventoryCount(inventoryCount);
-        return truckManifest;
+            truckManifest.setTotalProcessed(inventoryCount + truckManifest.getDamageLog().size());
+            truckManifest.setInventoryCount(inventoryCount);
+            return truckManifest;
+        }
+        throw new TruckNotAtDockException();
     }
 
 
@@ -112,11 +117,14 @@ public class DeliveryTruck implements Tickable {
         return damageRoll <= damageChance;
     }
 
+    public boolean isTruckAtDock() { return truckAtDock; }
+    public void setTruckArrival(boolean truckAtDock) { this.truckAtDock = truckAtDock; }
+
 
     public void tick(GameState state) {
-
+        try {
+            advance();
+        } catch (EmptyStructureException | TruckNotAtDockException _) {
+        }
     }
-
-
-
 }

@@ -31,6 +31,8 @@ public class GameClock {
         return tick;
     }
 
+    public int getCurrentTick() { return tick % TICKS_PER_DAY; }
+
     public boolean isNewDay() {
         return tick % TICKS_PER_DAY == 0;
     }

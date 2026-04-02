@@ -13,7 +13,7 @@ public class GameEngine {
     private final DamagesManager damages;
     private final GameClock time;
     List<Tickable> gameSystems = new ArrayList<>();
-    List<Tickable> tempSystem = new ArrayList<>();
+    List<Tickable> pausedSystems = new ArrayList<>();
 
     public GameEngine(GameState gameState, InventoryManager manager, DamagesManager damages) {
         scottsville = gameState;
@@ -30,7 +30,7 @@ public class GameEngine {
     public boolean pauseSystem(Tickable system) {
         for (int i = 0; i < gameSystems.size(); i++){
             if (gameSystems.get(i) == system) {
-                tempSystem.add(system);
+                pausedSystems.add(system);
                 gameSystems.remove(system);
                 return true;
             }
@@ -40,10 +40,10 @@ public class GameEngine {
 
     // Debugging method for resuming system
     public boolean resumeSystem(Tickable system) {
-        for (int i = 0; i < gameSystems.size(); i++){
-            if (gameSystems.get(i) == system) {
+        for (int i = 0; i < pausedSystems.size(); i++){
+            if (pausedSystems.get(i) == system) {
                 gameSystems.add(system);
-                tempSystem.remove(system);
+                pausedSystems.remove(system);
                 return true;
             }
         }
