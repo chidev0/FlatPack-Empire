@@ -15,11 +15,11 @@ public class GameEngine {
     List<Tickable> gameSystems = new ArrayList<>();
     List<Tickable> pausedSystems = new ArrayList<>();
 
-    public GameEngine(GameState gameState, InventoryManager manager, DamagesManager damages) {
+    public GameEngine(GameState gameState, InventoryManager manager, DamagesManager damages, GameClock time) {
         scottsville = gameState;
         this.manager = manager;
         this.damages = damages;
-        this.time = new GameClock(scottsville);
+        this.time = time;
     }
 
     public void registerSystem(Tickable system) {

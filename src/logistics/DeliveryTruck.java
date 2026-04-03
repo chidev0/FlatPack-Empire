@@ -121,6 +121,7 @@ public class DeliveryTruck implements Tickable {
     public void setTruckArrival(boolean truckAtDock) { this.truckAtDock = truckAtDock; }
 
 
+
     public void tick(GameState state) {
         try {
             advance();
