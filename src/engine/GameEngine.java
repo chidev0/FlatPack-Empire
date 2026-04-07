@@ -64,7 +64,11 @@ public class GameEngine {
     public void tick() {
         time.advance();
         for (Tickable i : gameSystems) {
-            i.tick(scottsville);
+            try {
+                i.tick(scottsville);
+            } catch (RuntimeException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 

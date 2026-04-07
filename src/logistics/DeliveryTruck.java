@@ -120,6 +120,14 @@ public class DeliveryTruck implements Tickable {
     public boolean isTruckAtDock() { return truckAtDock; }
     public void setTruckArrival(boolean truckAtDock) { this.truckAtDock = truckAtDock; }
 
+    public void updateTruck(ArrayStack<Product> truck) {
+        this.truck = truck;
+    }
+
+    public ArrayStack<Product> getTruck() {
+        return truck;
+    }
+
 
 
     public void tick(GameState state) {

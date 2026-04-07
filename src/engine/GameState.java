@@ -5,11 +5,13 @@ import java.math.BigDecimal;
 public class GameState {
     private GameStatus GAME_STATUS = GameStatus.RUNNING;
 
+    private BigDecimal CURRENT_BALANCE = SimConfig.STARTING_BALANCE;
     private int CURRENT_CHECKOUT_LANES = SimConfig.STARTING_CASHIER_LANES;
     private int CURRENT_TRUCK_TIER = SimConfig.STARTING_TRUCK_TIER;
     private int CURRENT_CUSTOMER_TIER = SimConfig.STARTING_CUSTOMER_TIER;
     private int CURRENT_DAY;
     private int CURRENT_SIMULATION_SPEED = SimConfig.SIMULATION_SPEED;
+    private double CURRENT_CUSTOMER_SPAWN_RATE = SimConfig.STARTING_CUSTOMER_SPAWN_RATE;
     private boolean PAUSE;
 
 
@@ -62,5 +64,21 @@ public class GameState {
 
     public void pauseSimulation() {
         GAME_STATUS = GameStatus.PAUSED;
+    }
+
+    public BigDecimal getCURRENT_BALANCE() {
+        return CURRENT_BALANCE;
+    }
+
+    public void setCURRENT_BALANCE(BigDecimal CURRENT_BALANCE) {
+        this.CURRENT_BALANCE = CURRENT_BALANCE;
+    }
+
+    public double getCurrentCustomerSpawnRate() {
+        return CURRENT_CUSTOMER_SPAWN_RATE;
+    }
+
+    public void setCurrentCustomerSpawnRate(double CURRENT_CUSTOMER_SPAWN_RATE) {
+        this.CURRENT_CUSTOMER_SPAWN_RATE = CURRENT_CUSTOMER_SPAWN_RATE;
     }
 }

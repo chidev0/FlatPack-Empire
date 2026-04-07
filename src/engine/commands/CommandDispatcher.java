@@ -3,16 +3,22 @@ package engine.commands;
 import exceptions.InvalidCommandException;
 import models.Product;
 import products.ProductCatalog;
-import products.ProductType;
+import ui.InputListener;
 
-public class Command {
+public class CommandDispatcher {
 
     public void execute(String[] command) {
     if (command[0].equals("info")) {
         if (command.length != 3) {
             throw new InvalidCommandException("Invalid Arguments");
         }
-        info(command[1], command[2]);
+        try {
+            System.out.println("Running info");
+            info(command[1], command[2]);
+        } catch (InvalidCommandException e) {
+            System.out.print("Incorrect Usage - info [ProductName] [ProductType]");
+        }
+        InputListener.setProcessingCommand(false);
     }
     }
 
@@ -21,8 +27,8 @@ public class Command {
             Product p = ProductCatalog.productLookup(productName, productType);
             //TODO: Decouple print statement from Command class, output formatted product information, support color lookup.
             System.out.println(p.getProduct() + " " + p.getType() + " - $" + p.getPrice() + ": " + p.getDescription());
-        } catch (RuntimeException e) {
-            throw new RuntimeException(e);
+        } catch (InvalidCommandException e) {
+            throw new InvalidCommandException("Missing Arguments");
         }
     }
 }

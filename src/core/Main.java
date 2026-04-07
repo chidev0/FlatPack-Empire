@@ -3,13 +3,11 @@ package core;
 import engine.GameClock;
 import engine.GameEngine;
 import engine.GameState;
+import engine.Tickable;
 import engine.commands.CommandQueue;
 import logistics.DeliveryManager;
 import logistics.DeliveryTruck;
-import models.FoodItem;
-import models.FurnitureItem;
-import models.Product;
-import models.UnloadManifest;
+import models.*;
 import products.MaterialType;
 import products.ProductColor;
 import products.ProductType;
@@ -28,7 +26,10 @@ public class Main {
         DamagesManager damageControl = new DamagesManager();
         GameClock clock = new GameClock(Scottsville);
         DeliveryTruck truck = new DeliveryTruck(manager, damageControl, Scottsville);
-        DeliveryManager truckManager = new DeliveryManager(manager, damageControl, Scottsville, clock);
+        DeliveryManager truckManager = new DeliveryManager(manager, damageControl, Scottsville, clock, truck);
+        RevenueManager revenueManager = new RevenueManager(Scottsville);
+        CheckoutLane checkoutLane = new CheckoutLane(Scottsville, manager, revenueManager);
+        CustomerManager customerManager = new CustomerManager(Scottsville, manager, checkoutLane);
         CommandQueue queue = new CommandQueue();
         CommandParser parser = new CommandParser(queue);
         InputListener input = new InputListener(parser);
@@ -40,7 +41,7 @@ public class Main {
         engine.registerSystem(truck);
         engine.registerSystem(truckManager);
         engine.registerSystem(queue);
-        // TODO: engine.registerSystem(customerManager)
+        engine.registerSystem(customerManager);
         // TODO: engine.registerSystem(checkout)
         // TODO: engine.registerSystem(revenueSystem)
 

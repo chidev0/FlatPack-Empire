@@ -18,13 +18,15 @@ public class DeliveryManager implements Tickable {
     private DamagesManager damagesManager;
     private GameState state;
     private GameClock clock;
+    private DeliveryTruck deliveryTruck;
     int arrivalTick;
 
-    public DeliveryManager(InventoryManager manager, DamagesManager damagesManager, GameState state, GameClock clock) {
+    public DeliveryManager(InventoryManager manager, DamagesManager damagesManager, GameState state, GameClock clock, DeliveryTruck deliveryTruck) {
         this.manager = manager;
         this.damagesManager = damagesManager;
         this.state = state;
         this.clock = clock;
+        this.deliveryTruck = deliveryTruck;
         arrivalTick = -1;
     }
 
@@ -119,6 +121,7 @@ public class DeliveryManager implements Tickable {
             if (clock.getCurrentTick() == arrivalTick) {
                     DeliveryTruck truck = dispatchScheduledTruck();
                     truck.setTruckArrival(true);
+                    deliveryTruck.updateTruck(truck.getTruck());
                     arrivalTick = -1;
             }
         }
