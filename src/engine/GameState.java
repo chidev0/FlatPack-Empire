@@ -11,6 +11,7 @@ public class GameState {
     private int CURRENT_CUSTOMER_TIER = SimConfig.STARTING_CUSTOMER_TIER;
     private int CURRENT_DAY;
     private int CURRENT_SIMULATION_SPEED = SimConfig.SIMULATION_SPEED;
+    private BigDecimal CURRENT_DAY_STARTING_BALANCE = SimConfig.STARTING_BALANCE;
     private double CURRENT_CUSTOMER_SPAWN_RATE = SimConfig.STARTING_CUSTOMER_SPAWN_RATE;
     private boolean PAUSE;
 
@@ -62,6 +63,10 @@ public class GameState {
         return GAME_STATUS;
     }
 
+    public void setSimulationStatus(GameStatus status) {
+        this.GAME_STATUS = status;
+    }
+
     public void pauseSimulation() {
         GAME_STATUS = GameStatus.PAUSED;
     }
@@ -81,4 +86,8 @@ public class GameState {
     public void setCurrentCustomerSpawnRate(double CURRENT_CUSTOMER_SPAWN_RATE) {
         this.CURRENT_CUSTOMER_SPAWN_RATE = CURRENT_CUSTOMER_SPAWN_RATE;
     }
+
+    public BigDecimal getCurrentDayStartingBalance() { return CURRENT_DAY_STARTING_BALANCE; }
+
+    public void setCurrentDayStartingBalance(BigDecimal currentBalance) { this.CURRENT_DAY_STARTING_BALANCE = currentBalance; }
 }

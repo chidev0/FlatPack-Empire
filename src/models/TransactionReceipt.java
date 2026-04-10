@@ -6,7 +6,7 @@ import java.util.List;
 
 public class TransactionReceipt {
 List<Product> transactionLog = new ArrayList<>();
-BigDecimal total;
+BigDecimal total = BigDecimal.ZERO;
 
 public void addProduct(Product p) {
     transactionLog.add(p);

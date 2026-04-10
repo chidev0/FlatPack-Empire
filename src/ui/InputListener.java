@@ -41,6 +41,6 @@ public class InputListener implements Runnable{
 
     public static void setProcessingCommand(boolean processingCommand) {
         InputListener.processingCommand = processingCommand;
-        System.out.println("Processing command");
+       // System.out.println("Processing command");
     }
 }

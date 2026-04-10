@@ -1,6 +1,7 @@
 package models;
 
 import products.ProductModel;
+import products.ProductState;
 import products.ProductType;
 
 import java.math.BigDecimal;
@@ -98,7 +99,7 @@ public class FoodItem extends Product {
     @Override
     public FoodItem copy() {
         FoodItem tempItem = new FoodItem(this.getProduct(), this.getType(), this.getPrice(), this.getDescription());
-        tempItem.setState(this.getState());
+        if (this.getState() != ProductState.LIMBO) tempItem.setState(this.getState());
         if (this.hasProtein) {
             tempItem.setProtein(this.proteinAmount);
         }

@@ -5,7 +5,7 @@ import java.util.Arrays;
 public class GameClock {
     public GameState GameState;
 
-    private int tick;
+    private static int tick;
     private static final int TICKS_PER_DAY = SimConfig.TICKS_PER_DAY;
     private static final int SIMULATION_SPEED = SimConfig.SIMULATION_SPEED;
     private static final int[][] time = {
@@ -47,6 +47,10 @@ public class GameClock {
         return tick % TICKS_PER_DAY <= 30;
     }
 
+    public boolean isRollover() {
+        return (getCurrentTick() == 599);
+    }
+
     // Getter for SIMULATION_SPEED
     public int getSimulationSpeed() {
         return GameState.getCurrentSimulationSpeed();
@@ -64,7 +68,7 @@ public class GameClock {
     }
 
     // Method for evaluating current time.
-    public String getCurrentTime() {
+    public static String getCurrentTime() {
         int targetTick = -1;
         int targetHour = -1;
         boolean isMorning = false;

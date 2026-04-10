@@ -121,7 +121,7 @@ public class DeliveryManager implements Tickable {
             if (clock.getCurrentTick() == arrivalTick) {
                     DeliveryTruck truck = dispatchScheduledTruck();
                     truck.setTruckArrival(true);
-                    deliveryTruck.updateTruck(truck.getTruck());
+                    deliveryTruck.updateTruck(truck.getTruck(), truck.truckAtDock);
                     arrivalTick = -1;
             }
         }

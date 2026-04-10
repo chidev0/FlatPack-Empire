@@ -14,11 +14,11 @@ public class CommandQueue implements Tickable {
 
     public void executeCommand() {
         try {
-            System.out.println("Attempting to dequeue command");
+            //System.out.println("Attempting to dequeue command");
             String[] command = commandPipeline.dequeue();
-            System.out.println("Command dequeued, attempting execute");
+            //System.out.println("Command dequeued, attempting execute");
             commandExecuter.execute(command);
-            System.out.println("Executed command");
+            //System.out.println("Executed command");
         } catch (RuntimeException e) {
             throw new RuntimeException(e);
         }
@@ -28,7 +28,7 @@ public class CommandQueue implements Tickable {
         if (!commandPipeline.isEmpty()) {
             try {
                 executeCommand();
-                System.out.println("Command executed");
+                //System.out.println("Command executed");
             } catch (RuntimeException e) {
                 System.out.println("Ran into an error running that command.");
             }

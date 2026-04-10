@@ -7,7 +7,8 @@ public enum ProductState {
     IN_INVENTORY("Store Inventory"),
     LIMBO("Limbo"),
     AS_IS("As is"),
-    SOLD("Sold");
+    SOLD("Sold"),
+    IN_CART("Reserved");
 
     private final String UI_Label;
 
@@ -24,11 +25,13 @@ public enum ProductState {
             case DAMAGED:
                 return (newState == AS_IS);
             case IN_INVENTORY:
-                return (newState == LIMBO || newState == DAMAGED);
+                return (newState == LIMBO || newState == DAMAGED || newState == IN_CART);
             case LIMBO:
-                return (newState == ON_TRUCK || newState == DAMAGED || newState == IN_INVENTORY);
+                return (newState == ON_TRUCK || newState == DAMAGED || newState == IN_INVENTORY || newState == SOLD);
             case AS_IS, SOLD:
                 return false;
+            case IN_CART:
+                return (newState == SOLD || newState == LIMBO);
         }
         throw new RuntimeException("Illegal Product State");
     }

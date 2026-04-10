@@ -1,9 +1,6 @@
 package core;
 
-import engine.GameClock;
-import engine.GameEngine;
-import engine.GameState;
-import engine.Tickable;
+import engine.*;
 import engine.commands.CommandQueue;
 import logistics.DeliveryManager;
 import logistics.DeliveryTruck;
@@ -33,6 +30,8 @@ public class Main {
         CommandQueue queue = new CommandQueue();
         CommandParser parser = new CommandParser(queue);
         InputListener input = new InputListener(parser);
+        SimConfig simConfig  = new SimConfig(manager);
+        DayManager dayManager = new DayManager(clock);
 
         System.out.println(ConsoleNarrator.WelcomeMessageLine1);
         System.out.println(ConsoleNarrator.WelcomeMessageLine2);
@@ -42,9 +41,10 @@ public class Main {
         engine.registerSystem(truckManager);
         engine.registerSystem(queue);
         engine.registerSystem(customerManager);
-        // TODO: engine.registerSystem(checkout)
-        // TODO: engine.registerSystem(revenueSystem)
+        engine.registerSystem(checkoutLane);
+        engine.registerSystem(dayManager);
 
+        simConfig.initializeStore();
         Thread commandHandler = new Thread(input);
         commandHandler.start();
         engine.advance();

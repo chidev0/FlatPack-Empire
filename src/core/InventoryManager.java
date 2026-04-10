@@ -29,7 +29,7 @@ public class InventoryManager {
         TransitManifest logger = TransitManifest.createForMovement("INVENTORY_ADD");
         for (int i = 0; i < quantity; i++) {
             p = p.copy();
-            p.setState(ProductState.IN_INVENTORY);
+            if (p.getState() != ProductState.IN_INVENTORY) p.setState(ProductState.IN_INVENTORY);
             this.inventory.add(p);
             logger.logProduct(p);
         }

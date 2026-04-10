@@ -1,5 +1,6 @@
 package engine.commands;
 
+import engine.GameClock;
 import exceptions.InvalidCommandException;
 import models.Product;
 import products.ProductCatalog;
@@ -19,6 +20,8 @@ public class CommandDispatcher {
             System.out.print("Incorrect Usage - info [ProductName] [ProductType]");
         }
         InputListener.setProcessingCommand(false);
+    } else if (command[0].equals("time")) {
+        System.out.println(time());
     }
     }
 
@@ -30,5 +33,9 @@ public class CommandDispatcher {
         } catch (InvalidCommandException e) {
             throw new InvalidCommandException("Missing Arguments");
         }
+    }
+
+    public String time() {
+        return GameClock.getCurrentTime();
     }
 }

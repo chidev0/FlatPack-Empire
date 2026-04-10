@@ -1,9 +1,6 @@
 package models;
 
-import products.MaterialType;
-import products.ProductColor;
-import products.ProductModel;
-import products.ProductType;
+import products.*;
 
 import java.math.BigDecimal;
 
@@ -56,7 +53,7 @@ public class FurnitureItem extends Product {
     @Override
     public FurnitureItem copy() {
         FurnitureItem tempItem = new FurnitureItem(this.getProduct(), this.getType(), this.getPrice(), this.getColor(), this.getDescription(), this.getMaterial());
-        tempItem.setState(getState());
+        if (this.getState() != ProductState.LIMBO) tempItem.setState(getState());
         if (this.dimensions != null) {
             tempItem.setDimensions(getDimensions());
         }
