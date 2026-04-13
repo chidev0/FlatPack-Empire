@@ -33,8 +33,7 @@ public class Main {
         SimConfig simConfig  = new SimConfig(manager);
         DayManager dayManager = new DayManager(clock);
 
-        System.out.println(ConsoleNarrator.WelcomeMessageLine1);
-        System.out.println(ConsoleNarrator.WelcomeMessageLine2);
+        ConsoleNarrator.bootSequence();
 
         GameEngine engine = new GameEngine(Scottsville, manager, damageControl, clock);
         engine.registerSystem(truck);

@@ -76,6 +76,7 @@ public class CheckoutLane implements Tickable {
                 System.out.println("\nCustomers in queue: " + lane.size());
                 manager.removeProduct(item);
                 laneOneTransaction.addProduct(item);
+
             } else if (currentCustomerL1.getShoppingCart().isEmpty()){
                 System.out.println("[chIKEA Checkout] Customer Processed. Transaction total: $" + laneOneTransaction.calculateTotal());
                 accountant.addToBalance(laneOneTransaction.calculateTotal());
