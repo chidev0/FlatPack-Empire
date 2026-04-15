@@ -21,4 +21,8 @@ public class DamagesManager {
         damageManifest.logProduct(p);
         return damageManifest;
     }
+
+    public int size() {
+        return damages.size();
+    }
 }

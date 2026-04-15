@@ -129,6 +129,10 @@ public class DeliveryTruck implements Tickable {
         return truck;
     }
 
+    public void updateTruckStatus(String status) {
+        state.setTruckStatus(status);
+    }
+
 
 
     public void tick(GameState state) {

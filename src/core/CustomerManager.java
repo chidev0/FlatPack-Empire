@@ -55,9 +55,14 @@ public class CustomerManager implements Tickable {
         }
     }
 
+    public void updateCurrentCustomerSize() {
+        state.setCurrentCustomers(customerList.size());
+    }
+
     @Override
     public void tick(GameState state) {
         spawnCustomer();
         populateCustomersCart();
+        updateCurrentCustomerSize();
     }
 }

@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 
 public class GameState {
     private GameStatus GAME_STATUS = GameStatus.RUNNING;
+    private String TRUCK_STATUS = "Idle";
 
     private BigDecimal CURRENT_BALANCE = SimConfig.STARTING_BALANCE;
     private int CURRENT_CHECKOUT_LANES = SimConfig.STARTING_CASHIER_LANES;
@@ -14,6 +15,8 @@ public class GameState {
     private BigDecimal CURRENT_DAY_STARTING_BALANCE = SimConfig.STARTING_BALANCE;
     private double CURRENT_CUSTOMER_SPAWN_RATE = SimConfig.STARTING_CUSTOMER_SPAWN_RATE;
     private boolean PAUSE;
+
+    private int CURRENT_CUSTOMERS_IN_STORE = 0;
 
 
     // Setter for CURRENT_TRUCK_TIER
@@ -90,4 +93,20 @@ public class GameState {
     public BigDecimal getCurrentDayStartingBalance() { return CURRENT_DAY_STARTING_BALANCE; }
 
     public void setCurrentDayStartingBalance(BigDecimal currentBalance) { this.CURRENT_DAY_STARTING_BALANCE = currentBalance; }
+
+    public String getTruckStatus() {
+        return TRUCK_STATUS;
+    }
+
+    public void setTruckStatus(String TRUCK_STATUS) {
+        this.TRUCK_STATUS = TRUCK_STATUS;
+    }
+
+    public int getCurrentCustomers() {
+        return CURRENT_CUSTOMERS_IN_STORE;
+    }
+
+    public void setCurrentCustomers(int CURRENT_CUSTOMERS_IN_STORE) {
+        this.CURRENT_CUSTOMERS_IN_STORE = CURRENT_CUSTOMERS_IN_STORE;
+    }
 }

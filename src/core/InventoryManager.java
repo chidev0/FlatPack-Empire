@@ -9,6 +9,7 @@ import products.ProductState;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class InventoryManager {
     // Initializes Store Inventory via ArrayList
@@ -79,6 +80,16 @@ public class InventoryManager {
             }
         }
     throw new RuntimeException("Couldn't find any Products with that SKU");
+    }
+
+    public Product lookupProduct(UUID Sku) {
+        for (Product p : this.inventory) {
+            String skuString = p.getSku().toString();
+            if (skuString.startsWith(String.valueOf(Sku))) {
+                return p;
+            }
+        }
+        throw new RuntimeException("No Product found");
     }
 
 

@@ -4,7 +4,9 @@ import engine.GameClock;
 import exceptions.InvalidCommandException;
 import models.Product;
 import products.ProductCatalog;
+import ui.ActiveViewContext;
 import ui.InputListener;
+import ui.ViewMode;
 
 public class CommandDispatcher {
 
@@ -25,10 +27,11 @@ public class CommandDispatcher {
     }
     }
 
-    public void info(String productName, String productType) {
+    public ActiveViewContext info(String productName, String productType) {
         try {
             Product p = ProductCatalog.productLookup(productName, productType);
             //TODO: Decouple print statement from Command class, output formatted product information, support color lookup.
+            ActiveViewContext info = new ActiveViewContext(p.getSku(), ViewMode.INVENTORY_VIEW);
             System.out.println(p.getProduct() + " " + p.getType() + " - $" + p.getPrice() + ": " + p.getDescription());
         } catch (InvalidCommandException e) {
             throw new InvalidCommandException("Missing Arguments");

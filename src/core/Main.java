@@ -32,6 +32,7 @@ public class Main {
         InputListener input = new InputListener(parser);
         SimConfig simConfig  = new SimConfig(manager);
         DayManager dayManager = new DayManager(clock);
+        ConsoleNarrator consoleNarrator = new ConsoleNarrator(Scottsville, manager, damageControl);
 
         ConsoleNarrator.bootSequence();
 
@@ -42,6 +43,7 @@ public class Main {
         engine.registerSystem(customerManager);
         engine.registerSystem(checkoutLane);
         engine.registerSystem(dayManager);
+        engine.registerSystem(consoleNarrator);
 
         simConfig.initializeStore();
         Thread commandHandler = new Thread(input);

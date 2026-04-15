@@ -4,6 +4,7 @@ import engine.GameClock;
 import engine.GameState;
 import engine.GameStatus;
 import engine.Tickable;
+import ui.Printer;
 
 public class DayManager implements Tickable {
     private GameClock clock;
@@ -16,6 +17,7 @@ public class DayManager implements Tickable {
         if (clock.isRollover()) {
             state.setSimulationStatus(GameStatus.ROLLOVER_DAY);
             handleDayEnd(state);
+            Printer.pressEnterToContinue();
         }
     }
 
@@ -26,5 +28,10 @@ public class DayManager implements Tickable {
         System.out.println("Start of Day Revenue: " + state.getCurrentDayStartingBalance());
         System.out.println("End of Day Revenue: " + state.getCURRENT_BALANCE());
         state.setCurrentDayStartingBalance(state.getCURRENT_BALANCE());
+        CustomerManager.totalDayCustomers = 0;
+    }
+
+    public void handleDayBegin(GameState state) {
+
     }
 }
