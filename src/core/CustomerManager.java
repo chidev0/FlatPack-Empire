@@ -5,6 +5,7 @@ import engine.GameState;
 import engine.Tickable;
 import models.CheckoutLane;
 import models.Customer;
+import ui.EventBuffer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,14 +15,16 @@ public class CustomerManager implements Tickable {
     private GameState state;
     private InventoryManager manager;
     private CheckoutLane lane;
+    private EventBuffer eventBuffer;
     Random randomizer = new Random();
     List<Customer> customerList = new ArrayList<>();
     public static int totalDayCustomers;
 
-    public CustomerManager(GameState state, InventoryManager manager, CheckoutLane lane) {
+    public CustomerManager(GameState state, InventoryManager manager, CheckoutLane lane, EventBuffer eventBuffer) {
         this.state = state;
         this.manager = manager;
         this.lane = lane;
+        this.eventBuffer = eventBuffer;
     }
 
     // Customer spawn randomizer logic
@@ -31,7 +34,7 @@ public class CustomerManager implements Tickable {
         customerList.add(new Customer(state, manager));
         totalDayCustomers++;
         // ToDo: Decouple print statement from CustomerManager.
-        System.out.println("Looks like we got a customer.\nCustomers shopping: " + customerList.size());
+        eventBuffer.enqueueEvent("Looks like we got a customer. Customers shopping: " + customerList.size());
      }
     }
 

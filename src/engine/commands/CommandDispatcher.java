@@ -6,9 +6,15 @@ import models.Product;
 import products.ProductCatalog;
 import ui.ActiveViewContext;
 import ui.InputListener;
+import ui.UIState;
 import ui.ViewMode;
 
 public class CommandDispatcher {
+    private UIState uiState;
+
+    public CommandDispatcher(UIState uiState) {
+        this.uiState = uiState;
+    }
 
     public void execute(String[] command) {
     if (command[0].equals("info")) {
@@ -17,7 +23,8 @@ public class CommandDispatcher {
         }
         try {
             System.out.println("Running info");
-            info(command[1], command[2]);
+            ActiveViewContext info = info(command[1], command[2]);
+            uiState.setActiveViewContext(info);
         } catch (InvalidCommandException e) {
             System.out.print("Incorrect Usage - info [ProductName] [ProductType]");
         }
@@ -33,12 +40,13 @@ public class CommandDispatcher {
             //TODO: Decouple print statement from Command class, output formatted product information, support color lookup.
             ActiveViewContext info = new ActiveViewContext(p.getSku(), ViewMode.INVENTORY_VIEW);
             System.out.println(p.getProduct() + " " + p.getType() + " - $" + p.getPrice() + ": " + p.getDescription());
+            return info;
         } catch (InvalidCommandException e) {
             throw new InvalidCommandException("Missing Arguments");
         }
     }
 
     public String time() {
-        return GameClock.getCurrentTime();
+        return GameClock.getCurrentTime(true);
     }
 }

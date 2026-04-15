@@ -2,11 +2,19 @@ package engine.commands;
 import engine.GameState;
 import engine.Tickable;
 import structures.ArrayQueue;
+import ui.UIState;
 
 public class CommandQueue implements Tickable {
 
+    private UIState uiState;
+    private CommandDispatcher commandExecuter;
+
+    public CommandQueue(UIState uiState) {
+        this.uiState = uiState;
+        this.commandExecuter = new CommandDispatcher(uiState);
+    }
+
     private ArrayQueue<String[]> commandPipeline = new ArrayQueue<>();
-    private CommandDispatcher commandExecuter = new CommandDispatcher();
 
     public void add(String[] command) {
         commandPipeline.enqueue(command);

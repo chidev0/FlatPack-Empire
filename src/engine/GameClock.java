@@ -68,7 +68,7 @@ public class GameClock {
     }
 
     // Method for evaluating current time.
-    public static String getCurrentTime() {
+    public static String getCurrentTime(boolean formatted) {
         int targetTick = -1;
         int targetHour = -1;
         boolean isMorning = false;
@@ -92,7 +92,8 @@ public class GameClock {
             } else {
                 timeType = "PM";
             }
-            return targetHour + ":" + minute + " " + timeType;
+            if (formatted) return targetHour + ":" + minute + " " + timeType;
+            else return targetHour + ":" + minute;
         }
         throw new RuntimeException("Something went wrong pulling the time");
     }
