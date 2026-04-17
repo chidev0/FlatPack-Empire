@@ -76,11 +76,11 @@ public class ScreenRenderer {
         eventBuffer.updateRecentEventsPanel();
         eventPanel.append("[INTERNAL MEMO - WAREHOUSE DIVISION]");
         eventPanel.append("\n");
-        eventPanel.append("1" + eventBuffer.getEventOne());
+        eventPanel.append(eventBuffer.getEventOne());
         eventPanel.append("\n");
-        eventPanel.append("2" + eventBuffer.getEventTwo());
+        eventPanel.append(eventBuffer.getEventTwo());
         eventPanel.append("\n");
-        eventPanel.append("3" + eventBuffer.getEventThree());
+        eventPanel.append(eventBuffer.getEventThree());
         eventPanel.append("\n");
         eventPanel.append("Current Mood of Store: WIP");
         System.out.println(eventPanel.toString());

@@ -11,6 +11,7 @@ public class EventBuffer {
     private String rollingEvent;
     private boolean rollingEventInProgress;
     private boolean isEventUpdated;
+    private boolean rollingEventFinished;
     private int rollingEventLength;
     private int rollingEventProgress;
     ArrayQueue<String> eventQueue = new ArrayQueue<>();
@@ -32,26 +33,48 @@ public class EventBuffer {
     }
 
     public void updateRecentEventsPanel() {
-        if (!rollingEventInProgress) dequeueEvent();
-        if(rollingEventInProgress && !isEventUpdated) updateVisibleEventWindow();
+        if (!rollingEventInProgress) {
+            dequeueEvent();
+        }
         if (rollingEventInProgress) advanceCurrentEventTyping();
+        // System.out.println(eventQueue.size());
 
     }
 
     public void updateVisibleEventWindow() {
-        eventThree = eventTwo;
-        eventTwo = eventOne;
-        eventOne = "";
-        isEventUpdated = true;
+        if (eventThree.isEmpty() && eventTwo.isEmpty() && eventOne.isEmpty()) {
+            return;
+        }
+        if (!eventOne.isEmpty() && eventTwo.isEmpty() && eventThree.isEmpty()) {
+            eventTwo = eventOne;
+            eventOne = "";
+            isEventUpdated = true;
+            return;
+        }
+        if (!eventOne.isEmpty() && !eventTwo.isEmpty() && eventThree.isEmpty()) {
+            eventThree = eventTwo;
+            eventTwo = eventOne;
+            eventOne = "";
+            isEventUpdated = true;
+            return;
+        }
+        if (!eventOne.isEmpty() && !eventTwo.isEmpty() && !eventThree.isEmpty()) {
+            eventThree = eventTwo;
+            eventTwo = eventOne;
+            eventOne = "";
+            isEventUpdated = true;
+        }
+
     }
 
     public void advanceCurrentEventTyping() {
         if (rollingEventInProgress) {
             rollingEventLength = rollingEvent.length();
             if (rollingEventLength <= rollingEventProgress) {
-                System.out.println("Event done printing");
+              //  System.out.println("Event done printing");
                 rollingEventInProgress = false;
-                rollingEvent = null;
+                rollingEvent = "";
+                rollingEventProgress = 0;
                 return;
             }
 
@@ -69,7 +92,9 @@ public class EventBuffer {
             if (!eventQueue.isEmpty()) {
                 rollingEvent = eventQueue.dequeue();
                 isEventUpdated = false;
+                updateVisibleEventWindow();
                 rollingEventInProgress = true;
+                //System.out.println("Event in progress");
             }
         }
     }
