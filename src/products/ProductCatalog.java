@@ -7,6 +7,7 @@ import models.Product;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class ProductCatalog {
     public static FurnitureItem AlexDeskW = new FurnitureItem("Alex", ProductType.DESK, BigDecimal.valueOf(74.99), ProductColor.WHITE, "Forged in the fires of industrial compression and blessed by three Swedish engineers on their lunch break.", MaterialType.PARTICLE_BOARD);
@@ -26,6 +27,12 @@ public class ProductCatalog {
             }
         }
         throw new RuntimeException("Illegal Product");
+    }
+    public static Product productLookup(UUID Sku) {
+        for (Product p : catalog) {
+            if (p.getSku() == Sku) return p;
+        }
+        throw new RuntimeException("No Product found");
     }
 
 }

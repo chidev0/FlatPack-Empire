@@ -26,9 +26,9 @@ public class ConsoleNarrator implements Tickable {
     public static String WelcomeMessageLine2 = "The warehouse is yours. Try not to set it on " + ConsoleStyle.RED + ConsoleStyle.BOLD + "FIRE" + ConsoleStyle.RESET;
 
     public static void bootSequence() {
+        Printer.clearConsole();
         Printer.typeThenPause(ConsoleNarrator.WelcomeMessageLine1, 40, 500);
         Printer.typeThenPause(WelcomeMessageLine2, 40, 500);
-        Printer.pressEnterToContinue();
     }
 
 

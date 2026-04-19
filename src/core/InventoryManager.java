@@ -84,10 +84,7 @@ public class InventoryManager {
 
     public Product lookupProduct(UUID Sku) {
         for (Product p : this.inventory) {
-            String skuString = p.getSku().toString();
-            if (skuString.startsWith(String.valueOf(Sku))) {
-                return p;
-            }
+            if (p.getSku() == Sku) return p;
         }
         throw new RuntimeException("No Product found");
     }

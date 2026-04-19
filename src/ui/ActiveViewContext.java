@@ -10,6 +10,8 @@ public class ActiveViewContext {
     private String searchQuery;
     private String statusMessage;
     private ViewMode viewMode;
+    private String productName;
+    private String productType;
 
     public ActiveViewContext(UUID selectedProductSku, ViewMode viewMode) {
         this.selectedProductSku = selectedProductSku;
@@ -19,6 +21,11 @@ public class ActiveViewContext {
     public ActiveViewContext(int selectedLaneId, int selectedCustomerId) {
         this.selectedLaneId = selectedLaneId;
         this.selectedCustomerId = selectedCustomerId;
+    }
+
+    public ActiveViewContext(String productName, String productType, ViewMode viewMode) {
+        this.productName = productName;
+        this.productType = productType;
     }
 
     public int getSelectedCustomerId() {
@@ -67,5 +74,13 @@ public class ActiveViewContext {
 
     public void setViewMode(ViewMode viewMode) {
         this.viewMode = viewMode;
+    }
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public String getProductType() {
+        return productType;
     }
 }

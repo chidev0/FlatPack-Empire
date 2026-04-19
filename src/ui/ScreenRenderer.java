@@ -5,6 +5,7 @@ import core.InventoryManager;
 import engine.GameClock;
 import engine.GameState;
 import models.Product;
+import products.ProductCatalog;
 
 public class ScreenRenderer {
     private static GameState state;
@@ -12,13 +13,15 @@ public class ScreenRenderer {
     private static InventoryManager manager;
     private static EventBuffer eventBuffer;
     private static DamagesManager damagesManager;
+    private static InputListener inputListener;
 
-    public ScreenRenderer(GameState state, UIState uiState, InventoryManager manager, EventBuffer eventBuffer, DamagesManager damagesManager) {
+    public ScreenRenderer(GameState state, UIState uiState, InventoryManager manager, EventBuffer eventBuffer, DamagesManager damagesManager, InputListener inputListener) {
     ScreenRenderer.state = state;
     ScreenRenderer.uiState = uiState;
     ScreenRenderer.manager = manager;
     ScreenRenderer.eventBuffer = eventBuffer;
     ScreenRenderer.damagesManager = damagesManager;
+    ScreenRenderer.inputListener = inputListener;
     }
 
 
@@ -91,12 +94,13 @@ public class ScreenRenderer {
         promptPanel.append("=".repeat(57));
         promptPanel.append("\n");
         promptPanel.append("Enter Command > ");
+        if (!inputListener.getCurrentInput().isEmpty()) promptPanel.append(inputListener.getCurrentInput().toString());
         System.out.println(promptPanel.toString());
 
     }
 
     public static void buildInventoryPanel(StringBuilder activePanel, ActiveViewContext activeViewContext) {
-        Product p = manager.lookupProduct(activeViewContext.getSelectedProductSku());
+        Product p = ProductCatalog.productLookup(activeViewContext.getSelectedProductSku());
         activePanel.append("ACTIVE VIEW: PRODUCT INFO - " + p.getProduct() + " " + p.getType() + " (" + p.getColor() +")");
         activePanel.append("\n");
         activePanel.append(p.getDescription());
@@ -106,7 +110,6 @@ public class ScreenRenderer {
         activePanel.append("\n");
         activePanel.append("Cost: $" + p.getPrice());
         activePanel.append("\n");
-        activePanel.append("Description: " + p.getDescription());
     }
 
 
