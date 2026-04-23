@@ -78,7 +78,7 @@ public class EventBuffer {
                 return;
             }
 
-            rollingEventProgress = rollingEventProgress + 6;
+            rollingEventProgress = rollingEventProgress + 4;
             eventOne = rollingEvent.substring(0, Math.min(rollingEventProgress, rollingEventLength));
         }
     }

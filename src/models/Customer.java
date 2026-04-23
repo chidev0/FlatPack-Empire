@@ -37,11 +37,13 @@ public class Customer {
     // Current limitations: No pattern to what will be in a customers shopping cart, fully random.
     public void populateCart() {
         // Grabs random item from Store inventory and adds it to cart.
+        if (shoppingCart.isFull()) return;
         Product p = new Product();
         while (p.getState() != ProductState.IN_INVENTORY) {
             p = manager.getInventorySnapshot().get(cartRandomizer.nextInt(0, manager.getInventorySnapshot().size()));
         }
         shoppingCart.push(p);
+        System.out.println("Added an item to a customers cart");
         p.setState(ProductState.IN_CART);
     }
 
@@ -55,6 +57,15 @@ public class Customer {
         } else if (customerTier == 2) {
             this.ticksUntilNextItem = cartRandomizer.nextInt(6,12);
         }
+    }
+
+    public int rollPickupDelay() {
+        if (customerTier == 1) {
+            return cartRandomizer.nextInt(8,15);
+        } else if (customerTier == 2) {
+            return cartRandomizer.nextInt(6,12);
+        }
+        throw new RuntimeException("Illegal customer tier");
     }
 
     public void advanceShoppingProgress() {

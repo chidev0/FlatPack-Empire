@@ -6,6 +6,7 @@ public class GameClock {
     public GameState GameState;
 
     private static int tick;
+    private static int subTick;
     private static final int TICKS_PER_DAY = SimConfig.TICKS_PER_DAY;
     private static final int SIMULATION_SPEED = SimConfig.SIMULATION_SPEED;
     private static final int[][] time = {
@@ -13,18 +14,24 @@ public class GameClock {
             {0,60,120,180,240,300,360,420,480,540,600}
     };
 
+
     public GameClock(GameState GameState) {
         this.GameState = GameState;
     }
 
 
     public void advance() {
+        subTick++;
+        if (subTick == 10) {
             tick++;
+            subTick = 0;
+        }
             if (tick % TICKS_PER_DAY == 0) {
                 GameState.setCurrentDay(GameState.getCurrentDay() + 1);
             }
 
     }
+
 
     // Getter for Tick & Day
     public int getTick() {
@@ -96,5 +103,9 @@ public class GameClock {
             else return targetHour + ":" + minute;
         }
         throw new RuntimeException("Something went wrong pulling the time");
+    }
+
+    public int calculateChanceForSubTicks(int chance) {
+        return chance / subTick;
     }
 }

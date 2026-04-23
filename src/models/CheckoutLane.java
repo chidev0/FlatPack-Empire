@@ -8,8 +8,10 @@ import products.ProductModel;
 import products.ProductState;
 import structures.ArrayQueue;
 
+import java.lang.classfile.attribute.CodeAttribute;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class CheckoutLane implements Tickable {
     private List<ArrayQueue<Customer>> lanes = new ArrayList<>();
@@ -26,12 +28,26 @@ public class CheckoutLane implements Tickable {
     private boolean isTransactionCompleteL1 = true;
     private boolean isTransactionCompleteL2 = true;
 
-    public CheckoutLane(GameState state, InventoryManager manager, RevenueManager accountant) {
+    // New lane model
+    private boolean awaitingCustomer;
+    private ArrayQueue<Customer> lane;
+    private boolean selfCheckout;
+    private boolean isTransactionComplete = false;
+    private int cartSize;
+    private TransactionReceipt laneTransaction;
+    private int ticksUntilNextItemProcessed;
+    private Customer currentCustomer;
+    private Random checkoutRandomizer = new Random();
+    private int laneNumber;
+
+    public CheckoutLane(GameState state, InventoryManager manager, RevenueManager accountant, int laneNumber) {
         this.manager = manager;
         this.accountant = accountant;
         int CASHIER_LANES = state.getCurrentCheckoutLanes();
         this.laneOne = new ArrayQueue<>();
+        this.lane = new ArrayQueue<>();
         lanes.add(laneOne);
+        this.laneNumber = laneNumber;
         if (CASHIER_LANES == 2) {
             this.laneTwo = new ArrayQueue<>();
             lanes.add(laneTwo);
@@ -48,6 +64,10 @@ public class CheckoutLane implements Tickable {
                 laneTwo.enqueue(customer);
             }
         }
+    }
+
+    public void queueCustomerN(Customer customer) {
+        lane.enqueue(customer);
     }
 
     // Logic for tick-based checkout lane processing
@@ -124,6 +144,58 @@ public class CheckoutLane implements Tickable {
         } else if (customer == currentCustomerL2) {
             cartSizeL2 = size;
         }
+    }
+
+    //New methods
+
+    public boolean isAwaitingCustomer() {
+        return awaitingCustomer;
+    }
+
+    public void setCustomerAwaitStatus(boolean awaitingCustomer) {
+        this.awaitingCustomer = awaitingCustomer;
+    }
+
+    public boolean isTransactionComplete() {
+        return isTransactionComplete;
+    }
+
+    public void setTransactionComplete(boolean isTransactionComplete) {
+        this.isTransactionComplete = isTransactionComplete;
+    }
+
+    public void releaseCustomer() {
+        currentCustomer = lane.dequeue();
+        cartSize = currentCustomer.getShoppingCart().size();
+        this.laneTransaction = new TransactionReceipt();
+        isTransactionComplete = false;
+    }
+
+    public void processCheckoutProgress() {
+        ticksUntilNextItemProcessed--;
+        if (ticksUntilNextItemProcessed == 0) {
+            Product item = currentCustomer.getShoppingCart().pop();
+            manager.removeProduct(item);
+            laneTransaction.addProduct(item);
+            item.setState(ProductState.SOLD);
+            if (currentCustomer.getShoppingCart().isEmpty()) {
+                isTransactionComplete = true;
+            } else {
+                resetItemProcessingDelay();
+            }
+        }
+    }
+
+    public void resetItemProcessingDelay() {
+        ticksUntilNextItemProcessed = checkoutRandomizer.nextInt(10,50);
+    }
+
+    public TransactionReceipt getLaneTransaction() {
+        return laneTransaction;
+    }
+
+    public int getLaneNumber() {
+        return laneNumber;
     }
 
     public void tick(GameState state) {

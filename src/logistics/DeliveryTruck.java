@@ -3,10 +3,12 @@ package logistics;
 import core.DamagesManager;
 import core.InventoryManager;
 import engine.GameState;
+import engine.TaskScheduler;
 import engine.Tickable;
 import exceptions.CapacityExceededException;
 import exceptions.EmptyStructureException;
 import exceptions.TruckNotAtDockException;
+import org.jline.utils.ShutdownHooks;
 import products.ProductState;
 import models.TransitManifest;
 import models.UnloadManifest;
@@ -27,6 +29,7 @@ public class DeliveryTruck implements Tickable {
     UnloadManifest truckManifest;
     int inventoryCount = 0;
     boolean truckAtDock = false;
+    TaskScheduler taskScheduler;
 
     public DeliveryTruck(InventoryManager manager, DamagesManager damageController, GameState state) {
         this.inventoryController = manager;

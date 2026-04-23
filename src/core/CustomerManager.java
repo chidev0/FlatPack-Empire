@@ -2,6 +2,7 @@ package core;
 
 import engine.GameClock;
 import engine.GameState;
+import engine.TaskScheduler;
 import engine.Tickable;
 import models.CheckoutLane;
 import models.Customer;
@@ -19,12 +20,14 @@ public class CustomerManager implements Tickable {
     Random randomizer = new Random();
     List<Customer> customerList = new ArrayList<>();
     public static int totalDayCustomers;
+    private TaskScheduler taskScheduler;
 
-    public CustomerManager(GameState state, InventoryManager manager, CheckoutLane lane, EventBuffer eventBuffer) {
+    public CustomerManager(GameState state, InventoryManager manager, CheckoutLane lane, EventBuffer eventBuffer, TaskScheduler taskScheduler) {
         this.state = state;
         this.manager = manager;
         this.lane = lane;
         this.eventBuffer = eventBuffer;
+        this.taskScheduler = taskScheduler;
     }
 
     // Customer spawn randomizer logic
@@ -58,6 +61,21 @@ public class CustomerManager implements Tickable {
         }
     }
 
+public void newPopulateCart() {
+        if (customerList.isEmpty()) return;
+        int customerSize = customerList.size();
+        for (int i = customerList.size() - 1; i >= 0; i--) {
+            if (customerList.get(i).getShoppingCart().isFull()) {
+                lane.queueCustomer(customerList.get(i));
+                customerList.remove(i);
+            } else {
+                int finalI = i;
+                Customer customer = customerList.get(finalI);
+                taskScheduler.scheduleTask(customerList.get(finalI).rollPickupDelay() * 10, customer::populateCart);
+            }
+        }
+}
+
     public void updateCurrentCustomerSize() {
         state.setCurrentCustomers(customerList.size());
     }
@@ -65,7 +83,7 @@ public class CustomerManager implements Tickable {
     @Override
     public void tick(GameState state) {
         spawnCustomer();
-        populateCustomersCart();
+        newPopulateCart();
         updateCurrentCustomerSize();
     }
 }

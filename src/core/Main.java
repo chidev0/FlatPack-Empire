@@ -5,6 +5,7 @@ import engine.commands.CommandQueue;
 import logistics.DeliveryManager;
 import logistics.DeliveryTruck;
 import models.*;
+import org.jline.utils.ShutdownHooks;
 import products.MaterialType;
 import products.ProductColor;
 import products.ProductType;
@@ -20,6 +21,7 @@ public class Main {
         GameState Scottsville = new GameState();
         InventoryManager manager = new InventoryManager();
         DamagesManager damageControl = new DamagesManager();
+        TaskScheduler taskScheduler = new TaskScheduler();
         GameClock clock = new GameClock(Scottsville);
         UIState uiState = new UIState();
         EventBuffer eventBuffer = new EventBuffer();
@@ -31,7 +33,7 @@ public class Main {
         DeliveryManager truckManager = new DeliveryManager(manager, damageControl, Scottsville, clock, truck);
         RevenueManager revenueManager = new RevenueManager(Scottsville);
         CheckoutLane checkoutLane = new CheckoutLane(Scottsville, manager, revenueManager);
-        CustomerManager customerManager = new CustomerManager(Scottsville, manager, checkoutLane, eventBuffer);
+        CustomerManager customerManager = new CustomerManager(Scottsville, manager, checkoutLane, eventBuffer,taskScheduler);
         SimConfig simConfig  = new SimConfig(manager);
         DayManager dayManager = new DayManager(clock);
         ConsoleNarrator consoleNarrator = new ConsoleNarrator(Scottsville, manager, damageControl, screenRenderer);
@@ -46,6 +48,7 @@ public class Main {
         engine.registerSystem(checkoutLane);
         engine.registerSystem(dayManager);
         engine.registerSystem(consoleNarrator);
+        engine.registerSystem(taskScheduler);
 
         simConfig.initializeStore();
         Thread commandHandler = new Thread(input);
