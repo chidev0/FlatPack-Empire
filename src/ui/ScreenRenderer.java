@@ -1,9 +1,12 @@
 package ui;
 
+import core.CheckoutManager;
 import core.DamagesManager;
 import core.InventoryManager;
 import engine.GameClock;
 import engine.GameState;
+import models.CheckoutLane;
+import models.CheckoutLaneSnapshot;
 import models.Product;
 import products.ProductCatalog;
 
@@ -14,14 +17,16 @@ public class ScreenRenderer {
     private static EventBuffer eventBuffer;
     private static DamagesManager damagesManager;
     private static InputListener inputListener;
+    private static CheckoutManager checkoutManager;
 
-    public ScreenRenderer(GameState state, UIState uiState, InventoryManager manager, EventBuffer eventBuffer, DamagesManager damagesManager, InputListener inputListener) {
-    ScreenRenderer.state = state;
-    ScreenRenderer.uiState = uiState;
-    ScreenRenderer.manager = manager;
-    ScreenRenderer.eventBuffer = eventBuffer;
-    ScreenRenderer.damagesManager = damagesManager;
-    ScreenRenderer.inputListener = inputListener;
+    public ScreenRenderer(GameState state, UIState uiState, InventoryManager manager, EventBuffer eventBuffer, DamagesManager damagesManager, InputListener inputListener, CheckoutManager checkoutManager) {
+        ScreenRenderer.state = state;
+        ScreenRenderer.uiState = uiState;
+        ScreenRenderer.manager = manager;
+        ScreenRenderer.eventBuffer = eventBuffer;
+        ScreenRenderer.damagesManager = damagesManager;
+        ScreenRenderer.inputListener = inputListener;
+        ScreenRenderer.checkoutManager = checkoutManager;
     }
 
 
@@ -34,14 +39,14 @@ public class ScreenRenderer {
     }
 
     public static void buildHeader() {
-    StringBuilder header = new StringBuilder();
-    header.append("=".repeat(57));
-    header.append("\n");
-    header.append(Printer.centerPad("FLATPACK EMPIRE - STORE DASHBOARD - DAY "  + state.getCurrentDay() + " - " + GameClock.getCurrentTime(true), 62));
-    header.append("\n");
-    header.append("=".repeat(57));
-    header.append("\n");
-    System.out.println(header.toString());
+        StringBuilder header = new StringBuilder();
+        header.append("=".repeat(57));
+        header.append("\n");
+        header.append(Printer.centerPad("FLATPACK EMPIRE - STORE DASHBOARD - DAY " + state.getCurrentDay() + " - " + GameClock.getCurrentTime(true), 62));
+        header.append("\n");
+        header.append("=".repeat(57));
+        header.append("\n");
+        System.out.println(header.toString());
     }
 
     public static void buildSummaryPanel() {
@@ -49,7 +54,7 @@ public class ScreenRenderer {
         summaryPanel.append("\uD83D\uDCB0 Balance: $" + state.getCURRENT_BALANCE() + " ".repeat(14 - state.getCURRENT_BALANCE().toString().length()) + "| \uD83D\uDCE6 Inventory: " + manager.getInventorySnapshot().size() + " items");
         summaryPanel.append("\n");
         summaryPanel.append("🚚 Truck Tier " + state.getCurrentTruckTier() + " (" + state.getTruckStatus() + ")" + " ".repeat(9 - state.getTruckStatus().length()));
-        summaryPanel.append("| \uD83D\uDD28 Damages: " + damagesManager.size() );
+        summaryPanel.append("| \uD83D\uDD28 Damages: " + damagesManager.size());
         summaryPanel.append("\n");
         summaryPanel.append("\uD83D\uDED2 Customers in Store: " + state.getCurrentCustomers());
         summaryPanel.append(" ".repeat(4 - String.valueOf(state.getCurrentCustomers()).length()) + "| \uD83E\uDDD1\u200D\uD83D\uDCBC Checkout Lanes Open: 1/5");
@@ -65,8 +70,10 @@ public class ScreenRenderer {
         if (activeView != null) {
             if (activeView.getViewMode() == ViewMode.INVENTORY_VIEW) {
                 buildInventoryPanel(activePanel, activeView);
+            } else if (activeView.getViewMode() == ViewMode.LANE_VIEW) {
+                buildLanePanel(activePanel, activeView);
             }
-        }  else {
+        } else {
             activePanel.append("WIP");
         }
         activePanel.append("\n");
@@ -101,7 +108,7 @@ public class ScreenRenderer {
 
     public static void buildInventoryPanel(StringBuilder activePanel, ActiveViewContext activeViewContext) {
         Product p = ProductCatalog.productLookup(activeViewContext.getSelectedProductSku());
-        activePanel.append("ACTIVE VIEW: PRODUCT INFO - " + p.getProduct() + " " + p.getType() + " (" + p.getColor() +")");
+        activePanel.append("ACTIVE VIEW: PRODUCT INFO - " + p.getProduct() + " " + p.getType() + " (" + p.getColor() + ")");
         activePanel.append("\n");
         activePanel.append(p.getDescription());
         activePanel.append("\n");
@@ -112,7 +119,19 @@ public class ScreenRenderer {
         activePanel.append("\n");
     }
 
+    public static void buildLanePanel(StringBuilder activePanel, ActiveViewContext activeViewContext) {
+        CheckoutLaneSnapshot laneSnapshot = checkoutManager.buildLaneSnapshot(activeViewContext.getSelectedLaneSnapshot().getLaneNumber());
+        activePanel.append("ACTIVE VIEW: LANE VIEW (" + laneSnapshot.getLaneNumber() + ")");
+        activePanel.append("\n");
+        if (!laneSnapshot.isLaneProcessing()) {
+            activePanel.append("Lane is currently empty");
+        } else {
+            activePanel.append("Processing customer");
+            activePanel.append("\n" + laneSnapshot.getItemsProcessed() + " / " + laneSnapshot.getItemsRemaining());
+            activePanel.append("Current total: $" + laneSnapshot.getTransactionTotal());
+            activePanel.append("Ticks until Next Scan: " + laneSnapshot.getTicksUntilNextScan());
+        }
 
 
-
+    }
 }

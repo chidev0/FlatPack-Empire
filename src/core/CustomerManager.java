@@ -15,17 +15,17 @@ import java.util.Random;
 public class CustomerManager implements Tickable {
     private GameState state;
     private InventoryManager manager;
-    private CheckoutLane lane;
+    private CheckoutManager checkoutManager;
     private EventBuffer eventBuffer;
     Random randomizer = new Random();
     List<Customer> customerList = new ArrayList<>();
     public static int totalDayCustomers;
     private TaskScheduler taskScheduler;
 
-    public CustomerManager(GameState state, InventoryManager manager, CheckoutLane lane, EventBuffer eventBuffer, TaskScheduler taskScheduler) {
+    public CustomerManager(GameState state, InventoryManager manager, CheckoutManager checkoutManager, EventBuffer eventBuffer, TaskScheduler taskScheduler) {
         this.state = state;
         this.manager = manager;
-        this.lane = lane;
+        this.checkoutManager = checkoutManager;
         this.eventBuffer = eventBuffer;
         this.taskScheduler = taskScheduler;
     }
@@ -46,7 +46,7 @@ public class CustomerManager implements Tickable {
         int customerSize = customerList.size();
         for (int i = customerSize - 1; i >= 0; i-- ) {
             if (customerList.get(i).getShoppingCart().isFull()) {
-                lane.queueCustomer(customerList.get(i));
+                checkoutManager.queueCustomer(customerList.get(i));
                 customerList.remove(i);
             } else {
                 if (customerList.get(i).getTicksUntilNextItem() == 0) {
@@ -66,7 +66,7 @@ public void newPopulateCart() {
         int customerSize = customerList.size();
         for (int i = customerList.size() - 1; i >= 0; i--) {
             if (customerList.get(i).getShoppingCart().isFull()) {
-                lane.queueCustomer(customerList.get(i));
+                checkoutManager.queueCustomer(customerList.get(i));
                 customerList.remove(i);
             } else {
                 int finalI = i;

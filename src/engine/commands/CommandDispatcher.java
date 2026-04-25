@@ -1,52 +1,36 @@
 package engine.commands;
 
+import core.CheckoutManager;
 import engine.GameClock;
+import engine.commands.core.TimeCommand;
+import exceptions.InvalidCommandArgsException;
 import exceptions.InvalidCommandException;
 import models.Product;
 import products.ProductCatalog;
-import ui.ActiveViewContext;
-import ui.InputListener;
-import ui.UIState;
-import ui.ViewMode;
+import ui.*;
 
 public class CommandDispatcher {
     private UIState uiState;
+    CommandRegistry commandRegistry;
+    private EventBuffer eventBuffer;
 
-    public CommandDispatcher(UIState uiState) {
+    public CommandDispatcher(UIState uiState, CommandRegistry commandRegistry, EventBuffer eventBuffer) {
         this.uiState = uiState;
+        this.commandRegistry = commandRegistry;
+        this.eventBuffer = eventBuffer;
+
     }
 
-    public void execute(String[] command) {
-    if (command[0].equals("info")) {
-        if (command.length != 3) {
-            throw new InvalidCommandException("Invalid Arguments");
-        }
+    public void executeN(String[] args) {
+        Command command = commandRegistry.getCommand(args[0]);
         try {
-            System.out.println("Running info");
-            ActiveViewContext info = info(command[1], command[2]);
-            uiState.setActiveViewContext(info);
-        } catch (InvalidCommandException e) {
-            System.out.print("Incorrect Usage - info [ProductName] [ProductType]");
-        }
-        InputListener.setProcessingCommand(false);
-    } else if (command[0].equals("time")) {
-        System.out.println(time());
-    }
-    }
-
-    public ActiveViewContext info(String productName, String productType) {
-        try {
-            Product p = ProductCatalog.productLookup(productName, productType);
-            //TODO: Decouple print statement from Command class, output formatted product information, support color lookup.
-            ActiveViewContext info = new ActiveViewContext(p.getSku(), ViewMode.INVENTORY_VIEW);
-            System.out.println(p.getProduct() + " " + p.getType() + " - $" + p.getPrice() + ": " + p.getDescription());
-            return info;
-        } catch (InvalidCommandException e) {
-            throw new InvalidCommandException("Missing Arguments");
+            CommandContext context = command.parseArgs(args);
+            // eventBuffer.enqueueEvent("Built context for " + command.name() + " attempting execute.");
+            command.execute(context, args);
+            // eventBuffer.enqueueEvent("Command executed.");
+        } catch (InvalidCommandArgsException e) {
+            throw new RuntimeException(e);
         }
     }
 
-    public String time() {
-        return GameClock.getCurrentTime(true);
-    }
 }

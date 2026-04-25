@@ -2,16 +2,19 @@ package engine.commands;
 import engine.GameState;
 import engine.Tickable;
 import structures.ArrayQueue;
+import ui.EventBuffer;
 import ui.UIState;
 
 public class CommandQueue implements Tickable {
 
     private UIState uiState;
     private CommandDispatcher commandExecuter;
+    private EventBuffer eventBuffer;
 
-    public CommandQueue(UIState uiState) {
+    public CommandQueue(UIState uiState, CommandDispatcher commandExecuter, EventBuffer eventBuffer) {
         this.uiState = uiState;
-        this.commandExecuter = new CommandDispatcher(uiState);
+        this.commandExecuter = commandExecuter;
+        this.eventBuffer = eventBuffer;
     }
 
     private ArrayQueue<String[]> commandPipeline = new ArrayQueue<>();
@@ -24,8 +27,8 @@ public class CommandQueue implements Tickable {
         try {
             //System.out.println("Attempting to dequeue command");
             String[] command = commandPipeline.dequeue();
-            //System.out.println("Command dequeued, attempting execute");
-            commandExecuter.execute(command);
+            // eventBuffer.enqueueEvent("Command dequeued, attempting execute");
+            commandExecuter.executeN(command);
             //System.out.println("Executed command");
         } catch (RuntimeException e) {
             throw new RuntimeException(e);

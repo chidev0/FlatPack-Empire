@@ -16,6 +16,7 @@ public class Customer {
     private int customerTier;
     private InventoryManager manager;
     private int ticksUntilNextItem;
+    public boolean placeholder = false;
 
     public Customer(GameState state, InventoryManager manager) {
         this.manager = manager;
@@ -27,6 +28,19 @@ public class Customer {
             this.shoppingCart = new ArrayStack<>(cartRandomizer.nextInt(5,15));
             this.ticksUntilNextItem = cartRandomizer.nextInt(10,20);
         }
+    }
+
+    public Customer(GameState state, InventoryManager manager, boolean placeholder) {
+        this.manager = manager;
+        customerTier = state.getCurrentCustomerTier();
+        if (customerTier == 1) {
+            this.shoppingCart = new ArrayStack<>(cartRandomizer.nextInt(1,5));
+            this.ticksUntilNextItem = cartRandomizer.nextInt(14,30);
+        } else if (customerTier == 2) {
+            this.shoppingCart = new ArrayStack<>(cartRandomizer.nextInt(5,15));
+            this.ticksUntilNextItem = cartRandomizer.nextInt(10,20);
+        }
+        this.placeholder = placeholder;
     }
 
     public ArrayStack<Product> getShoppingCart() {

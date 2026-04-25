@@ -10,6 +10,7 @@ import structures.ArrayStack;
 import upgrades.UpgradeCatalog;
 import upgrades.UpgradeManager;
 
+import java.util.Arrays;
 import java.util.Random;
 
 public class DeliveryManager implements Tickable {
@@ -43,6 +44,9 @@ public class DeliveryManager implements Tickable {
     // Get arrival slot size.
     public int getScheduledManifestSize(Product[][] manifest, int arrivalSlot) {
         int scheduledSlotIndex = 0;
+        if (Arrays.deepEquals(inboundManifest, new Product[7][])) {
+            return scheduledSlotIndex;
+        }
         boolean stopLoop = false;
         while (!stopLoop) {
             if (manifest[arrivalSlot][scheduledSlotIndex] != null) {
@@ -75,7 +79,7 @@ public class DeliveryManager implements Tickable {
     public DeliveryTruck dispatchScheduledTruck(){
         // If inbound schedule for current day is empty, throw Runtime Exception.
         if (getScheduledManifestSize(inboundManifest, 0) == 0) {
-            throw new RuntimeException("No Cargo for Today!");
+            System.out.println("No Cargo for Today!");
         }
         // Create inbound truck and load it with the scheduled slot cargo
         DeliveryTruck scheduledTruck = new DeliveryTruck(manager, damagesManager, state);

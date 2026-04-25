@@ -1,26 +1,34 @@
 package ui;
 
+import models.CheckoutLaneSnapshot;
+
 import java.util.UUID;
 
 public class ActiveViewContext {
 
     private UUID selectedProductSku;
-    private int selectedLaneId;
+    private CheckoutLaneSnapshot selectedLaneSnapshot;
     private int selectedCustomerId;
     private String searchQuery;
     private String statusMessage;
     private ViewMode viewMode;
     private String productName;
     private String productType;
+    private CheckoutLaneSnapshot[] laneSnapshotArray;
 
     public ActiveViewContext(UUID selectedProductSku, ViewMode viewMode) {
         this.selectedProductSku = selectedProductSku;
         this.viewMode = viewMode;
     }
 
-    public ActiveViewContext(int selectedLaneId, int selectedCustomerId) {
-        this.selectedLaneId = selectedLaneId;
-        this.selectedCustomerId = selectedCustomerId;
+    public ActiveViewContext(CheckoutLaneSnapshot[] laneSnapshotArray, ViewMode viewMode) {
+        this.laneSnapshotArray = laneSnapshotArray;
+        this.viewMode = viewMode;
+    }
+
+    public ActiveViewContext(CheckoutLaneSnapshot selectedLaneId) {
+        this.selectedLaneSnapshot = selectedLaneId;
+        this.viewMode = ViewMode.LANE_VIEW;
     }
 
     public ActiveViewContext(String productName, String productType, ViewMode viewMode) {
@@ -36,12 +44,12 @@ public class ActiveViewContext {
         this.selectedCustomerId = selectedCustomerId;
     }
 
-    public int getSelectedLaneId() {
-        return selectedLaneId;
+    public CheckoutLaneSnapshot getSelectedLaneSnapshot() {
+        return selectedLaneSnapshot;
     }
 
-    public void setSelectedLaneId(int selectedLaneId) {
-        this.selectedLaneId = selectedLaneId;
+    public void setSelectedLaneSnapshot(CheckoutLaneSnapshot selectedLaneSnapshot) {
+        this.selectedLaneSnapshot = selectedLaneSnapshot;
     }
 
     public UUID getSelectedProductSku() {
