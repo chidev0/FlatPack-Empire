@@ -21,12 +21,13 @@ public class GameClock {
 
 
     public void advance() {
-        subTick++;
         if (subTick == 10) {
             tick++;
             subTick = 0;
+        } else {
+            subTick++;
         }
-            if (tick % TICKS_PER_DAY == 0) {
+            if (isNewDay()) {
                 GameState.setCurrentDay(GameState.getCurrentDay() + 1);
             }
 
@@ -41,7 +42,7 @@ public class GameClock {
     public int getCurrentTick() { return tick % TICKS_PER_DAY; }
 
     public boolean isNewDay() {
-        return tick % TICKS_PER_DAY == 0;
+        return (tick % TICKS_PER_DAY == 0 && subTick == 0);
     }
 
     // Method For Evaluating EOD (Last hour of business)
@@ -55,7 +56,7 @@ public class GameClock {
     }
 
     public boolean isRollover() {
-        return (getCurrentTick() == 599);
+        return (getCurrentTick() == 599 && subTick == 0);
     }
 
     // Getter for SIMULATION_SPEED

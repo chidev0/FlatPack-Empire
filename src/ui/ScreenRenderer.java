@@ -2,6 +2,7 @@ package ui;
 
 import core.CheckoutManager;
 import core.DamagesManager;
+import core.DayManager;
 import core.InventoryManager;
 import engine.GameClock;
 import engine.GameState;
@@ -11,26 +12,28 @@ import models.Product;
 import products.ProductCatalog;
 
 public class ScreenRenderer {
-    private static GameState state;
-    private static UIState uiState;
-    private static InventoryManager manager;
-    private static EventBuffer eventBuffer;
-    private static DamagesManager damagesManager;
-    private static InputListener inputListener;
-    private static CheckoutManager checkoutManager;
+    private GameState state;
+    private UIState uiState;
+    private InventoryManager manager;
+    private EventBuffer eventBuffer;
+    private DamagesManager damagesManager;
+    private InputListener inputListener;
+    private CheckoutManager checkoutManager;
+    private DayManager dayManager;
 
-    public ScreenRenderer(GameState state, UIState uiState, InventoryManager manager, EventBuffer eventBuffer, DamagesManager damagesManager, InputListener inputListener, CheckoutManager checkoutManager) {
-        ScreenRenderer.state = state;
-        ScreenRenderer.uiState = uiState;
-        ScreenRenderer.manager = manager;
-        ScreenRenderer.eventBuffer = eventBuffer;
-        ScreenRenderer.damagesManager = damagesManager;
-        ScreenRenderer.inputListener = inputListener;
-        ScreenRenderer.checkoutManager = checkoutManager;
+    public ScreenRenderer(GameState state, UIState uiState, InventoryManager manager, EventBuffer eventBuffer, DamagesManager damagesManager, InputListener inputListener, CheckoutManager checkoutManager, DayManager dayManager) {
+        this.state = state;
+        this.uiState = uiState;
+        this.manager = manager;
+        this.eventBuffer = eventBuffer;
+        this.damagesManager = damagesManager;
+        this.inputListener = inputListener;
+        this.checkoutManager = checkoutManager;
+        this.dayManager = dayManager;
     }
 
 
-    public static void renderFrame() {
+    public void renderFrame() {
         buildHeader();
         buildSummaryPanel();
         buildActivePanel();
@@ -38,7 +41,7 @@ public class ScreenRenderer {
         buildPromptLine();
     }
 
-    public static void buildHeader() {
+    public void buildHeader() {
         StringBuilder header = new StringBuilder();
         header.append("=".repeat(57));
         header.append("\n");
@@ -49,14 +52,14 @@ public class ScreenRenderer {
         System.out.println(header.toString());
     }
 
-    public static void buildSummaryPanel() {
+    public void buildSummaryPanel() {
         StringBuilder summaryPanel = new StringBuilder();
         summaryPanel.append("\uD83D\uDCB0 Balance: $" + state.getCURRENT_BALANCE() + " ".repeat(14 - state.getCURRENT_BALANCE().toString().length()) + "| \uD83D\uDCE6 Inventory: " + manager.getInventorySnapshot().size() + " items");
         summaryPanel.append("\n");
         summaryPanel.append("🚚 Truck Tier " + state.getCurrentTruckTier() + " (" + state.getTruckStatus() + ")" + " ".repeat(9 - state.getTruckStatus().length()));
         summaryPanel.append("| \uD83D\uDD28 Damages: " + damagesManager.size());
         summaryPanel.append("\n");
-        summaryPanel.append("\uD83D\uDED2 Customers in Store: " + state.getCurrentCustomers());
+        summaryPanel.append("\uD83D\uDED2 Customers in Store: " + dayManager.getCurrentDay().getCustomersInStore());
         summaryPanel.append(" ".repeat(4 - String.valueOf(state.getCurrentCustomers()).length()) + "| \uD83E\uDDD1\u200D\uD83D\uDCBC Checkout Lanes Open: 1/5");
         summaryPanel.append("\n");
         summaryPanel.append("-".repeat(57));
@@ -64,7 +67,7 @@ public class ScreenRenderer {
         System.out.println(summaryPanel.toString());
     }
 
-    public static void buildActivePanel() {
+    public void buildActivePanel() {
         StringBuilder activePanel = new StringBuilder();
         ActiveViewContext activeView = uiState.getActiveViewContext();
         if (activeView != null) {
@@ -81,7 +84,7 @@ public class ScreenRenderer {
         System.out.println(activePanel.toString());
     }
 
-    public static void buildRecentEventsPanel() {
+    public void buildRecentEventsPanel() {
         StringBuilder eventPanel = new StringBuilder();
         eventBuffer.updateRecentEventsPanel();
         eventPanel.append("[INTERNAL MEMO - WAREHOUSE DIVISION]");
@@ -96,7 +99,7 @@ public class ScreenRenderer {
         System.out.println(eventPanel.toString());
     }
 
-    public static void buildPromptLine() {
+    public void buildPromptLine() {
         StringBuilder promptPanel = new StringBuilder();
         promptPanel.append("=".repeat(57));
         promptPanel.append("\n");
@@ -119,7 +122,7 @@ public class ScreenRenderer {
         activePanel.append("\n");
     }
 
-    public static void buildLanePanel(StringBuilder activePanel, ActiveViewContext activeViewContext) {
+    public void buildLanePanel(StringBuilder activePanel, ActiveViewContext activeViewContext) {
         CheckoutLaneSnapshot laneSnapshot = checkoutManager.buildLaneSnapshot(activeViewContext.getSelectedLaneSnapshot().getLaneNumber());
         activePanel.append("ACTIVE VIEW: LANE VIEW (" + laneSnapshot.getLaneNumber() + ")");
         activePanel.append("\n");

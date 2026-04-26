@@ -81,6 +81,7 @@ public class CheckoutLane {
     public void releaseCustomer() {
         currentCustomer = lane.dequeue();
         cartSize = currentCustomer.getShoppingCart().size();
+        currentCustomer.setProcessing(true);
         this.laneTransaction = new TransactionReceipt();
         isTransactionComplete = false;
         resetItemProcessingDelay();

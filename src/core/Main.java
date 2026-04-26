@@ -16,8 +16,9 @@ public class Main {
         DamagesManager damageControl = new DamagesManager();
         TaskScheduler taskScheduler = new TaskScheduler();
         GameClock clock = new GameClock(Scottsville);
+        DayManager dayManager = new DayManager(clock, Scottsville);
         EventBuffer eventBuffer = new EventBuffer();
-        CheckoutManager checkoutManager = new CheckoutManager(Scottsville, manager, revenueManager, eventBuffer);
+        CheckoutManager checkoutManager = new CheckoutManager(Scottsville, manager, revenueManager, eventBuffer, dayManager);
         UIState uiState = new UIState();
         CommandBootstrapper commandBootstrapper = new CommandBootstrapper(uiState);
         CommandRegistry registry = commandBootstrapper.createDefaultRegistry();
@@ -25,22 +26,21 @@ public class Main {
         CommandQueue queue = new CommandQueue(uiState, commandDispatcher, eventBuffer);
         CommandParser parser = new CommandParser(queue, eventBuffer, registry);
         InputListener input = new InputListener(parser);
-        ScreenRenderer screenRenderer = new ScreenRenderer(Scottsville, uiState, manager, eventBuffer, damageControl, input, checkoutManager);
+        ScreenRenderer screenRenderer = new ScreenRenderer(Scottsville, uiState, manager, eventBuffer, damageControl, input, checkoutManager, dayManager);
         DeliveryTruck truck = new DeliveryTruck(manager, damageControl, Scottsville);
         DeliveryManager truckManager = new DeliveryManager(manager, damageControl, Scottsville, clock, truck);
-        CustomerManager customerManager = new CustomerManager(Scottsville, manager, checkoutManager, eventBuffer,taskScheduler);
+        CustomerManager customerManager = new CustomerManager(Scottsville, manager, checkoutManager, eventBuffer,taskScheduler, dayManager);
         SimConfig simConfig  = new SimConfig(manager);
-        DayManager dayManager = new DayManager(clock);
         ConsoleNarrator consoleNarrator = new ConsoleNarrator(Scottsville, manager, damageControl, screenRenderer);
 
         ConsoleNarrator.bootSequence();
 
         GameEngine engine = new GameEngine(Scottsville, manager, damageControl, clock);
+        engine.registerSystem(dayManager);
         engine.registerSystem(truck);
         engine.registerSystem(truckManager);
         engine.registerSystem(queue);
         engine.registerSystem(customerManager);
-        engine.registerSystem(dayManager);
         engine.registerSystem(consoleNarrator);
         engine.registerSystem(taskScheduler);
         engine.registerSystem(checkoutManager);

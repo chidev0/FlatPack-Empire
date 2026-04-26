@@ -21,13 +21,15 @@ public class CustomerManager implements Tickable {
     List<Customer> customerList = new ArrayList<>();
     public static int totalDayCustomers;
     private TaskScheduler taskScheduler;
+    private DayManager dayManager;
 
-    public CustomerManager(GameState state, InventoryManager manager, CheckoutManager checkoutManager, EventBuffer eventBuffer, TaskScheduler taskScheduler) {
+    public CustomerManager(GameState state, InventoryManager manager, CheckoutManager checkoutManager, EventBuffer eventBuffer, TaskScheduler taskScheduler, DayManager dayManager) {
         this.state = state;
         this.manager = manager;
         this.checkoutManager = checkoutManager;
         this.eventBuffer = eventBuffer;
         this.taskScheduler = taskScheduler;
+        this.dayManager = dayManager;
     }
 
     // Customer spawn randomizer logic
@@ -35,6 +37,7 @@ public class CustomerManager implements Tickable {
     if (randomizer.nextDouble() <= state.getCurrentCustomerSpawnRate()) {
         // Adds customer to list, spawning them in the store.
         customerList.add(new Customer(state, manager));
+        dayManager.getCurrentDay().handleNewCustomer();
         totalDayCustomers++;
         // ToDo: Decouple print statement from CustomerManager.
         eventBuffer.enqueueEvent("Looks like we got a customer. Customers shopping: " + customerList.size());

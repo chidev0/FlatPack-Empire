@@ -16,6 +16,7 @@ public class Customer {
     private int customerTier;
     private InventoryManager manager;
     private int ticksUntilNextItem;
+    private boolean processing;
     public boolean placeholder = false;
 
     public Customer(GameState state, InventoryManager manager) {
@@ -51,7 +52,7 @@ public class Customer {
     // Current limitations: No pattern to what will be in a customers shopping cart, fully random.
     public void populateCart() {
         // Grabs random item from Store inventory and adds it to cart.
-        if (shoppingCart.isFull()) return;
+        if (shoppingCart.isFull() || processing) return;
         Product p = new Product();
         while (p.getState() != ProductState.IN_INVENTORY) {
             p = manager.getInventorySnapshot().get(cartRandomizer.nextInt(0, manager.getInventorySnapshot().size()));
@@ -67,22 +68,26 @@ public class Customer {
 
     public void rerollPickupDelay() {
         if (customerTier == 1) {
-            this.ticksUntilNextItem = cartRandomizer.nextInt(8,15);
+            this.ticksUntilNextItem = cartRandomizer.nextInt(80,150);
         } else if (customerTier == 2) {
-            this.ticksUntilNextItem = cartRandomizer.nextInt(6,12);
+            this.ticksUntilNextItem = cartRandomizer.nextInt(60,120);
         }
     }
 
     public int rollPickupDelay() {
         if (customerTier == 1) {
-            return cartRandomizer.nextInt(8,15);
+            return cartRandomizer.nextInt(80,150);
         } else if (customerTier == 2) {
-            return cartRandomizer.nextInt(6,12);
+            return cartRandomizer.nextInt(60,120);
         }
         throw new RuntimeException("Illegal customer tier");
     }
 
     public void advanceShoppingProgress() {
         ticksUntilNextItem--;
+    }
+
+    public void setProcessing(boolean processing) {
+        this.processing = processing;
     }
 }

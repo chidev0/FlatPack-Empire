@@ -16,12 +16,14 @@ public class CheckoutManager implements Tickable {
     private final InventoryManager manager;
     private final RevenueManager accountant;
     private EventBuffer eventBuffer;
+    private DayManager dayManager;
 
-    public CheckoutManager(GameState state, InventoryManager manager, RevenueManager accountant, EventBuffer eventBuffer) {
+    public CheckoutManager(GameState state, InventoryManager manager, RevenueManager accountant, EventBuffer eventBuffer, DayManager dayManager) {
         this.state = state;
         this.manager = manager;
         this.accountant = accountant;
         this.eventBuffer = eventBuffer;
+        this.dayManager = dayManager;
         initializeCheckout();
     }
 
@@ -41,13 +43,14 @@ public class CheckoutManager implements Tickable {
             if (lane.isAwaitingCustomer() && !lane.isEmpty()) {
                 lane.releaseCustomer();
                 lane.setCustomerAwaitStatus(false);
-                eventBuffer.enqueueEvent("Customer being processed in lane " + lane.getLaneNumber());
+                eventBuffer.enqueueEvent("Customer being processed in lane " + lane.getLaneNumber() + " (" + lane.getCurrentCustomer().getShoppingCart().size() + ")");
             }
             if (lane.isTransactionComplete()) {
                 accountant.addToBalance(lane.getLaneTransaction().calculateTotal());
                 lane.setCustomerAwaitStatus(true);
                 lane.resetCurrentCustomer();
                 lane.setCurrentlyProcessingCustomer(false);
+                dayManager.getCurrentDay().setCustomersInStore(dayManager.getCurrentDay().getCustomersInStore() - 1);
                 eventBuffer.enqueueEvent("Finished processing Customer in lane " + lane.getLaneNumber());
             } else {
                 lane.processCheckoutProgress();

@@ -12,7 +12,7 @@ public class SimConfig {
     public static final int SELF_CHECKOUT_LANES = 0;
     public static final int STARTING_CASHIER = 0;
     public static final int STARTING_CUSTOMER_TIER = 1;
-    public static final double STARTING_CUSTOMER_SPAWN_RATE = 0.005;
+    public static final double STARTING_CUSTOMER_SPAWN_RATE = 0.0010;
     public static final double EVENT_CHANCE = 0.35;
     public static final double SHRINK_CHANCE = 0.10;
     public static final int TICKS_PER_DAY = 600;

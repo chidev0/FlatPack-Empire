@@ -1,12 +1,6 @@
 package engine.commands;
 
-import core.CheckoutManager;
-import engine.GameClock;
-import engine.commands.core.TimeCommand;
 import exceptions.InvalidCommandArgsException;
-import exceptions.InvalidCommandException;
-import models.Product;
-import products.ProductCatalog;
 import ui.*;
 
 public class CommandDispatcher {
