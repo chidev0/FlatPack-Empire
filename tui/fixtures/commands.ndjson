@@ -1,0 +1,5 @@
+{"schemaVersion":1,"type":"command","id":"c-0001","seenTick":26440,"command":"setSpeed","args":{"multiplier":2}}
+{"schemaVersion":1,"type":"command","id":"c-0012","seenTick":26452,"command":"pause","args":{}}
+{"schemaVersion":1,"type":"command","id":"c-0013","seenTick":26452,"command":"resume","args":{}}
+{"schemaVersion":1,"type":"command","id":"c-0042","seenTick":50829,"command":"upgrade","args":{"upgradeType":"CHECKOUT_LANE"}}
+{"schemaVersion":1,"type":"command","id":"c-0043","seenTick":50830,"command":"orderStock","args":{"catalogId":"AlexDresserW","units":40,"arrivalDay":87}}

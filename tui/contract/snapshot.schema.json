@@ -1,0 +1,661 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/chidev0/FlatPack-Empire/tui/contract/snapshot.schema.json",
+  "title": "Flatpack Empire snapshot (engine -> UI)",
+  "description": "PROPOSAL v1. One full-state snapshot per GameClock tick, one JSON object per line (NDJSON). The engine owns every number; the UI only renders. Annotations: x-status is 'exists' (a field or getter exists in the engine today), 'derivable' (no new mechanic, the engine computes it at the boundary from existing state) or 'planned' (needs a mechanic from the roadmap version in x-roadmap). x-source names the Java class/field/getter. Everything planned is optional: absent or null means the UI shows a 'not yet wired' stub. Required fields are what the v4.2 boundary must emit.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion", "type", "seed", "tick", "status", "clock", "finance",
+    "customers", "checkout", "inventory", "inbound", "dock",
+    "events", "commandResults", "lastDaySummary"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1,
+      "description": "Bumped on any change. The UI refuses to run on a version it does not know."
+    },
+    "type": {
+      "const": "snapshot",
+      "description": "Message kind. Only 'snapshot' flows engine -> UI in v1."
+    },
+    "seed": {
+      "type": ["integer", "null"],
+      "minimum": 0,
+      "maximum": 9007199254740991,
+      "description": "Run seed. Null until seeded RNG lands. Kept within 2^53-1 so JSON parsers that use doubles (Unreal's FJsonObject, JavaScript) read it exactly.",
+      "x-status": "planned",
+      "x-roadmap": "v4.1",
+      "x-source": "SimRandom seed (v4.1). Today: six unseeded new Random() calls."
+    },
+    "tick": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Absolute tick since the run started. Never resets at day end. Replay files line up on (seed, tick).",
+      "x-status": "exists",
+      "x-source": "GameClock.getTick()"
+    },
+    "status": {
+      "enum": ["RUNNING", "PAUSED", "ROLLOVER_DAY", "DEBUG"],
+      "x-status": "exists",
+      "x-source": "GameState.getSimulationStatus() -> GameStatus"
+    },
+    "clock": { "$ref": "#/$defs/clock" },
+    "finance": { "$ref": "#/$defs/finance" },
+    "reputation": { "$ref": "#/$defs/reputation" },
+    "customers": { "$ref": "#/$defs/customers" },
+    "checkout": { "$ref": "#/$defs/checkout" },
+    "inventory": { "$ref": "#/$defs/inventory" },
+    "inbound": { "$ref": "#/$defs/inbound" },
+    "dock": { "$ref": "#/$defs/dock" },
+    "zones": {
+      "type": ["array", "null"],
+      "items": { "$ref": "#/$defs/zone" },
+      "description": "Logical store zones. Zone-level customer routes arrive in v6; footprints and capacity arrive with the grid in v9.",
+      "x-status": "planned",
+      "x-roadmap": "v6 (occupancy), v9 (footprint, capacity)",
+      "x-source": "ZoneType enum exists; no zone instances exist yet."
+    },
+    "layout": { "$ref": "#/$defs/layout" },
+    "zoneFlows": {
+      "type": ["array", "null"],
+      "items": { "$ref": "#/$defs/zoneFlow" },
+      "description": "Customer flow between zones, as rates. Drawn as arrows in the zone view.",
+      "x-status": "planned",
+      "x-roadmap": "v6"
+    },
+    "markers": {
+      "type": ["array", "null"],
+      "items": { "$ref": "#/$defs/marker" },
+      "description": "The only place individual customers appear: short-lived floor markers for notable moments.",
+      "x-status": "planned",
+      "x-roadmap": "v6 (WALK_OUT), v9 (STUCK), no slot yet (COMPLAINT)"
+    },
+    "aisles": {
+      "type": ["array", "null"],
+      "items": { "$ref": "#/$defs/aisle" },
+      "x-status": "planned",
+      "x-roadmap": "v9",
+      "x-source": "Location(aisle, bin) and Product.setWarehouseLocation exist; nothing assigns locations yet."
+    },
+    "staff": { "$ref": "#/$defs/staff" },
+    "market": { "$ref": "#/$defs/market" },
+    "restaurant": { "$ref": "#/$defs/restaurant" },
+    "returns": { "$ref": "#/$defs/returns" },
+    "events": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/event" },
+      "description": "Events raised since the previous snapshot, oldest first. The first snapshot after the UI connects may carry up to 50 recent events as backlog. The UI keeps its own scrollback.",
+      "x-status": "derivable",
+      "x-source": "EventBuffer.enqueueEvent(String) today; SimEvent bus in v4.2"
+    },
+    "commandResults": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/commandResult" },
+      "description": "One entry per command handled since the previous snapshot."
+    },
+    "lastDaySummary": {
+      "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/daySummary" }],
+      "description": "The most recently closed day. Null on day 1. The UI shows its end-of-day modal when lastDaySummary.day changes."
+    },
+    "outcome": { "$ref": "#/$defs/outcome" },
+    "debug": { "$ref": "#/$defs/debug" }
+  },
+
+  "$defs": {
+    "cents": {
+      "type": "integer",
+      "description": "Money in integer cents. Engine converts with BigDecimal.movePointRight(2).longValueExact() after setScale(2)."
+    },
+    "pct": { "type": "integer", "minimum": 0, "maximum": 100 },
+    "unit": { "type": "number", "minimum": 0, "maximum": 1 },
+    "severity": {
+      "enum": ["debug", "info", "warn", "alert"],
+      "description": "UI uses colour only for warn (amber) and alert (red)."
+    },
+    "zoneType": {
+      "enum": ["WAREHOUSE_GRID", "MARKET_HALL", "SHOWROOM", "FOOD_COURT", "CHECKOUT", "ENTRANCE", "STAFF_ONLY", "DAMAGES", "RECEIVING"],
+      "x-status": "exists",
+      "x-source": "models.ZoneType"
+    },
+    "customerState": {
+      "enum": ["IDLE", "AWAITING_ITEM_TASK", "SHOPPING", "READY_FOR_CHECKOUT", "QUEUED_FOR_CHECKOUT", "CHECKING_OUT", "EXITING_STORE"],
+      "x-status": "exists",
+      "x-source": "customer.CustomerState"
+    },
+    "catalogId": {
+      "type": "string",
+      "pattern": "^[A-Za-z][A-Za-z0-9_]*$",
+      "description": "Stable id for a product line. Today the only stable handle is the ProductCatalog field name (AlexDeskW, BillyBookcaseBr, Swedish_Meatballs...). Product.sku is a per-unit UUID and changes on copy(), so it cannot identify a line.",
+      "x-status": "derivable",
+      "x-roadmap": "v4.4 replaces with ids from the JSON catalogue"
+    },
+    "rect": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["x", "y", "w", "h"],
+      "description": "Tile rectangle, origin top-left, integers.",
+      "properties": {
+        "x": { "type": "integer", "minimum": 0 },
+        "y": { "type": "integer", "minimum": 0 },
+        "w": { "type": "integer", "minimum": 1 },
+        "h": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "alert": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "required": ["code", "severity", "text"],
+      "description": "An active condition the engine has decided is worth flagging. The UI never decides what counts as low stock or crowded.",
+      "properties": {
+        "code": { "type": "string", "description": "Machine-readable, e.g. STOCK_OUT, LOW_STOCK, OVER_CAPACITY. Set by the engine." },
+        "severity": { "$ref": "#/$defs/severity" },
+        "text": { "type": "string" }
+      }
+    },
+
+    "clock": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["day", "tickOfDay", "subTick", "ticksPerDay", "timeLabel", "isStartOfDay", "isEndOfDay", "speedMultiplier"],
+      "properties": {
+        "day": {
+          "type": "integer", "minimum": 1,
+          "description": "1-based day number.",
+          "x-status": "derivable",
+          "x-source": "GameClock.getTick() / SimConfig.TICKS_PER_DAY + 1. GameState.CURRENT_DAY reads 0 on the first day, see CONTRACT_NOTES."
+        },
+        "runLengthDays": {
+          "type": ["integer", "null"],
+          "description": "Run length for the 'Day X/90' readout.",
+          "x-status": "planned", "x-roadmap": "v5"
+        },
+        "tickOfDay": { "type": "integer", "minimum": 0, "x-status": "exists", "x-source": "GameClock.getCurrentTick()" },
+        "subTick": { "type": "integer", "minimum": 0, "maximum": 10, "x-status": "exists", "x-source": "GameClock.subTick (private, no getter yet)" },
+        "ticksPerDay": { "type": "integer", "x-status": "exists", "x-source": "SimConfig.TICKS_PER_DAY" },
+        "timeLabel": { "type": "string", "description": "e.g. '11:42 AM'.", "x-status": "exists", "x-source": "GameClock.getCurrentTime(true)" },
+        "isStartOfDay": { "type": "boolean", "x-status": "exists", "x-source": "GameClock.startOfDay()" },
+        "isEndOfDay": { "type": "boolean", "description": "Last hour of business.", "x-status": "exists", "x-source": "GameClock.endOfDay()" },
+        "speedMultiplier": {
+          "enum": [1, 2, 4, 8],
+          "x-status": "derivable",
+          "x-source": "SimConfig.SIMULATION_SPEED / GameState.getCurrentSimulationSpeed() (state stores a sleep in ms)"
+        }
+      }
+    },
+
+    "finance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["cashCents", "dayStartingBalanceCents", "revenueTodayCents", "revenueGoalCents"],
+      "properties": {
+        "cashCents": { "$ref": "#/$defs/cents", "x-status": "exists", "x-source": "GameState.getCURRENT_BALANCE()" },
+        "dayStartingBalanceCents": { "$ref": "#/$defs/cents", "x-status": "exists", "x-source": "DayManager.getCurrentDay().getStartingBalance()" },
+        "revenueTodayCents": {
+          "$ref": "#/$defs/cents",
+          "description": "Revenue so far today. Day.revenue is only set at day end, so the engine supplies the running figure.",
+          "x-status": "derivable",
+          "x-source": "CURRENT_BALANCE - Day.startingBalance today; ledger revenue lines from v5"
+        },
+        "revenueGoalCents": { "$ref": "#/$defs/cents", "x-status": "exists", "x-source": "DayManager.getCurrentDay().getRevenueGoal()" },
+        "debt": {
+          "type": ["object", "null"],
+          "additionalProperties": false,
+          "required": ["remainingCents", "dueDay", "daysUntilDue"],
+          "x-status": "planned", "x-roadmap": "v5",
+          "properties": {
+            "principalCents": { "$ref": "#/$defs/cents" },
+            "remainingCents": { "$ref": "#/$defs/cents" },
+            "dueDay": { "type": "integer", "minimum": 1 },
+            "daysUntilDue": { "type": "integer", "minimum": 0, "description": "The 'days on the debt clock' readout." },
+            "nextPaymentDay": { "type": ["integer", "null"] },
+            "nextPaymentCents": { "type": ["integer", "null"] }
+          }
+        },
+        "consecutiveNegativeCashDays": {
+          "type": ["integer", "null"], "minimum": 0,
+          "description": "Spec loss rule: cash below zero for 7 straight days.",
+          "x-status": "planned", "x-roadmap": "v5"
+        }
+      }
+    },
+
+    "reputation": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "description": "Spec section 4: three axes in [0,1], daily moving averages of measured outcomes. Not yet placed in roadmap rev 2; inputs arrive across v5-v12.",
+      "x-status": "planned",
+      "x-roadmap": "unplaced (commercial needs v5/v7, people v8, quality v6/v12)",
+      "properties": {
+        "commercial": { "oneOf": [{ "$ref": "#/$defs/unit" }, { "type": "null" }] },
+        "people": { "oneOf": [{ "$ref": "#/$defs/unit" }, { "type": "null" }] },
+        "quality": { "oneOf": [{ "$ref": "#/$defs/unit" }, { "type": "null" }] }
+      }
+    },
+
+    "customers": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["inStore", "shopping", "trafficToday", "customerTier", "byState"],
+      "properties": {
+        "inStore": { "type": "integer", "minimum": 0, "description": "Everyone inside, including checkout queues.", "x-status": "exists", "x-source": "Day.getCustomersInStore()" },
+        "shopping": { "type": "integer", "minimum": 0, "description": "Customers not yet sent to a lane.", "x-status": "exists", "x-source": "GameState.getCurrentCustomers() (CustomerManager.customerList.size())" },
+        "trafficToday": { "type": "integer", "minimum": 0, "x-status": "exists", "x-source": "Day.getTotalTraffic()" },
+        "customerTier": { "type": "integer", "minimum": 1, "x-status": "exists", "x-source": "GameState.getCurrentCustomerTier()" },
+        "byState": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Headcount per CustomerState, across customerList and every lane queue. Today only IDLE, AWAITING_ITEM_TASK and SHOPPING are ever assigned; the other keys read 0 until v6 sets them.",
+          "x-status": "derivable",
+          "x-source": "Customer.getCustomerState()",
+          "required": ["IDLE", "AWAITING_ITEM_TASK", "SHOPPING", "READY_FOR_CHECKOUT", "QUEUED_FOR_CHECKOUT", "CHECKING_OUT", "EXITING_STORE"],
+          "properties": {
+            "IDLE": { "type": "integer", "minimum": 0 },
+            "AWAITING_ITEM_TASK": { "type": "integer", "minimum": 0 },
+            "SHOPPING": { "type": "integer", "minimum": 0 },
+            "READY_FOR_CHECKOUT": { "type": "integer", "minimum": 0 },
+            "QUEUED_FOR_CHECKOUT": { "type": "integer", "minimum": 0 },
+            "CHECKING_OUT": { "type": "integer", "minimum": 0 },
+            "EXITING_STORE": { "type": "integer", "minimum": 0 }
+          }
+        },
+        "conversionPct": {
+          "oneOf": [{ "$ref": "#/$defs/pct" }, { "type": "null" }],
+          "description": "Every customer buys today, so conversion only means something once buying odds exist.",
+          "x-status": "planned", "x-roadmap": "v6"
+        },
+        "walkOutsToday": { "type": ["integer", "null"], "minimum": 0, "x-status": "planned", "x-roadmap": "v6 (queue abandonment)" }
+      }
+    },
+
+    "checkoutLane": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["laneNumber", "queueLength", "isLaneProcessing", "laneStatus", "itemsProcessed", "cartSize", "ticksUntilNextScan", "transactionTotalCents"],
+      "description": "Mirrors models.CheckoutLaneSnapshot plus queue length. Idle lanes report zeros (today buildLaneSnapshot throws on an idle lane).",
+      "properties": {
+        "laneNumber": { "type": "integer", "minimum": 1, "x-status": "exists", "x-source": "CheckoutLaneSnapshot.laneNumber" },
+        "queueLength": { "type": "integer", "minimum": 0, "x-status": "exists", "x-source": "CheckoutLane.getLaneSize()" },
+        "isLaneProcessing": { "type": "boolean", "x-status": "exists", "x-source": "CheckoutLaneSnapshot.isLaneProcessing (!CheckoutLane.isAwaitingCustomer())" },
+        "laneStatus": { "type": "string", "x-status": "exists", "x-source": "CheckoutLane.laneStatus()" },
+        "itemsProcessed": { "type": "integer", "minimum": 0, "x-status": "exists", "x-source": "CheckoutLaneSnapshot.itemsProcessed" },
+        "cartSize": { "type": "integer", "minimum": 0, "description": "Total items in the current cart.", "x-status": "exists", "x-source": "CheckoutLaneSnapshot.itemsRemaining (which holds CheckoutLane.cartSize)" },
+        "ticksUntilNextScan": { "type": "integer", "minimum": 0, "x-status": "exists", "x-source": "CheckoutLaneSnapshot.ticksUntilNextScan" },
+        "transactionTotalCents": { "$ref": "#/$defs/cents", "x-status": "exists", "x-source": "CheckoutLaneSnapshot.transactionTotal. TransactionReceipt.calculateTotal() is not idempotent, see CONTRACT_NOTES." },
+        "selfCheckout": { "type": "boolean", "x-status": "exists", "x-source": "CheckoutLane.selfCheckout (no getter, never set)" },
+        "cashierStaffId": { "type": ["string", "null"], "x-status": "planned", "x-roadmap": "v8" }
+      }
+    },
+    "checkout": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["lanesUnlocked", "maxLanes", "lanes"],
+      "properties": {
+        "lanesUnlocked": { "type": "integer", "minimum": 1, "x-status": "exists", "x-source": "GameState.getCurrentCheckoutLanes()" },
+        "maxLanes": { "type": "integer", "x-status": "exists", "x-source": "SimConfig.MAX_CASHIER_LANES" },
+        "lanes": { "type": "array", "items": { "$ref": "#/$defs/checkoutLane" }, "x-source": "CheckoutManager.activeLanes" }
+      }
+    },
+
+    "inventoryItem": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["catalogId", "name", "productType", "model", "priceCents", "units", "inCart"],
+      "properties": {
+        "catalogId": { "$ref": "#/$defs/catalogId" },
+        "name": { "type": "string", "x-status": "exists", "x-source": "Product.getProduct()" },
+        "productType": { "enum": ["DESK", "DRESSER", "BOOKCASE", "HOT_FOOD", "COLD_FOOD", "SNACK"], "x-status": "exists", "x-source": "Product.getType() -> ProductType" },
+        "color": { "enum": ["BLACK", "WHITE", "BROWN", null], "x-status": "exists", "x-source": "Product.getColor() (null for food)" },
+        "model": { "enum": ["FURNITURE", "FOOD"], "x-status": "exists", "x-source": "Product.getProductModel()" },
+        "priceCents": { "$ref": "#/$defs/cents", "x-status": "exists", "x-source": "Product.getPrice()" },
+        "units": { "type": "integer", "minimum": 0, "description": "Units in the inventory list, including ones reserved in carts.", "x-status": "derivable", "x-source": "count of InventoryManager.getInventorySnapshot() by catalog line" },
+        "inCart": { "type": "integer", "minimum": 0, "x-status": "derivable", "x-source": "count with ProductState.IN_CART" },
+        "lowStock": { "type": ["boolean", "null"], "description": "Engine's verdict. Product.stockLevel is never set today, so findLowStockItems() flags everything.", "x-status": "planned", "x-roadmap": "v7" }
+      }
+    },
+    "inventory": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["totalUnits", "damagedUnits", "items"],
+      "properties": {
+        "totalUnits": { "type": "integer", "minimum": 0, "x-status": "exists", "x-source": "InventoryManager.getInventorySnapshot().size()" },
+        "damagedUnits": { "type": "integer", "minimum": 0, "x-status": "exists", "x-source": "DamagesManager.size()" },
+        "items": { "type": "array", "items": { "$ref": "#/$defs/inventoryItem" } }
+      }
+    },
+
+    "manifestSlot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["slot", "arrivalDay", "status", "units", "contents"],
+      "properties": {
+        "slot": { "type": "integer", "minimum": 0, "maximum": 6, "x-status": "exists", "x-source": "index into DeliveryManager.inboundManifest" },
+        "arrivalDay": {
+          "type": "integer", "minimum": 1,
+          "description": "Absolute 1-based day this slot's truck arrives. The engine resolves it because slot 0 means today before the truck arrives and tomorrow after advanceInboundSchedule() shifts the array.",
+          "x-status": "derivable"
+        },
+        "status": {
+          "enum": ["EMPTY", "SCHEDULED", "DUE_TODAY", "DELAYED"],
+          "description": "DELAYED needs supplier delays (v7).",
+          "x-status": "derivable",
+          "x-source": "slot contents + DeliveryManager.arrivalTick"
+        },
+        "units": { "type": "integer", "minimum": 0, "x-status": "exists", "x-source": "DeliveryManager.getScheduledManifestSize(inboundManifest, slot)" },
+        "contents": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["catalogId", "units"],
+            "properties": { "catalogId": { "$ref": "#/$defs/catalogId" }, "units": { "type": "integer", "minimum": 1 } }
+          },
+          "x-status": "derivable",
+          "x-source": "inboundManifest[slot] grouped by catalog line"
+        },
+        "etaTimeLabel": { "type": ["string", "null"], "description": "Only for DUE_TODAY.", "x-status": "derivable", "x-source": "DeliveryManager.arrivalTick formatted like GameClock.getCurrentTime(true)" },
+        "supplier": {
+          "type": ["object", "null"],
+          "additionalProperties": false,
+          "required": ["id", "name"],
+          "properties": { "id": { "type": "string" }, "name": { "type": "string" } },
+          "x-status": "planned", "x-roadmap": "v7"
+        },
+        "leadTimeDays": { "type": ["integer", "null"], "x-status": "planned", "x-roadmap": "v7" },
+        "delayReason": { "type": ["string", "null"], "x-status": "planned", "x-roadmap": "v7" }
+      }
+    },
+    "inbound": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["truckCapacity", "todayArrivalTimeLabel", "slots"],
+      "properties": {
+        "truckCapacity": { "type": "integer", "minimum": 1, "description": "Units per slot.", "x-status": "exists", "x-source": "UpgradeManager.getTruckCapacity()" },
+        "todayArrivalTimeLabel": { "type": ["string", "null"], "description": "Null when no truck is due today or it has already arrived.", "x-status": "derivable", "x-source": "DeliveryManager.arrivalTick (-1 means none)" },
+        "slots": { "type": "array", "minItems": 7, "maxItems": 7, "items": { "$ref": "#/$defs/manifestSlot" }, "x-source": "DeliveryManager.inboundManifest (Product[7][])" }
+      }
+    },
+
+    "dock": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["truckAtDock", "unitsOnTruck", "truckTier", "truckCapacity", "damageChancePct", "truckStatus", "unloadManifest"],
+      "properties": {
+        "truckAtDock": { "type": "boolean", "x-status": "exists", "x-source": "DeliveryTruck.isTruckAtDock()" },
+        "unitsOnTruck": { "type": "integer", "minimum": 0, "x-status": "exists", "x-source": "DeliveryTruck.getTruck().size()" },
+        "truckTier": { "type": "integer", "minimum": 1, "x-status": "exists", "x-source": "GameState.getCurrentTruckTier()" },
+        "truckCapacity": { "type": "integer", "minimum": 1, "x-status": "exists", "x-source": "DeliveryTruck.truckCapacity" },
+        "damageChancePct": { "type": "number", "minimum": 0, "maximum": 100, "x-status": "exists", "x-source": "DeliveryTruck.damageChance" },
+        "truckStatus": { "type": "string", "x-status": "exists", "x-source": "GameState.getTruckStatus() (always 'Idle' today)" },
+        "unloadManifest": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["totalProcessed", "inventoryCount", "damageCount"],
+          "description": "Cumulative for the registered DeliveryTruck; never reset today.",
+          "x-status": "exists",
+          "x-source": "DeliveryTruck.truckManifest (UnloadManifest)",
+          "properties": {
+            "totalProcessed": { "type": "integer", "minimum": 0 },
+            "inventoryCount": { "type": "integer", "minimum": 0 },
+            "damageCount": { "type": "integer", "minimum": 0 }
+          }
+        }
+      }
+    },
+
+    "zone": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "type", "label", "occupancy"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
+        "type": { "$ref": "#/$defs/zoneType" },
+        "label": { "type": "string", "x-status": "exists", "x-source": "ZoneType.getLocationName()" },
+        "occupancy": { "type": "integer", "minimum": 0, "x-roadmap": "v6" },
+        "capacity": { "type": ["integer", "null"], "minimum": 1, "x-roadmap": "v9 (layout compiler)" },
+        "occupancyPct": { "type": ["integer", "null"], "minimum": 0, "description": "Can exceed 100 when over capacity. Drives the density shading.", "x-roadmap": "v9" },
+        "queueLength": { "type": ["integer", "null"], "minimum": 0, "x-roadmap": "v6" },
+        "footprint": { "type": ["array", "null"], "items": { "$ref": "#/$defs/rect" }, "description": "One or more tile rectangles.", "x-roadmap": "v9" },
+        "alert": { "$ref": "#/$defs/alert" }
+      }
+    },
+    "layout": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "required": ["revision", "width", "height"],
+      "description": "Grid geometry. Zone and aisle footprints live on those entries. revision changes only when the layout changes, so a client may cache.",
+      "x-status": "planned",
+      "x-roadmap": "v9",
+      "properties": {
+        "revision": { "type": "integer", "minimum": 0 },
+        "width": { "type": "integer", "minimum": 1 },
+        "height": { "type": "integer", "minimum": 1 },
+        "portals": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "x", "y", "zoneIds"],
+            "properties": {
+              "id": { "type": "string" },
+              "x": { "type": "integer", "minimum": 0 },
+              "y": { "type": "integer", "minimum": 0 },
+              "zoneIds": { "type": "array", "minItems": 1, "maxItems": 2, "items": { "type": "string" } }
+            }
+          }
+        }
+      }
+    },
+    "zoneFlow": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["fromZoneId", "toZoneId", "perHour"],
+      "properties": {
+        "fromZoneId": { "type": "string" },
+        "toZoneId": { "type": "string" },
+        "perHour": { "type": "integer", "minimum": 0, "description": "Customers per in-game hour, smoothed by the engine." }
+      }
+    },
+    "marker": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "zoneId", "tick"],
+      "properties": {
+        "kind": { "enum": ["WALK_OUT", "COMPLAINT", "STUCK"] },
+        "zoneId": { "type": "string" },
+        "x": { "type": ["integer", "null"], "minimum": 0, "x-roadmap": "v9" },
+        "y": { "type": ["integer", "null"], "minimum": 0, "x-roadmap": "v9" },
+        "tick": { "type": "integer", "minimum": 0, "description": "When it happened. The engine drops markers when they expire." }
+      }
+    },
+    "aisle": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "number", "zoneId", "units", "capacity", "fillPct", "stock"],
+      "properties": {
+        "id": { "type": "string" },
+        "number": { "type": "integer", "minimum": 1, "x-source": "Location.aisle" },
+        "label": { "type": ["string", "null"] },
+        "zoneId": { "type": "string" },
+        "bins": { "type": ["integer", "null"], "minimum": 1, "x-source": "Location.bin" },
+        "units": { "type": "integer", "minimum": 0 },
+        "capacity": { "type": "integer", "minimum": 1 },
+        "fillPct": { "$ref": "#/$defs/pct", "description": "Engine-supplied so the UI does no arithmetic." },
+        "stock": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["catalogId", "units"],
+            "properties": { "catalogId": { "$ref": "#/$defs/catalogId" }, "units": { "type": "integer", "minimum": 0 } }
+          }
+        },
+        "staffAssigned": { "type": ["integer", "null"], "minimum": 0, "x-roadmap": "v8" },
+        "footprint": { "type": ["array", "null"], "items": { "$ref": "#/$defs/rect" } },
+        "alert": { "$ref": "#/$defs/alert" }
+      }
+    },
+    "staff": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "required": ["onShift", "rostered"],
+      "x-status": "planned",
+      "x-roadmap": "v8 (counts, assignments), v16 (named members)",
+      "x-source": "SimConfig.STARTING_CASHIER exists as an unused constant",
+      "properties": {
+        "onShift": { "type": "integer", "minimum": 0 },
+        "rostered": { "type": "integer", "minimum": 0 },
+        "assignments": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["targetKind", "targetId", "count"],
+            "properties": {
+              "targetKind": { "enum": ["zone", "aisle", "lane", "dock"] },
+              "targetId": { "type": "string" },
+              "count": { "type": "integer", "minimum": 0 }
+            }
+          }
+        },
+        "members": {
+          "type": ["array", "null"],
+          "x-roadmap": "v16",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "name"],
+            "properties": {
+              "id": { "type": "string" },
+              "name": { "type": "string" },
+              "role": { "type": ["string", "null"] },
+              "targetKind": { "enum": ["zone", "aisle", "lane", "dock", null] },
+              "targetId": { "type": ["string", "null"] }
+            }
+          }
+        }
+      }
+    },
+    "market": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "x-status": "planned",
+      "x-roadmap": "v10",
+      "properties": {
+        "pallas": {
+          "type": ["object", "null"],
+          "additionalProperties": false,
+          "properties": {
+            "pressure": { "type": ["number", "null"], "minimum": 0, "maximum": 0.5, "description": "Spec pi_d in [0, 0.5]." },
+            "marketSharePct": { "oneOf": [{ "$ref": "#/$defs/pct" }, { "type": "null" }] },
+            "latestAction": {
+              "type": ["object", "null"],
+              "additionalProperties": false,
+              "required": ["day", "text"],
+              "properties": { "day": { "type": "integer", "minimum": 1 }, "text": { "type": "string" } }
+            }
+          }
+        }
+      }
+    },
+    "restaurant": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "description": "Stats for the FOOD_COURT zone. Food events arrive in events[] with that zoneId.",
+      "x-status": "planned",
+      "x-roadmap": "v10",
+      "properties": {
+        "zoneId": { "type": "string" },
+        "seated": { "type": ["integer", "null"], "minimum": 0 },
+        "seats": { "type": ["integer", "null"], "minimum": 0 },
+        "queueLength": { "type": ["integer", "null"], "minimum": 0 },
+        "mealsSoldToday": { "type": ["integer", "null"], "minimum": 0 },
+        "revenueTodayCents": { "type": ["integer", "null"] }
+      }
+    },
+    "returns": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "x-status": "planned",
+      "x-roadmap": "v12",
+      "x-source": "ProductState.AS_IS and the DAMAGED -> AS_IS transition exist; nothing uses them yet",
+      "properties": {
+        "queueLength": { "type": ["integer", "null"], "minimum": 0 },
+        "inRepair": { "type": ["integer", "null"], "minimum": 0 },
+        "repairedToday": { "type": ["integer", "null"], "minimum": 0 },
+        "asIsUnits": { "type": ["integer", "null"], "minimum": 0 },
+        "refundsTodayCents": { "type": ["integer", "null"] }
+      }
+    },
+
+    "event": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["seq", "tick", "timeLabel", "severity", "text"],
+      "properties": {
+        "seq": { "type": "integer", "minimum": 1, "description": "Monotonic per run. A gap tells the UI it missed events.", "x-status": "derivable" },
+        "tick": { "type": "integer", "minimum": 0, "description": "Absolute tick when raised.", "x-status": "derivable" },
+        "timeLabel": { "type": "string", "x-status": "exists", "x-source": "GameClock.getCurrentTime(false), as EventBuffer prefixes today" },
+        "severity": { "$ref": "#/$defs/severity", "description": "Emit 'info' (or 'debug' for pipeline chatter) until SimEvent types carry a severity.", "x-status": "derivable", "x-roadmap": "v4.2" },
+        "text": { "type": "string", "description": "The string passed to EventBuffer.enqueueEvent, without the '> h:mm - ' prefix.", "x-status": "exists" },
+        "code": { "type": ["string", "null"], "description": "SimEvent type name.", "x-status": "planned", "x-roadmap": "v4.2" },
+        "zoneId": { "type": ["string", "null"], "x-status": "planned", "x-roadmap": "v6" }
+      }
+    },
+    "commandResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "command", "status", "appliedTick"],
+      "properties": {
+        "id": { "type": "string", "description": "Echoes command.id." },
+        "command": { "type": "string" },
+        "status": { "enum": ["APPLIED", "REJECTED"] },
+        "appliedTick": { "type": "integer", "minimum": 0, "description": "The tick the engine applied it at. This is what the v4.1 command log records." },
+        "message": { "type": ["string", "null"], "description": "Command.execute() already returns a String; it can go here." }
+      }
+    },
+    "daySummary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["day", "totalCustomers", "revenueCents", "revenueGoalCents", "metRevenueGoal", "startingBalanceCents", "endingBalanceCents"],
+      "description": "What DayManager.handleDayEnd() prints today, as data.",
+      "properties": {
+        "day": { "type": "integer", "minimum": 1, "x-status": "exists", "x-source": "Day.getDay()" },
+        "totalCustomers": { "type": "integer", "minimum": 0, "x-status": "exists", "x-source": "CustomerManager.totalDayCustomers" },
+        "revenueCents": { "$ref": "#/$defs/cents", "x-status": "exists", "x-source": "Day.getRevenue()" },
+        "revenueGoalCents": { "$ref": "#/$defs/cents", "x-status": "exists", "x-source": "Day.getRevenueGoal()" },
+        "metRevenueGoal": { "type": "boolean", "x-status": "exists", "x-source": "Day.metRevenueGoal() (uses BigDecimal.equals, see CONTRACT_NOTES)" },
+        "startingBalanceCents": { "$ref": "#/$defs/cents", "x-status": "exists", "x-source": "Day.getStartingBalance()" },
+        "endingBalanceCents": { "$ref": "#/$defs/cents", "x-status": "exists", "x-source": "GameState.getCURRENT_BALANCE() at rollover" },
+        "lossesCents": { "type": ["integer", "null"], "x-status": "planned", "x-roadmap": "v5", "x-source": "Day.losses exists but is never set" },
+        "profitCents": { "type": ["integer", "null"], "x-status": "planned", "x-roadmap": "v5" },
+        "debtPaidCents": { "type": ["integer", "null"], "x-status": "planned", "x-roadmap": "v5" },
+        "conversionPct": { "oneOf": [{ "$ref": "#/$defs/pct" }, { "type": "null" }], "x-status": "planned", "x-roadmap": "v6" },
+        "walkOuts": { "type": ["integer", "null"], "minimum": 0, "x-status": "planned", "x-roadmap": "v6" },
+        "damagedUnits": { "type": ["integer", "null"], "minimum": 0, "x-status": "derivable", "x-source": "DamagesManager.size() delta over the day" }
+      }
+    },
+    "outcome": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "required": ["state"],
+      "x-status": "planned",
+      "x-roadmap": "v5 (bankruptcy, debt cleared); endings read reputation (unplaced)",
+      "properties": {
+        "state": { "enum": ["IN_PROGRESS", "WON", "LOST"] },
+        "reason": { "type": ["string", "null"] },
+        "ending": { "type": ["string", "null"] }
+      }
+    },
+    "debug": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "description": "Engine internals for manny while iterating. Hidden in the UI unless toggled.",
+      "properties": {
+        "simDelayMs": { "type": "integer", "x-status": "exists", "x-source": "GameState.getCurrentSimulationSpeed()" },
+        "spawnRate": { "type": "number", "x-status": "exists", "x-source": "GameState.getCurrentCustomerSpawnRate()" },
+        "scheduledTasks": { "type": "integer", "minimum": 0, "x-status": "exists", "x-source": "TaskScheduler.totalScheduled()" }
+      }
+    }
+  }
+}

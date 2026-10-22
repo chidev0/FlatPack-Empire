@@ -1,0 +1,1334 @@
+{
+  "schemaVersion": 1,
+  "type": "snapshot",
+  "seed": 20711022,
+  "tick": 50830,
+  "status": "RUNNING",
+  "clock": {
+    "day": 85,
+    "tickOfDay": 430,
+    "subTick": 0,
+    "ticksPerDay": 600,
+    "timeLabel": "5:10 PM",
+    "isStartOfDay": false,
+    "isEndOfDay": false,
+    "speedMultiplier": 4,
+    "runLengthDays": 90
+  },
+  "finance": {
+    "cashCents": 6131240,
+    "dayStartingBalanceCents": 3026215,
+    "revenueTodayCents": 3105025,
+    "revenueGoalCents": 3850000,
+    "debt": {
+      "principalCents": 30000000,
+      "remainingCents": 2280000,
+      "dueDay": 90,
+      "daysUntilDue": 5,
+      "nextPaymentDay": 90,
+      "nextPaymentCents": 2280000
+    },
+    "consecutiveNegativeCashDays": 0
+  },
+  "reputation": {
+    "commercial": 0.74,
+    "people": 0.52,
+    "quality": 0.81
+  },
+  "customers": {
+    "inStore": 168,
+    "shopping": 126,
+    "trafficToday": 1940,
+    "customerTier": 2,
+    "byState": {
+      "IDLE": 9,
+      "AWAITING_ITEM_TASK": 21,
+      "SHOPPING": 92,
+      "READY_FOR_CHECKOUT": 4,
+      "QUEUED_FOR_CHECKOUT": 31,
+      "CHECKING_OUT": 5,
+      "EXITING_STORE": 6
+    },
+    "conversionPct": 64,
+    "walkOutsToday": 37
+  },
+  "checkout": {
+    "lanesUnlocked": 5,
+    "maxLanes": 5,
+    "lanes": [
+      {
+        "laneNumber": 1,
+        "queueLength": 7,
+        "isLaneProcessing": true,
+        "laneStatus": "Processing Customer",
+        "itemsProcessed": 6,
+        "cartSize": 11,
+        "ticksUntilNextScan": 14,
+        "transactionTotalCents": 52394,
+        "cashierStaffId": "s01"
+      },
+      {
+        "laneNumber": 2,
+        "queueLength": 6,
+        "isLaneProcessing": true,
+        "laneStatus": "Processing Customer",
+        "itemsProcessed": 2,
+        "cartSize": 9,
+        "ticksUntilNextScan": 22,
+        "transactionTotalCents": 19498,
+        "cashierStaffId": "s02"
+      },
+      {
+        "laneNumber": 3,
+        "queueLength": 8,
+        "isLaneProcessing": true,
+        "laneStatus": "Processing Customer",
+        "itemsProcessed": 13,
+        "cartSize": 14,
+        "ticksUntilNextScan": 3,
+        "transactionTotalCents": 98986,
+        "cashierStaffId": "s03"
+      },
+      {
+        "laneNumber": 4,
+        "queueLength": 5,
+        "isLaneProcessing": true,
+        "laneStatus": "Processing Customer",
+        "itemsProcessed": 5,
+        "cartSize": 6,
+        "ticksUntilNextScan": 9,
+        "transactionTotalCents": 34496,
+        "cashierStaffId": "s04"
+      },
+      {
+        "laneNumber": 5,
+        "queueLength": 5,
+        "isLaneProcessing": true,
+        "laneStatus": "Processing Customer",
+        "itemsProcessed": 0,
+        "cartSize": 12,
+        "ticksUntilNextScan": 41,
+        "transactionTotalCents": 0,
+        "cashierStaffId": "s05"
+      }
+    ]
+  },
+  "inventory": {
+    "totalUnits": 1766,
+    "damagedUnits": 482,
+    "items": [
+      {
+        "catalogId": "AlexDeskW",
+        "name": "Alex",
+        "productType": "DESK",
+        "color": "WHITE",
+        "model": "FURNITURE",
+        "priceCents": 7499,
+        "units": 504,
+        "inCart": 96,
+        "lowStock": false
+      },
+      {
+        "catalogId": "AlexDeskB",
+        "name": "Alex",
+        "productType": "DESK",
+        "color": "BLACK",
+        "model": "FURNITURE",
+        "priceCents": 6499,
+        "units": 264,
+        "inCart": 81,
+        "lowStock": false
+      },
+      {
+        "catalogId": "AlexDresserW",
+        "name": "Alex",
+        "productType": "DRESSER",
+        "color": "WHITE",
+        "model": "FURNITURE",
+        "priceCents": 5499,
+        "units": 323,
+        "inCart": 64,
+        "lowStock": false
+      },
+      {
+        "catalogId": "AlexDresserB",
+        "name": "Alex",
+        "productType": "DRESSER",
+        "color": "BLACK",
+        "model": "FURNITURE",
+        "priceCents": 5799,
+        "units": 167,
+        "inCart": 57,
+        "lowStock": true
+      },
+      {
+        "catalogId": "BillyBookcaseBr",
+        "name": "Billy",
+        "productType": "BOOKCASE",
+        "color": "BROWN",
+        "model": "FURNITURE",
+        "priceCents": 13999,
+        "units": 268,
+        "inCart": 118,
+        "lowStock": false
+      },
+      {
+        "catalogId": "Swedish_Meatballs",
+        "name": "Meatball",
+        "productType": "HOT_FOOD",
+        "color": null,
+        "model": "FOOD",
+        "priceCents": 599,
+        "units": 240,
+        "inCart": 0,
+        "lowStock": false
+      }
+    ]
+  },
+  "inbound": {
+    "truckCapacity": 100,
+    "todayArrivalTimeLabel": null,
+    "slots": [
+      {
+        "slot": 0,
+        "arrivalDay": 86,
+        "status": "SCHEDULED",
+        "units": 100,
+        "contents": [
+          {
+            "catalogId": "AlexDeskW",
+            "units": 40
+          },
+          {
+            "catalogId": "BillyBookcaseBr",
+            "units": 60
+          }
+        ],
+        "etaTimeLabel": null
+      },
+      {
+        "slot": 1,
+        "arrivalDay": 87,
+        "status": "SCHEDULED",
+        "units": 100,
+        "contents": [
+          {
+            "catalogId": "AlexDresserB",
+            "units": 70
+          },
+          {
+            "catalogId": "AlexDeskB",
+            "units": 30
+          }
+        ],
+        "etaTimeLabel": null
+      },
+      {
+        "slot": 2,
+        "arrivalDay": 88,
+        "status": "SCHEDULED",
+        "units": 60,
+        "contents": [
+          {
+            "catalogId": "AlexDresserW",
+            "units": 60
+          }
+        ],
+        "etaTimeLabel": null
+      },
+      {
+        "slot": 3,
+        "arrivalDay": 89,
+        "status": "EMPTY",
+        "units": 0,
+        "contents": [],
+        "etaTimeLabel": null
+      },
+      {
+        "slot": 4,
+        "arrivalDay": 90,
+        "status": "SCHEDULED",
+        "units": 40,
+        "contents": [
+          {
+            "catalogId": "BillyBookcaseBr",
+            "units": 25
+          },
+          {
+            "catalogId": "Swedish_Meatballs",
+            "units": 15
+          }
+        ],
+        "etaTimeLabel": null
+      },
+      {
+        "slot": 5,
+        "arrivalDay": 91,
+        "status": "EMPTY",
+        "units": 0,
+        "contents": [],
+        "etaTimeLabel": null
+      },
+      {
+        "slot": 6,
+        "arrivalDay": 92,
+        "status": "EMPTY",
+        "units": 0,
+        "contents": [],
+        "etaTimeLabel": null
+      }
+    ]
+  },
+  "dock": {
+    "truckAtDock": false,
+    "unitsOnTruck": 0,
+    "truckTier": 2,
+    "truckCapacity": 100,
+    "damageChancePct": 7.5,
+    "truckStatus": "Idle",
+    "unloadManifest": {
+      "totalProcessed": 6420,
+      "inventoryCount": 5938,
+      "damageCount": 482
+    }
+  },
+  "zones": [
+    {
+      "id": "showroom-1",
+      "type": "SHOWROOM",
+      "label": "Showroom",
+      "occupancy": 30,
+      "capacity": 60,
+      "occupancyPct": 50,
+      "queueLength": null,
+      "footprint": [
+        {
+          "x": 0,
+          "y": 0,
+          "w": 16,
+          "h": 9
+        }
+      ],
+      "alert": null
+    },
+    {
+      "id": "showroom-2",
+      "type": "SHOWROOM",
+      "label": "Showroom",
+      "occupancy": 22,
+      "capacity": 50,
+      "occupancyPct": 44,
+      "queueLength": null,
+      "footprint": [
+        {
+          "x": 16,
+          "y": 0,
+          "w": 14,
+          "h": 9
+        }
+      ],
+      "alert": null
+    },
+    {
+      "id": "restaurant",
+      "type": "FOOD_COURT",
+      "label": "Restaurant",
+      "occupancy": 18,
+      "capacity": 48,
+      "occupancyPct": 38,
+      "queueLength": 4,
+      "footprint": [
+        {
+          "x": 30,
+          "y": 0,
+          "w": 12,
+          "h": 9
+        }
+      ],
+      "alert": null
+    },
+    {
+      "id": "receiving",
+      "type": "RECEIVING",
+      "label": "Receiving",
+      "occupancy": 0,
+      "capacity": 12,
+      "occupancyPct": 0,
+      "queueLength": null,
+      "footprint": [
+        {
+          "x": 42,
+          "y": 0,
+          "w": 22,
+          "h": 9
+        }
+      ],
+      "alert": null
+    },
+    {
+      "id": "market-hall",
+      "type": "MARKET_HALL",
+      "label": "Market Hall",
+      "occupancy": 28,
+      "capacity": 60,
+      "occupancyPct": 47,
+      "queueLength": null,
+      "footprint": [
+        {
+          "x": 0,
+          "y": 9,
+          "w": 30,
+          "h": 11
+        }
+      ],
+      "alert": null
+    },
+    {
+      "id": "warehouse",
+      "type": "WAREHOUSE_GRID",
+      "label": "Furniture Warehouse",
+      "occupancy": 26,
+      "capacity": 80,
+      "occupancyPct": 32,
+      "queueLength": null,
+      "footprint": [
+        {
+          "x": 30,
+          "y": 9,
+          "w": 34,
+          "h": 11
+        }
+      ],
+      "alert": {
+        "code": "STOCK_OUT",
+        "severity": "alert",
+        "text": "1 aisle out of stock, 2 low"
+      }
+    },
+    {
+      "id": "entrance",
+      "type": "ENTRANCE",
+      "label": "Entrance",
+      "occupancy": 8,
+      "capacity": 30,
+      "occupancyPct": 27,
+      "queueLength": null,
+      "footprint": [
+        {
+          "x": 0,
+          "y": 20,
+          "w": 14,
+          "h": 6
+        }
+      ],
+      "alert": null
+    },
+    {
+      "id": "checkout",
+      "type": "CHECKOUT",
+      "label": "Checkout",
+      "occupancy": 36,
+      "capacity": 40,
+      "occupancyPct": 90,
+      "queueLength": 31,
+      "footprint": [
+        {
+          "x": 14,
+          "y": 20,
+          "w": 30,
+          "h": 6
+        }
+      ],
+      "alert": {
+        "code": "CROWDED",
+        "severity": "warn",
+        "text": "31 waiting across 5 lanes"
+      }
+    },
+    {
+      "id": "damages",
+      "type": "DAMAGES",
+      "label": "Damages",
+      "occupancy": 0,
+      "capacity": 6,
+      "occupancyPct": 0,
+      "queueLength": null,
+      "footprint": [
+        {
+          "x": 44,
+          "y": 20,
+          "w": 10,
+          "h": 6
+        }
+      ],
+      "alert": null
+    },
+    {
+      "id": "staff",
+      "type": "STAFF_ONLY",
+      "label": "Staff Area",
+      "occupancy": 0,
+      "capacity": 16,
+      "occupancyPct": 0,
+      "queueLength": null,
+      "footprint": [
+        {
+          "x": 54,
+          "y": 20,
+          "w": 10,
+          "h": 6
+        }
+      ],
+      "alert": null
+    }
+  ],
+  "layout": {
+    "revision": 23,
+    "width": 64,
+    "height": 26,
+    "portals": [
+      {
+        "id": "p1",
+        "x": 6,
+        "y": 20,
+        "zoneIds": [
+          "entrance",
+          "market-hall"
+        ]
+      },
+      {
+        "id": "p2",
+        "x": 8,
+        "y": 9,
+        "zoneIds": [
+          "market-hall",
+          "showroom-1"
+        ]
+      },
+      {
+        "id": "p3",
+        "x": 16,
+        "y": 4,
+        "zoneIds": [
+          "showroom-1",
+          "showroom-2"
+        ]
+      },
+      {
+        "id": "p4",
+        "x": 22,
+        "y": 9,
+        "zoneIds": [
+          "showroom-2",
+          "market-hall"
+        ]
+      },
+      {
+        "id": "p5",
+        "x": 30,
+        "y": 4,
+        "zoneIds": [
+          "showroom-2",
+          "restaurant"
+        ]
+      },
+      {
+        "id": "p6",
+        "x": 30,
+        "y": 14,
+        "zoneIds": [
+          "market-hall",
+          "warehouse"
+        ]
+      },
+      {
+        "id": "p7",
+        "x": 36,
+        "y": 9,
+        "zoneIds": [
+          "restaurant",
+          "warehouse"
+        ]
+      },
+      {
+        "id": "p8",
+        "x": 52,
+        "y": 9,
+        "zoneIds": [
+          "warehouse",
+          "receiving"
+        ]
+      },
+      {
+        "id": "p9",
+        "x": 34,
+        "y": 20,
+        "zoneIds": [
+          "warehouse",
+          "checkout"
+        ]
+      },
+      {
+        "id": "p10",
+        "x": 14,
+        "y": 23,
+        "zoneIds": [
+          "checkout",
+          "entrance"
+        ]
+      }
+    ]
+  },
+  "zoneFlows": [
+    {
+      "fromZoneId": "entrance",
+      "toZoneId": "market-hall",
+      "perHour": 162
+    },
+    {
+      "fromZoneId": "market-hall",
+      "toZoneId": "showroom-1",
+      "perHour": 140
+    },
+    {
+      "fromZoneId": "showroom-1",
+      "toZoneId": "showroom-2",
+      "perHour": 121
+    },
+    {
+      "fromZoneId": "showroom-2",
+      "toZoneId": "market-hall",
+      "perHour": 64
+    },
+    {
+      "fromZoneId": "showroom-2",
+      "toZoneId": "restaurant",
+      "perHour": 45
+    },
+    {
+      "fromZoneId": "restaurant",
+      "toZoneId": "warehouse",
+      "perHour": 41
+    },
+    {
+      "fromZoneId": "market-hall",
+      "toZoneId": "warehouse",
+      "perHour": 58
+    },
+    {
+      "fromZoneId": "warehouse",
+      "toZoneId": "checkout",
+      "perHour": 97
+    },
+    {
+      "fromZoneId": "checkout",
+      "toZoneId": "entrance",
+      "perHour": 88
+    }
+  ],
+  "markers": [
+    {
+      "kind": "WALK_OUT",
+      "zoneId": "checkout",
+      "x": 20,
+      "y": 22,
+      "tick": 50827
+    },
+    {
+      "kind": "WALK_OUT",
+      "zoneId": "checkout",
+      "x": 31,
+      "y": 23,
+      "tick": 50821
+    },
+    {
+      "kind": "STUCK",
+      "zoneId": "warehouse",
+      "x": 46,
+      "y": 14,
+      "tick": 50828
+    },
+    {
+      "kind": "COMPLAINT",
+      "zoneId": "showroom-2",
+      "x": 21,
+      "y": 5,
+      "tick": 50824
+    }
+  ],
+  "aisles": [
+    {
+      "id": "A01",
+      "number": 1,
+      "label": "Aisle 01",
+      "zoneId": "warehouse",
+      "bins": 6,
+      "units": 110,
+      "capacity": 120,
+      "fillPct": 92,
+      "stock": [
+        {
+          "catalogId": "AlexDeskW",
+          "units": 110
+        }
+      ],
+      "staffAssigned": 0,
+      "footprint": [
+        {
+          "x": 31,
+          "y": 10,
+          "w": 1,
+          "h": 9
+        }
+      ],
+      "alert": null
+    },
+    {
+      "id": "A02",
+      "number": 2,
+      "label": "Aisle 02",
+      "zoneId": "warehouse",
+      "bins": 6,
+      "units": 94,
+      "capacity": 120,
+      "fillPct": 78,
+      "stock": [
+        {
+          "catalogId": "AlexDeskB",
+          "units": 94
+        }
+      ],
+      "staffAssigned": 1,
+      "footprint": [
+        {
+          "x": 33,
+          "y": 10,
+          "w": 1,
+          "h": 9
+        }
+      ],
+      "alert": null
+    },
+    {
+      "id": "A03",
+      "number": 3,
+      "label": "Aisle 03",
+      "zoneId": "warehouse",
+      "bins": 6,
+      "units": 77,
+      "capacity": 120,
+      "fillPct": 64,
+      "stock": [
+        {
+          "catalogId": "AlexDresserW",
+          "units": 39
+        },
+        {
+          "catalogId": "BillyBookcaseBr",
+          "units": 38
+        }
+      ],
+      "staffAssigned": 0,
+      "footprint": [
+        {
+          "x": 35,
+          "y": 10,
+          "w": 1,
+          "h": 9
+        }
+      ],
+      "alert": null
+    },
+    {
+      "id": "A04",
+      "number": 4,
+      "label": "Aisle 04",
+      "zoneId": "warehouse",
+      "bins": 6,
+      "units": 0,
+      "capacity": 120,
+      "fillPct": 0,
+      "stock": [
+        {
+          "catalogId": "AlexDresserB",
+          "units": 0
+        }
+      ],
+      "staffAssigned": 1,
+      "footprint": [
+        {
+          "x": 37,
+          "y": 10,
+          "w": 1,
+          "h": 9
+        }
+      ],
+      "alert": {
+        "code": "STOCK_OUT",
+        "severity": "alert",
+        "text": "Aisle A04 is out of AlexDresserB"
+      }
+    },
+    {
+      "id": "A05",
+      "number": 5,
+      "label": "Aisle 05",
+      "zoneId": "warehouse",
+      "bins": 6,
+      "units": 66,
+      "capacity": 120,
+      "fillPct": 55,
+      "stock": [
+        {
+          "catalogId": "BillyBookcaseBr",
+          "units": 66
+        }
+      ],
+      "staffAssigned": 0,
+      "footprint": [
+        {
+          "x": 39,
+          "y": 10,
+          "w": 1,
+          "h": 9
+        }
+      ],
+      "alert": null
+    },
+    {
+      "id": "A06",
+      "number": 6,
+      "label": "Aisle 06",
+      "zoneId": "warehouse",
+      "bins": 6,
+      "units": 97,
+      "capacity": 120,
+      "fillPct": 81,
+      "stock": [
+        {
+          "catalogId": "AlexDeskW",
+          "units": 49
+        },
+        {
+          "catalogId": "AlexDresserW",
+          "units": 48
+        }
+      ],
+      "staffAssigned": 0,
+      "footprint": [
+        {
+          "x": 41,
+          "y": 10,
+          "w": 1,
+          "h": 9
+        }
+      ],
+      "alert": null
+    },
+    {
+      "id": "A07",
+      "number": 7,
+      "label": "Aisle 07",
+      "zoneId": "warehouse",
+      "bins": 6,
+      "units": 14,
+      "capacity": 120,
+      "fillPct": 12,
+      "stock": [
+        {
+          "catalogId": "AlexDeskB",
+          "units": 14
+        }
+      ],
+      "staffAssigned": 1,
+      "footprint": [
+        {
+          "x": 43,
+          "y": 10,
+          "w": 1,
+          "h": 9
+        }
+      ],
+      "alert": {
+        "code": "LOW_STOCK",
+        "severity": "warn",
+        "text": "Aisle A07 is low on AlexDeskB (14 left)"
+      }
+    },
+    {
+      "id": "A08",
+      "number": 8,
+      "label": "Aisle 08",
+      "zoneId": "warehouse",
+      "bins": 6,
+      "units": 84,
+      "capacity": 120,
+      "fillPct": 70,
+      "stock": [
+        {
+          "catalogId": "AlexDresserW",
+          "units": 84
+        }
+      ],
+      "staffAssigned": 0,
+      "footprint": [
+        {
+          "x": 45,
+          "y": 10,
+          "w": 1,
+          "h": 9
+        }
+      ],
+      "alert": null
+    },
+    {
+      "id": "A09",
+      "number": 9,
+      "label": "Aisle 09",
+      "zoneId": "warehouse",
+      "bins": 6,
+      "units": 58,
+      "capacity": 120,
+      "fillPct": 48,
+      "stock": [
+        {
+          "catalogId": "AlexDresserB",
+          "units": 29
+        },
+        {
+          "catalogId": "AlexDeskW",
+          "units": 29
+        }
+      ],
+      "staffAssigned": 0,
+      "footprint": [
+        {
+          "x": 47,
+          "y": 10,
+          "w": 1,
+          "h": 9
+        }
+      ],
+      "alert": null
+    },
+    {
+      "id": "A10",
+      "number": 10,
+      "label": "Aisle 10",
+      "zoneId": "warehouse",
+      "bins": 6,
+      "units": 11,
+      "capacity": 120,
+      "fillPct": 9,
+      "stock": [
+        {
+          "catalogId": "BillyBookcaseBr",
+          "units": 11
+        }
+      ],
+      "staffAssigned": 1,
+      "footprint": [
+        {
+          "x": 49,
+          "y": 10,
+          "w": 1,
+          "h": 9
+        }
+      ],
+      "alert": {
+        "code": "LOW_STOCK",
+        "severity": "warn",
+        "text": "Aisle A10 is low on BillyBookcaseBr (11 left)"
+      }
+    },
+    {
+      "id": "A11",
+      "number": 11,
+      "label": "Aisle 11",
+      "zoneId": "warehouse",
+      "bins": 6,
+      "units": 106,
+      "capacity": 120,
+      "fillPct": 88,
+      "stock": [
+        {
+          "catalogId": "AlexDeskW",
+          "units": 106
+        }
+      ],
+      "staffAssigned": 0,
+      "footprint": [
+        {
+          "x": 51,
+          "y": 10,
+          "w": 1,
+          "h": 9
+        }
+      ],
+      "alert": null
+    },
+    {
+      "id": "A12",
+      "number": 12,
+      "label": "Aisle 12",
+      "zoneId": "warehouse",
+      "bins": 6,
+      "units": 79,
+      "capacity": 120,
+      "fillPct": 66,
+      "stock": [
+        {
+          "catalogId": "AlexDeskB",
+          "units": 40
+        },
+        {
+          "catalogId": "AlexDresserB",
+          "units": 39
+        }
+      ],
+      "staffAssigned": 0,
+      "footprint": [
+        {
+          "x": 53,
+          "y": 10,
+          "w": 1,
+          "h": 9
+        }
+      ],
+      "alert": null
+    },
+    {
+      "id": "A13",
+      "number": 13,
+      "label": "Aisle 13",
+      "zoneId": "warehouse",
+      "bins": 6,
+      "units": 88,
+      "capacity": 120,
+      "fillPct": 73,
+      "stock": [
+        {
+          "catalogId": "AlexDresserW",
+          "units": 88
+        }
+      ],
+      "staffAssigned": 1,
+      "footprint": [
+        {
+          "x": 55,
+          "y": 10,
+          "w": 1,
+          "h": 9
+        }
+      ],
+      "alert": null
+    },
+    {
+      "id": "A14",
+      "number": 14,
+      "label": "Aisle 14",
+      "zoneId": "warehouse",
+      "bins": 6,
+      "units": 42,
+      "capacity": 120,
+      "fillPct": 35,
+      "stock": [
+        {
+          "catalogId": "AlexDresserB",
+          "units": 42
+        }
+      ],
+      "staffAssigned": 0,
+      "footprint": [
+        {
+          "x": 57,
+          "y": 10,
+          "w": 1,
+          "h": 9
+        }
+      ],
+      "alert": null
+    },
+    {
+      "id": "A15",
+      "number": 15,
+      "label": "Aisle 15",
+      "zoneId": "warehouse",
+      "bins": 6,
+      "units": 70,
+      "capacity": 120,
+      "fillPct": 58,
+      "stock": [
+        {
+          "catalogId": "BillyBookcaseBr",
+          "units": 35
+        },
+        {
+          "catalogId": "AlexDeskB",
+          "units": 35
+        }
+      ],
+      "staffAssigned": 0,
+      "footprint": [
+        {
+          "x": 59,
+          "y": 10,
+          "w": 1,
+          "h": 9
+        }
+      ],
+      "alert": null
+    },
+    {
+      "id": "A16",
+      "number": 16,
+      "label": "Aisle 16",
+      "zoneId": "warehouse",
+      "bins": 6,
+      "units": 114,
+      "capacity": 120,
+      "fillPct": 95,
+      "stock": [
+        {
+          "catalogId": "AlexDeskW",
+          "units": 114
+        }
+      ],
+      "staffAssigned": 1,
+      "footprint": [
+        {
+          "x": 61,
+          "y": 10,
+          "w": 1,
+          "h": 9
+        }
+      ],
+      "alert": null
+    }
+  ],
+  "staff": {
+    "onShift": 16,
+    "rostered": 19,
+    "assignments": [
+      {
+        "targetKind": "lane",
+        "targetId": "1",
+        "count": 1
+      },
+      {
+        "targetKind": "lane",
+        "targetId": "2",
+        "count": 1
+      },
+      {
+        "targetKind": "lane",
+        "targetId": "3",
+        "count": 1
+      },
+      {
+        "targetKind": "lane",
+        "targetId": "4",
+        "count": 1
+      },
+      {
+        "targetKind": "lane",
+        "targetId": "5",
+        "count": 1
+      },
+      {
+        "targetKind": "aisle",
+        "targetId": "A02",
+        "count": 1
+      },
+      {
+        "targetKind": "aisle",
+        "targetId": "A04",
+        "count": 1
+      },
+      {
+        "targetKind": "aisle",
+        "targetId": "A07",
+        "count": 1
+      },
+      {
+        "targetKind": "aisle",
+        "targetId": "A10",
+        "count": 1
+      },
+      {
+        "targetKind": "aisle",
+        "targetId": "A13",
+        "count": 1
+      },
+      {
+        "targetKind": "aisle",
+        "targetId": "A16",
+        "count": 1
+      },
+      {
+        "targetKind": "dock",
+        "targetId": "dock",
+        "count": 2
+      },
+      {
+        "targetKind": "zone",
+        "targetId": "showroom-1",
+        "count": 1
+      },
+      {
+        "targetKind": "zone",
+        "targetId": "showroom-2",
+        "count": 1
+      },
+      {
+        "targetKind": "zone",
+        "targetId": "restaurant",
+        "count": 1
+      }
+    ]
+  },
+  "events": [
+    {
+      "seq": 401877,
+      "tick": 50802,
+      "timeLabel": "4:42",
+      "severity": "info",
+      "text": "Truck unloaded: 100 boxes, 7 damaged",
+      "code": "TRUCK_UNLOADED",
+      "zoneId": "receiving"
+    },
+    {
+      "seq": 401878,
+      "tick": 50809,
+      "timeLabel": "4:49",
+      "severity": "alert",
+      "text": "Aisle A04 is out of AlexDresserB",
+      "code": "STOCK_OUT",
+      "zoneId": "warehouse"
+    },
+    {
+      "seq": 401879,
+      "tick": 50814,
+      "timeLabel": "4:54",
+      "severity": "warn",
+      "text": "Aisle A10 is low on BillyBookcaseBr (11 left)",
+      "code": "LOW_STOCK",
+      "zoneId": "warehouse"
+    },
+    {
+      "seq": 401880,
+      "tick": 50818,
+      "timeLabel": "4:58",
+      "severity": "info",
+      "text": "Customer being processed in lane 5 (12)",
+      "code": "CHECKOUT_STARTED",
+      "zoneId": "checkout"
+    },
+    {
+      "seq": 401881,
+      "tick": 50821,
+      "timeLabel": "5:01",
+      "severity": "warn",
+      "text": "Customer left the queue at lane 3 after 22 min",
+      "code": "QUEUE_ABANDONED",
+      "zoneId": "checkout"
+    },
+    {
+      "seq": 401882,
+      "tick": 50822,
+      "timeLabel": "5:02",
+      "severity": "warn",
+      "text": "Checkout queues are long: 31 waiting",
+      "code": "CROWDED",
+      "zoneId": "checkout"
+    },
+    {
+      "seq": 401883,
+      "tick": 50824,
+      "timeLabel": "5:04",
+      "severity": "warn",
+      "text": "Complaint logged in Showroom 2",
+      "code": "COMPLAINT",
+      "zoneId": "showroom-2"
+    },
+    {
+      "seq": 401884,
+      "tick": 50826,
+      "timeLabel": "5:06",
+      "severity": "info",
+      "text": "Finished processing Customer in lane 4",
+      "code": "CHECKOUT_COMPLETE",
+      "zoneId": "checkout"
+    },
+    {
+      "seq": 401885,
+      "tick": 50827,
+      "timeLabel": "5:07",
+      "severity": "warn",
+      "text": "Customer left the queue at lane 1 after 14 min",
+      "code": "QUEUE_ABANDONED",
+      "zoneId": "checkout"
+    },
+    {
+      "seq": 401886,
+      "tick": 50828,
+      "timeLabel": "5:08",
+      "severity": "warn",
+      "text": "A shopper is stuck in the warehouse near aisle A08",
+      "code": "STUCK",
+      "zoneId": "warehouse"
+    },
+    {
+      "seq": 401887,
+      "tick": 50829,
+      "timeLabel": "5:09",
+      "severity": "info",
+      "text": "Looks like we got a customer. Customers shopping: 126",
+      "code": "CUSTOMER_SPAWNED",
+      "zoneId": "entrance"
+    },
+    {
+      "seq": 401888,
+      "tick": 50830,
+      "timeLabel": "5:10",
+      "severity": "alert",
+      "text": "Debt clock: 5 days left, $22,800.00 remaining",
+      "code": "DEBT_CLOCK",
+      "zoneId": null
+    }
+  ],
+  "commandResults": [
+    {
+      "id": "c-0042",
+      "command": "upgrade",
+      "status": "REJECTED",
+      "appliedTick": 50830,
+      "message": "Maximum Cashier Lanes Reached"
+    }
+  ],
+  "lastDaySummary": {
+    "day": 84,
+    "totalCustomers": 2104,
+    "revenueCents": 3790880,
+    "revenueGoalCents": 3700000,
+    "metRevenueGoal": true,
+    "startingBalanceCents": 2512005,
+    "endingBalanceCents": 3026215,
+    "lossesCents": 52300,
+    "profitCents": 514210,
+    "debtPaidCents": 450000,
+    "conversionPct": 63,
+    "walkOuts": 41,
+    "damagedUnits": 11
+  },
+  "outcome": {
+    "state": "IN_PROGRESS",
+    "reason": null,
+    "ending": null
+  },
+  "debug": {
+    "simDelayMs": 12,
+    "spawnRate": 0.03,
+    "scheduledTasks": 126
+  }
+}

@@ -1,0 +1,99 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/chidev0/FlatPack-Empire/tui/contract/command.schema.json",
+  "title": "Flatpack Empire command (UI -> engine)",
+  "description": "PROPOSAL v1. One JSON object per line on the engine's stdin. Every player action the UI can take is listed here; selecting a lane, zone or aisle is UI-local and never sent. The engine answers each command in the next snapshot's commandResults[]. x-status says whether the engine can do it today: 'method exists' means a Java method does the work but no Command class wraps it yet.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "type", "id", "command", "args"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "type": { "const": "command" },
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]{1,64}$",
+      "description": "Chosen by the UI, unique per session. Echoed in commandResults[].id."
+    },
+    "seenTick": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "The snapshot tick the player was looking at. Informational; the engine records the tick it applied the command at."
+    },
+    "command": { "enum": ["pause", "resume", "setSpeed", "upgrade", "orderStock"] },
+    "args": { "type": "object" }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "command": { "const": "pause" } } },
+      "then": { "properties": { "args": { "$ref": "#/$defs/pause" } } }
+    },
+    {
+      "if": { "properties": { "command": { "const": "resume" } } },
+      "then": { "properties": { "args": { "$ref": "#/$defs/resume" } } }
+    },
+    {
+      "if": { "properties": { "command": { "const": "setSpeed" } } },
+      "then": { "properties": { "args": { "$ref": "#/$defs/setSpeed" } } }
+    },
+    {
+      "if": { "properties": { "command": { "const": "upgrade" } } },
+      "then": { "properties": { "args": { "$ref": "#/$defs/upgrade" } } }
+    },
+    {
+      "if": { "properties": { "command": { "const": "orderStock" } } },
+      "then": { "properties": { "args": { "$ref": "#/$defs/orderStock" } } }
+    }
+  ],
+  "$defs": {
+    "pause": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Pause the simulation. The UI also sends this when it opens the end-of-day modal, and resume when the player dismisses it.",
+      "x-status": "method exists",
+      "x-source": "GameState.pauseSimulation()",
+      "x-roadmap": "v4.1 (GameEngine.advance() exits its loop when status leaves RUNNING, so nothing could resume)"
+    },
+    "resume": {
+      "type": "object",
+      "additionalProperties": false,
+      "x-status": "planned",
+      "x-source": "GameState.setSimulationStatus(GameStatus.RUNNING)",
+      "x-roadmap": "v4.1"
+    },
+    "setSpeed": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["multiplier"],
+      "properties": {
+        "multiplier": { "enum": [1, 2, 4, 8], "description": "APPROVED_SIM_SPEEDS in GameClock. Rev 2's v4.1 lists 1x/2x/4x; drop 8 here if that wins." }
+      },
+      "x-status": "method exists",
+      "x-source": "GameClock.setSimulationSpeed(int)"
+    },
+    "upgrade": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["upgradeType"],
+      "properties": {
+        "upgradeType": { "enum": ["TRUCK", "CHECKOUT_LANE"], "x-source": "upgrades.UpgradeType" }
+      },
+      "x-status": "method exists",
+      "x-source": "UpgradeManager.upgrade(UpgradeType). UpgradeManager is not constructed in Main and charges nothing yet.",
+      "x-roadmap": "v13 (upgrade forks with upkeep)"
+    },
+    "orderStock": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["catalogId", "units", "arrivalDay"],
+      "properties": {
+        "catalogId": { "type": "string", "pattern": "^[A-Za-z][A-Za-z0-9_]*$" },
+        "units": { "type": "integer", "minimum": 1 },
+        "arrivalDay": { "type": "integer", "minimum": 1, "description": "Absolute day; the engine maps it to a manifest slot." },
+        "supplierId": { "type": ["string", "null"], "x-roadmap": "v7" }
+      },
+      "x-status": "method exists",
+      "x-source": "DeliveryManager.scheduleInboundProduct(int arrivalSlot, Product). Nothing calls it today; ProcurementManager is empty.",
+      "x-roadmap": "v7 (purchase orders)"
+    }
+  }
+}

@@ -1,0 +1,523 @@
+{
+  "schemaVersion": 1,
+  "type": "snapshot",
+  "seed": 20711022,
+  "tick": 160,
+  "status": "RUNNING",
+  "clock": {
+    "day": 1,
+    "tickOfDay": 160,
+    "subTick": 0,
+    "ticksPerDay": 600,
+    "timeLabel": "12:40 PM",
+    "isStartOfDay": false,
+    "isEndOfDay": false,
+    "speedMultiplier": 1,
+    "runLengthDays": 90
+  },
+  "finance": {
+    "cashCents": 163999,
+    "dayStartingBalanceCents": 150000,
+    "revenueTodayCents": 13999,
+    "revenueGoalCents": 500000,
+    "debt": {
+      "principalCents": 30000000,
+      "remainingCents": 30000000,
+      "dueDay": 90,
+      "daysUntilDue": 89,
+      "nextPaymentDay": 7,
+      "nextPaymentCents": 450000
+    },
+    "consecutiveNegativeCashDays": 0
+  },
+  "reputation": {
+    "commercial": 0.5,
+    "people": 0.5,
+    "quality": 0.5
+  },
+  "customers": {
+    "inStore": 1,
+    "shopping": 1,
+    "trafficToday": 2,
+    "customerTier": 1,
+    "byState": {
+      "IDLE": 0,
+      "AWAITING_ITEM_TASK": 0,
+      "SHOPPING": 1,
+      "READY_FOR_CHECKOUT": 0,
+      "QUEUED_FOR_CHECKOUT": 0,
+      "CHECKING_OUT": 0,
+      "EXITING_STORE": 0
+    },
+    "conversionPct": 100,
+    "walkOutsToday": 0
+  },
+  "checkout": {
+    "lanesUnlocked": 1,
+    "maxLanes": 5,
+    "lanes": [
+      {
+        "laneNumber": 1,
+        "queueLength": 0,
+        "isLaneProcessing": false,
+        "laneStatus": "Awaiting Customer (Idle)",
+        "itemsProcessed": 0,
+        "cartSize": 0,
+        "ticksUntilNextScan": 0,
+        "transactionTotalCents": 0,
+        "cashierStaffId": "s01"
+      }
+    ]
+  },
+  "inventory": {
+    "totalUnits": 119,
+    "damagedUnits": 0,
+    "items": [
+      {
+        "catalogId": "AlexDeskW",
+        "name": "Alex",
+        "productType": "DESK",
+        "color": "WHITE",
+        "model": "FURNITURE",
+        "priceCents": 7499,
+        "units": 30,
+        "inCart": 0,
+        "lowStock": false
+      },
+      {
+        "catalogId": "AlexDeskB",
+        "name": "Alex",
+        "productType": "DESK",
+        "color": "BLACK",
+        "model": "FURNITURE",
+        "priceCents": 6499,
+        "units": 30,
+        "inCart": 0,
+        "lowStock": false
+      },
+      {
+        "catalogId": "BillyBookcaseBr",
+        "name": "Billy",
+        "productType": "BOOKCASE",
+        "color": "BROWN",
+        "model": "FURNITURE",
+        "priceCents": 13999,
+        "units": 29,
+        "inCart": 0,
+        "lowStock": false
+      },
+      {
+        "catalogId": "Swedish_Meatballs",
+        "name": "Meatball",
+        "productType": "HOT_FOOD",
+        "color": null,
+        "model": "FOOD",
+        "priceCents": 599,
+        "units": 30,
+        "inCart": 0,
+        "lowStock": false
+      }
+    ]
+  },
+  "inbound": {
+    "truckCapacity": 50,
+    "todayArrivalTimeLabel": null,
+    "slots": [
+      {
+        "slot": 0,
+        "arrivalDay": 1,
+        "status": "EMPTY",
+        "units": 0,
+        "contents": [],
+        "etaTimeLabel": null
+      },
+      {
+        "slot": 1,
+        "arrivalDay": 2,
+        "status": "EMPTY",
+        "units": 0,
+        "contents": [],
+        "etaTimeLabel": null
+      },
+      {
+        "slot": 2,
+        "arrivalDay": 3,
+        "status": "EMPTY",
+        "units": 0,
+        "contents": [],
+        "etaTimeLabel": null
+      },
+      {
+        "slot": 3,
+        "arrivalDay": 4,
+        "status": "EMPTY",
+        "units": 0,
+        "contents": [],
+        "etaTimeLabel": null
+      },
+      {
+        "slot": 4,
+        "arrivalDay": 5,
+        "status": "EMPTY",
+        "units": 0,
+        "contents": [],
+        "etaTimeLabel": null
+      },
+      {
+        "slot": 5,
+        "arrivalDay": 6,
+        "status": "EMPTY",
+        "units": 0,
+        "contents": [],
+        "etaTimeLabel": null
+      },
+      {
+        "slot": 6,
+        "arrivalDay": 7,
+        "status": "EMPTY",
+        "units": 0,
+        "contents": [],
+        "etaTimeLabel": null
+      }
+    ]
+  },
+  "dock": {
+    "truckAtDock": false,
+    "unitsOnTruck": 0,
+    "truckTier": 1,
+    "truckCapacity": 50,
+    "damageChancePct": 15,
+    "truckStatus": "Idle",
+    "unloadManifest": {
+      "totalProcessed": 0,
+      "inventoryCount": 0,
+      "damageCount": 0
+    }
+  },
+  "zones": [
+    {
+      "id": "showroom",
+      "type": "SHOWROOM",
+      "label": "Showroom",
+      "occupancy": 1,
+      "capacity": 20,
+      "occupancyPct": 5,
+      "queueLength": null,
+      "footprint": [
+        {
+          "x": 0,
+          "y": 0,
+          "w": 9,
+          "h": 8
+        }
+      ],
+      "alert": null
+    },
+    {
+      "id": "warehouse",
+      "type": "WAREHOUSE_GRID",
+      "label": "Furniture Warehouse",
+      "occupancy": 0,
+      "capacity": 20,
+      "occupancyPct": 0,
+      "queueLength": null,
+      "footprint": [
+        {
+          "x": 9,
+          "y": 0,
+          "w": 15,
+          "h": 8
+        }
+      ],
+      "alert": null
+    },
+    {
+      "id": "entrance",
+      "type": "ENTRANCE",
+      "label": "Entrance",
+      "occupancy": 0,
+      "capacity": 6,
+      "occupancyPct": 0,
+      "queueLength": null,
+      "footprint": [
+        {
+          "x": 0,
+          "y": 8,
+          "w": 5,
+          "h": 4
+        }
+      ],
+      "alert": null
+    },
+    {
+      "id": "checkout",
+      "type": "CHECKOUT",
+      "label": "Checkout",
+      "occupancy": 0,
+      "capacity": 8,
+      "occupancyPct": 0,
+      "queueLength": 0,
+      "footprint": [
+        {
+          "x": 5,
+          "y": 8,
+          "w": 9,
+          "h": 4
+        }
+      ],
+      "alert": null
+    },
+    {
+      "id": "receiving",
+      "type": "RECEIVING",
+      "label": "Receiving",
+      "occupancy": 0,
+      "capacity": 4,
+      "occupancyPct": 0,
+      "queueLength": null,
+      "footprint": [
+        {
+          "x": 14,
+          "y": 8,
+          "w": 10,
+          "h": 4
+        }
+      ],
+      "alert": null
+    }
+  ],
+  "layout": {
+    "revision": 1,
+    "width": 24,
+    "height": 12,
+    "portals": [
+      {
+        "id": "p1",
+        "x": 2,
+        "y": 8,
+        "zoneIds": [
+          "entrance",
+          "showroom"
+        ]
+      },
+      {
+        "id": "p2",
+        "x": 9,
+        "y": 3,
+        "zoneIds": [
+          "showroom",
+          "warehouse"
+        ]
+      },
+      {
+        "id": "p3",
+        "x": 11,
+        "y": 8,
+        "zoneIds": [
+          "warehouse",
+          "checkout"
+        ]
+      },
+      {
+        "id": "p4",
+        "x": 5,
+        "y": 10,
+        "zoneIds": [
+          "checkout",
+          "entrance"
+        ]
+      },
+      {
+        "id": "p5",
+        "x": 20,
+        "y": 8,
+        "zoneIds": [
+          "warehouse",
+          "receiving"
+        ]
+      }
+    ]
+  },
+  "zoneFlows": [
+    {
+      "fromZoneId": "entrance",
+      "toZoneId": "showroom",
+      "perHour": 1
+    },
+    {
+      "fromZoneId": "showroom",
+      "toZoneId": "warehouse",
+      "perHour": 1
+    },
+    {
+      "fromZoneId": "warehouse",
+      "toZoneId": "checkout",
+      "perHour": 1
+    },
+    {
+      "fromZoneId": "checkout",
+      "toZoneId": "entrance",
+      "perHour": 1
+    }
+  ],
+  "markers": [],
+  "aisles": [
+    {
+      "id": "A01",
+      "number": 1,
+      "label": "Aisle 01",
+      "zoneId": "warehouse",
+      "bins": 6,
+      "units": 30,
+      "capacity": 40,
+      "fillPct": 75,
+      "stock": [
+        {
+          "catalogId": "AlexDeskW",
+          "units": 30
+        }
+      ],
+      "staffAssigned": 1,
+      "footprint": [
+        {
+          "x": 11,
+          "y": 1,
+          "w": 2,
+          "h": 6
+        }
+      ],
+      "alert": null
+    },
+    {
+      "id": "A02",
+      "number": 2,
+      "label": "Aisle 02",
+      "zoneId": "warehouse",
+      "bins": 6,
+      "units": 30,
+      "capacity": 40,
+      "fillPct": 75,
+      "stock": [
+        {
+          "catalogId": "AlexDeskB",
+          "units": 30
+        }
+      ],
+      "staffAssigned": 0,
+      "footprint": [
+        {
+          "x": 15,
+          "y": 1,
+          "w": 2,
+          "h": 6
+        }
+      ],
+      "alert": null
+    },
+    {
+      "id": "A03",
+      "number": 3,
+      "label": "Aisle 03",
+      "zoneId": "warehouse",
+      "bins": 6,
+      "units": 29,
+      "capacity": 40,
+      "fillPct": 73,
+      "stock": [
+        {
+          "catalogId": "BillyBookcaseBr",
+          "units": 29
+        }
+      ],
+      "staffAssigned": 0,
+      "footprint": [
+        {
+          "x": 19,
+          "y": 1,
+          "w": 2,
+          "h": 6
+        }
+      ],
+      "alert": null
+    }
+  ],
+  "staff": {
+    "onShift": 2,
+    "rostered": 2,
+    "assignments": [
+      {
+        "targetKind": "lane",
+        "targetId": "1",
+        "count": 1
+      },
+      {
+        "targetKind": "aisle",
+        "targetId": "A01",
+        "count": 1
+      }
+    ]
+  },
+  "events": [
+    {
+      "seq": 1,
+      "tick": 38,
+      "timeLabel": "10:38",
+      "severity": "info",
+      "text": "Looks like we got a customer. Customers shopping: 1"
+    },
+    {
+      "seq": 2,
+      "tick": 121,
+      "timeLabel": "12:01",
+      "severity": "info",
+      "text": "Customer being processed in lane 1 (1)"
+    },
+    {
+      "seq": 3,
+      "tick": 139,
+      "timeLabel": "12:19",
+      "severity": "info",
+      "text": "Lane 1 - Processing Billy BOOKCASE  (1/1)"
+    },
+    {
+      "seq": 4,
+      "tick": 139,
+      "timeLabel": "12:19",
+      "severity": "info",
+      "text": "Transaction has completed"
+    },
+    {
+      "seq": 5,
+      "tick": 140,
+      "timeLabel": "12:20",
+      "severity": "info",
+      "text": "Finished processing Customer in lane 1"
+    },
+    {
+      "seq": 6,
+      "tick": 150,
+      "timeLabel": "12:30",
+      "severity": "debug",
+      "text": "Command dequeued, attempting execute"
+    },
+    {
+      "seq": 7,
+      "tick": 152,
+      "timeLabel": "12:32",
+      "severity": "info",
+      "text": "Looks like we got a customer. Customers shopping: 1"
+    }
+  ],
+  "commandResults": [],
+  "lastDaySummary": null,
+  "outcome": {
+    "state": "IN_PROGRESS",
+    "reason": null,
+    "ending": null
+  },
+  "debug": {
+    "simDelayMs": 50,
+    "spawnRate": 0.001,
+    "scheduledTasks": 1
+  }
+}
