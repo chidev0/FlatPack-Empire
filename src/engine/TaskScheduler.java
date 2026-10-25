@@ -12,6 +12,14 @@ public class TaskScheduler implements Tickable {
         return newTask;
     }
 
+    public int totalScheduled() {
+        return scheduledTasks.size();
+    }
+
+    public void clearTasks() {
+        scheduledTasks.clear();
+    }
+
     public void tick(GameState state) {
         for (int i = scheduledTasks.size() - 1; i>= 0; i--) {
             ScheduledTask task = scheduledTasks.get(i);

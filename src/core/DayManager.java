@@ -1,5 +1,6 @@
 package core;
 
+import customer.CustomerManager;
 import engine.GameClock;
 import engine.GameState;
 import engine.GameStatus;

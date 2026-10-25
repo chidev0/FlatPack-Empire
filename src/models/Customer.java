@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Random;
 
 import core.InventoryManager;
+import customer.CustomerState;
 import engine.GameState;
 import products.ProductState;
 import structures.ArrayStack;
@@ -18,17 +19,21 @@ public class Customer {
     private int ticksUntilNextItem;
     private boolean processing;
     public boolean placeholder = false;
+    private int cartCapacity;
+    private CustomerState customerState;
 
     public Customer(GameState state, InventoryManager manager) {
         this.manager = manager;
         customerTier = state.getCurrentCustomerTier();
         if (customerTier == 1) {
-            this.shoppingCart = new ArrayStack<>(cartRandomizer.nextInt(1,5));
+            this.cartCapacity = cartRandomizer.nextInt(1,5);
             this.ticksUntilNextItem = cartRandomizer.nextInt(14,30);
         } else if (customerTier == 2) {
-            this.shoppingCart = new ArrayStack<>(cartRandomizer.nextInt(5,15));
+            this.cartCapacity = cartRandomizer.nextInt(5,15);
             this.ticksUntilNextItem = cartRandomizer.nextInt(10,20);
         }
+        this.shoppingCart = new ArrayStack<>(cartCapacity);
+        customerState = CustomerState.IDLE;
     }
 
     public Customer(GameState state, InventoryManager manager, boolean placeholder) {
@@ -76,18 +81,35 @@ public class Customer {
 
     public int rollPickupDelay() {
         if (customerTier == 1) {
-            return cartRandomizer.nextInt(80,150);
+            int pickupDelayRoll = cartRandomizer.nextInt(80,150);
+            this.ticksUntilNextItem = pickupDelayRoll * 10;
+            customerState = CustomerState.SHOPPING;
+            return pickupDelayRoll;
         } else if (customerTier == 2) {
-            return cartRandomizer.nextInt(60,120);
+            int pickupDelayRoll = cartRandomizer.nextInt(60,120);
+            this.ticksUntilNextItem = pickupDelayRoll * 10;
+            customerState = CustomerState.SHOPPING;
+            return pickupDelayRoll;
         }
         throw new RuntimeException("Illegal customer tier");
     }
 
     public void advanceShoppingProgress() {
         ticksUntilNextItem--;
+        if (ticksUntilNextItem <= 0) {
+            customerState = CustomerState.AWAITING_ITEM_TASK;
+        }
     }
 
     public void setProcessing(boolean processing) {
         this.processing = processing;
+    }
+
+    public void setCustomerState(CustomerState customerState) {
+        this.customerState = customerState;
+    }
+
+    public CustomerState getCustomerState() {
+        return customerState;
     }
 }

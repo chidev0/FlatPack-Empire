@@ -6,6 +6,7 @@ import core.DayManager;
 import core.InventoryManager;
 import engine.GameClock;
 import engine.GameState;
+import engine.TaskScheduler;
 import models.CheckoutLane;
 import models.CheckoutLaneSnapshot;
 import models.Product;
@@ -20,8 +21,10 @@ public class ScreenRenderer {
     private InputListener inputListener;
     private CheckoutManager checkoutManager;
     private DayManager dayManager;
+    private TaskScheduler taskScheduler;
+    private StringBuilder frame;
 
-    public ScreenRenderer(GameState state, UIState uiState, InventoryManager manager, EventBuffer eventBuffer, DamagesManager damagesManager, InputListener inputListener, CheckoutManager checkoutManager, DayManager dayManager) {
+    public ScreenRenderer(GameState state, UIState uiState, InventoryManager manager, EventBuffer eventBuffer, DamagesManager damagesManager, InputListener inputListener, CheckoutManager checkoutManager, DayManager dayManager, TaskScheduler taskScheduler) {
         this.state = state;
         this.uiState = uiState;
         this.manager = manager;
@@ -30,82 +33,82 @@ public class ScreenRenderer {
         this.inputListener = inputListener;
         this.checkoutManager = checkoutManager;
         this.dayManager = dayManager;
+        this.taskScheduler = taskScheduler;
     }
 
 
     public void renderFrame() {
-        buildHeader();
-        buildSummaryPanel();
-        buildActivePanel();
-        buildRecentEventsPanel();
-        buildPromptLine();
+        frame = new StringBuilder();
+        buildHeader(frame);
+        buildSummaryPanel(frame);
+        buildActivePanel(frame);
+        buildRecentEventsPanel(frame);
+        buildPromptLine(frame);
+        String body = frame.toString().replace("\n", "\033[K\n");
+
+        System.out.print("\033[H" + body + "\033[J");
+        System.out.flush();
     }
 
-    public void buildHeader() {
-        StringBuilder header = new StringBuilder();
-        header.append("=".repeat(57));
-        header.append("\n");
-        header.append(Printer.centerPad("FLATPACK EMPIRE - STORE DASHBOARD - DAY " + state.getCurrentDay() + " - " + GameClock.getCurrentTime(true), 62));
-        header.append("\n");
-        header.append("=".repeat(57));
-        header.append("\n");
-        System.out.println(header.toString());
+    public void buildHeader(StringBuilder frame) {
+        frame.append("=".repeat(57));
+        frame.append("\n");
+        frame.append(Printer.centerPad("FLATPACK EMPIRE - STORE DASHBOARD - DAY " + state.getCurrentDay() + " - " + GameClock.getCurrentTime(true), 62));
+        frame.append("\n");
+        frame.append("=".repeat(57));
+        frame.append("\n");
+        frame.append("\n");
     }
 
-    public void buildSummaryPanel() {
-        StringBuilder summaryPanel = new StringBuilder();
-        summaryPanel.append("\uD83D\uDCB0 Balance: $" + state.getCURRENT_BALANCE() + " ".repeat(14 - state.getCURRENT_BALANCE().toString().length()) + "| \uD83D\uDCE6 Inventory: " + manager.getInventorySnapshot().size() + " items");
-        summaryPanel.append("\n");
-        summaryPanel.append("🚚 Truck Tier " + state.getCurrentTruckTier() + " (" + state.getTruckStatus() + ")" + " ".repeat(9 - state.getTruckStatus().length()));
-        summaryPanel.append("| \uD83D\uDD28 Damages: " + damagesManager.size());
-        summaryPanel.append("\n");
-        summaryPanel.append("\uD83D\uDED2 Customers in Store: " + dayManager.getCurrentDay().getCustomersInStore());
-        summaryPanel.append(" ".repeat(4 - String.valueOf(state.getCurrentCustomers()).length()) + "| \uD83E\uDDD1\u200D\uD83D\uDCBC Checkout Lanes Open: 1/5");
-        summaryPanel.append("\n");
-        summaryPanel.append("-".repeat(57));
-        summaryPanel.append("\n");
-        System.out.println(summaryPanel.toString());
+    public void buildSummaryPanel(StringBuilder frame) {
+        frame.append("\uD83D\uDCB0 Balance: $" + state.getCURRENT_BALANCE() + " ".repeat(14 - state.getCURRENT_BALANCE().toString().length()) + "| \uD83D\uDCE6 Inventory: " + manager.getInventorySnapshot().size() + " items");
+        frame.append("\n");
+        frame.append("🚚 Truck Tier " + state.getCurrentTruckTier() + " (" + state.getTruckStatus() + ")" + " ".repeat(9 - state.getTruckStatus().length()));
+        frame.append("| \uD83D\uDD28 Tasks:   " + taskScheduler.totalScheduled());
+        frame.append("\n");
+        frame.append("\uD83D\uDED2 Customers in Store: " + dayManager.getCurrentDay().getCustomersInStore());
+        frame.append(" ".repeat(4 - String.valueOf(state.getCurrentCustomers()).length()) + "| \uD83E\uDDD1\u200D\uD83D\uDCBC Checkout Lanes Open: 1/5");
+        frame.append("\n");
+        frame.append("-".repeat(57));
+        frame.append("\n");
+        frame.append("\n");
     }
 
-    public void buildActivePanel() {
-        StringBuilder activePanel = new StringBuilder();
+    public void buildActivePanel(StringBuilder frame) {
         ActiveViewContext activeView = uiState.getActiveViewContext();
         if (activeView != null) {
             if (activeView.getViewMode() == ViewMode.INVENTORY_VIEW) {
-                buildInventoryPanel(activePanel, activeView);
+                buildInventoryPanel(frame, activeView);
             } else if (activeView.getViewMode() == ViewMode.LANE_VIEW) {
-                buildLanePanel(activePanel, activeView);
+                buildLanePanel(frame, activeView);
             }
         } else {
-            activePanel.append("WIP");
+            frame.append("WIP");
         }
-        activePanel.append("\n");
-        activePanel.append("-".repeat(57));
-        System.out.println(activePanel.toString());
+        frame.append("\n");
+        frame.append("-".repeat(57));
+        frame.append("\n");
     }
 
-    public void buildRecentEventsPanel() {
-        StringBuilder eventPanel = new StringBuilder();
+    public void buildRecentEventsPanel(StringBuilder frame) {
         eventBuffer.updateRecentEventsPanel();
-        eventPanel.append("[INTERNAL MEMO - WAREHOUSE DIVISION]");
-        eventPanel.append("\n");
-        eventPanel.append(eventBuffer.getEventOne());
-        eventPanel.append("\n");
-        eventPanel.append(eventBuffer.getEventTwo());
-        eventPanel.append("\n");
-        eventPanel.append(eventBuffer.getEventThree());
-        eventPanel.append("\n");
-        eventPanel.append("Current Mood of Store: WIP");
-        System.out.println(eventPanel.toString());
+        frame.append("[INTERNAL MEMO - WAREHOUSE DIVISION]");
+        frame.append("\n");
+        frame.append(eventBuffer.getEventOne());
+        frame.append("\n");
+        frame.append(eventBuffer.getEventTwo());
+        frame.append("\n");
+        frame.append(eventBuffer.getEventThree());
+        frame.append("\n");
+        frame.append("Current Mood of Store: WIP");
+        frame.append("\n");
     }
 
-    public void buildPromptLine() {
-        StringBuilder promptPanel = new StringBuilder();
-        promptPanel.append("=".repeat(57));
-        promptPanel.append("\n");
-        promptPanel.append("Enter Command > ");
-        if (!inputListener.getCurrentInput().isEmpty()) promptPanel.append(inputListener.getCurrentInput().toString());
-        System.out.println(promptPanel.toString());
+    public void buildPromptLine(StringBuilder frame) {
+        frame.append("=".repeat(57));
+        frame.append("\n");
+        frame.append("Enter Command > ");
+        frame.append(inputListener.getCurrentInput());
 
     }
 
@@ -121,6 +124,7 @@ public class ScreenRenderer {
         activePanel.append("Cost: $" + p.getPrice());
         activePanel.append("\n");
     }
+
 
     public void buildLanePanel(StringBuilder activePanel, ActiveViewContext activeViewContext) {
         CheckoutLaneSnapshot laneSnapshot = checkoutManager.buildLaneSnapshot(activeViewContext.getSelectedLaneSnapshot().getLaneNumber());

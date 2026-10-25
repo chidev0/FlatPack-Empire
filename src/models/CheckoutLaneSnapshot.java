@@ -9,14 +9,16 @@ public class CheckoutLaneSnapshot {
     private int ticksUntilNextScan;
     private BigDecimal transactionTotal;
     private boolean isLaneProcessing;
+    private String laneStatus;
 
-    public CheckoutLaneSnapshot(int laneNumber, int itemsProcessed, int itemsRemaining, int ticksUntilNextScan, BigDecimal transactionTotal, boolean isLaneProcessing) {
+    public CheckoutLaneSnapshot(int laneNumber, int itemsProcessed, int itemsRemaining, int ticksUntilNextScan, BigDecimal transactionTotal, boolean isLaneProcessing, String laneStatus) {
         this.laneNumber = laneNumber;
         this.itemsRemaining = itemsRemaining;
         this.ticksUntilNextScan = ticksUntilNextScan;
         this.transactionTotal = transactionTotal;
         this.itemsProcessed = itemsProcessed;
         this.isLaneProcessing = isLaneProcessing;
+        this.laneStatus = laneStatus;
     }
 
     public int getItemsProcessed() {
@@ -43,6 +45,7 @@ public class CheckoutLaneSnapshot {
         return isLaneProcessing;
     }
 
-
-
+    public String getLaneStatus() {
+        return laneStatus;
+    }
 }

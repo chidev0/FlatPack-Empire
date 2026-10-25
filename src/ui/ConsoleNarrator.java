@@ -37,7 +37,6 @@ public class ConsoleNarrator implements Tickable {
     }
 
     public void tick(GameState state){
-        Printer.clearConsole();
         screenRenderer.renderFrame();
     }
 }

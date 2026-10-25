@@ -1,10 +1,12 @@
-package core;
+package customer;
 
+import core.CheckoutManager;
+import core.DayManager;
+import core.InventoryManager;
 import engine.GameClock;
 import engine.GameState;
 import engine.TaskScheduler;
 import engine.Tickable;
-import models.CheckoutLane;
 import models.Customer;
 import ui.EventBuffer;
 
@@ -22,14 +24,16 @@ public class CustomerManager implements Tickable {
     public static int totalDayCustomers;
     private TaskScheduler taskScheduler;
     private DayManager dayManager;
+    private GameClock clock;
 
-    public CustomerManager(GameState state, InventoryManager manager, CheckoutManager checkoutManager, EventBuffer eventBuffer, TaskScheduler taskScheduler, DayManager dayManager) {
+    public CustomerManager(GameState state, InventoryManager manager, CheckoutManager checkoutManager, EventBuffer eventBuffer, TaskScheduler taskScheduler, DayManager dayManager, GameClock clock) {
         this.state = state;
         this.manager = manager;
         this.checkoutManager = checkoutManager;
         this.eventBuffer = eventBuffer;
         this.taskScheduler = taskScheduler;
         this.dayManager = dayManager;
+        this.clock = clock;
     }
 
     // Customer spawn randomizer logic
@@ -72,9 +76,11 @@ public void newPopulateCart() {
                 checkoutManager.queueCustomer(customerList.get(i));
                 customerList.remove(i);
             } else {
-                int finalI = i;
-                Customer customer = customerList.get(finalI);
-                taskScheduler.scheduleTask(customerList.get(finalI).rollPickupDelay() * 10, customer::populateCart);
+                Customer customer = customerList.get(i);
+                if (customer.getCustomerState() == CustomerState.AWAITING_ITEM_TASK) {
+                    taskScheduler.scheduleTask(customer.rollPickupDelay() * 10, customer::populateCart);
+                }
+                customerList.get(i).advanceShoppingProgress();
             }
         }
 }
@@ -83,10 +89,17 @@ public void newPopulateCart() {
         state.setCurrentCustomers(customerList.size());
     }
 
+    public void handleDayEnd() {
+        customerList.clear();
+        taskScheduler.clearTasks();
+    }
+
+
     @Override
     public void tick(GameState state) {
         spawnCustomer();
         newPopulateCart();
         updateCurrentCustomerSize();
+        if (clock.isRollover()) handleDayEnd();
     }
 }

@@ -106,6 +106,12 @@ public class CheckoutLane {
         }
     }
 
+    public String laneStatus(){
+        if (isTransactionComplete) {
+            return "Awaiting Customer (Idle)";
+        } else return "Processing Customer";
+    }
+
     public void resetItemProcessingDelay() {
         ticksUntilNextItemProcessed = checkoutRandomizer.nextInt(10, 50);
     }

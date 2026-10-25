@@ -1,6 +1,6 @@
-# chIKEA
+# FlatPack Empire
 
-Java warehouse simulation, built from scratch. The goal is a full retail tycoon engine — but I'm building the backend first and the gameplay loop after the foundation earns it.
+Retail Tycoon, built from scratch in Java, using custom data structure libraries. The goal is an advanced retail tycoon engine — but I'm building the backend first and the gameplay loop after the foundation earns it.
 
 ## Why I built this
 

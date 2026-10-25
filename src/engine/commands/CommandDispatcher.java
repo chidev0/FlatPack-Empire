@@ -18,10 +18,11 @@ public class CommandDispatcher {
     public void executeN(String[] args) {
         Command command = commandRegistry.getCommand(args[0]);
         try {
+            eventBuffer.enqueueEvent("Building context for " + command.name());
             CommandContext context = command.parseArgs(args);
-            // eventBuffer.enqueueEvent("Built context for " + command.name() + " attempting execute.");
+             eventBuffer.enqueueEvent("Built context for " + command.name() + " attempting execute.");
             command.execute(context, args);
-            // eventBuffer.enqueueEvent("Command executed.");
+             eventBuffer.enqueueEvent("Command executed.");
         } catch (InvalidCommandArgsException e) {
             throw new RuntimeException(e);
         }

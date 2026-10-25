@@ -25,11 +25,11 @@ public class CommandQueue implements Tickable {
 
     public void executeCommand() {
         try {
-            //System.out.println("Attempting to dequeue command");
+            System.out.println("Attempting to dequeue command");
             String[] command = commandPipeline.dequeue();
-            // eventBuffer.enqueueEvent("Command dequeued, attempting execute");
+            eventBuffer.enqueueEvent("Command dequeued, attempting execute");
             commandExecuter.executeN(command);
-            //System.out.println("Executed command");
+            System.out.println("Executed command");
         } catch (RuntimeException e) {
             throw new RuntimeException(e);
         }

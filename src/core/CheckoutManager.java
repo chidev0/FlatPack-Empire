@@ -46,7 +46,7 @@ public class CheckoutManager implements Tickable {
                 eventBuffer.enqueueEvent("Customer being processed in lane " + lane.getLaneNumber() + " (" + lane.getCurrentCustomer().getShoppingCart().size() + ")");
             }
             if (lane.isTransactionComplete()) {
-                accountant.addToBalance(lane.getLaneTransaction().calculateTotal());
+                accountant.addToBalance(lane.getLaneTransaction().getTotal());
                 lane.setCustomerAwaitStatus(true);
                 lane.resetCurrentCustomer();
                 lane.setCurrentlyProcessingCustomer(false);
@@ -71,7 +71,7 @@ public class CheckoutManager implements Tickable {
     public CheckoutLaneSnapshot buildLaneSnapshot(int laneNumber) {
         try {
             CheckoutLane lane = getLaneByNumber(laneNumber);
-            return new CheckoutLaneSnapshot(laneNumber, lane.getItemsProcessed(), lane.getItemsRemaining(), lane.getTicksUntilNextItemProcessed(), lane.getLaneTransaction().calculateTotal(), !lane.isAwaitingCustomer());
+            return new CheckoutLaneSnapshot(laneNumber, lane.getItemsProcessed(), lane.getItemsRemaining(), lane.getTicksUntilNextItemProcessed(), lane.getLaneTransaction().getTotal(), !lane.isAwaitingCustomer(), lane.laneStatus());
         } catch (RuntimeException e) {
             throw new RuntimeException(e);
         }

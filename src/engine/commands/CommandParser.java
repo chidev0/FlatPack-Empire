@@ -19,7 +19,7 @@ public class CommandParser {
         String commandName = commandArray[0];
         if (commandRegistry.commandFound(commandName)) {
             try {
-                // eventBuffer.enqueueEvent("Added " +commandName + "to the command queue" );
+                 eventBuffer.enqueueEvent("Added " +commandName + "to the command queue" );
                 queue.add(commandArray);
             } catch (RuntimeException e) {
                 throw new RuntimeException(e);

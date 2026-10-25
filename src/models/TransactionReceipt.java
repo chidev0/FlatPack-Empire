@@ -10,12 +10,17 @@ BigDecimal total = BigDecimal.ZERO;
 
 public void addProduct(Product p) {
     transactionLog.add(p);
+    total = total.add(p.getPrice());
 }
 
 public BigDecimal calculateTotal() {
     for (Product p : transactionLog) {
         total = total.add(p.getPrice());
     }
+    return total;
+}
+
+public BigDecimal getTotal() {
     return total;
 }
 

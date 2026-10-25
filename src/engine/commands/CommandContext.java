@@ -1,6 +1,7 @@
 package engine.commands;
 
 import engine.GameStatus;
+import models.CheckoutLaneSnapshot;
 
 import java.util.UUID;
 
@@ -9,6 +10,7 @@ public class CommandContext {
     private int laneId;
     private GameStatus status;
     private String displayLabel;
+    private CheckoutLaneSnapshot checkoutLane;
 
     public CommandContext(UUID Sku) {
         this.SKU = Sku;
@@ -26,9 +28,13 @@ public class CommandContext {
         this.displayLabel = displayLabel;
     }
 
+    public CommandContext(CheckoutLaneSnapshot checkoutLane) { this.checkoutLane = checkoutLane; }
+
     public GameStatus getStatus() {
         return status;
     }
+
+    public CheckoutLaneSnapshot getCheckoutLane() { return checkoutLane; }
 
     public int getLaneId() {
         return laneId;

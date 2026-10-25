@@ -1,7 +1,6 @@
 package ui;
 
 import models.CheckoutLaneSnapshot;
-
 import java.util.UUID;
 
 public class ActiveViewContext {
