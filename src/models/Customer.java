@@ -7,13 +7,14 @@ import java.util.Random;
 import core.InventoryManager;
 import customer.CustomerState;
 import engine.GameState;
+import engine.SimRandom;
 import products.ProductState;
 import structures.ArrayStack;
 
 public class Customer {
 
     private ArrayStack<Product> shoppingCart;
-    private Random cartRandomizer = new Random();
+    private Random cartRandomizer;
     private int customerTier;
     private InventoryManager manager;
     private int ticksUntilNextItem;
@@ -22,8 +23,9 @@ public class Customer {
     private int cartCapacity;
     private CustomerState customerState;
 
-    public Customer(GameState state, InventoryManager manager) {
+    public Customer(GameState state, InventoryManager manager, SimRandom simRandom) {
         this.manager = manager;
+        this.cartRandomizer = simRandom.getShopping();
         customerTier = state.getCurrentCustomerTier();
         if (customerTier == 1) {
             this.cartCapacity = cartRandomizer.nextInt(1,5);

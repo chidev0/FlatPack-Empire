@@ -4,6 +4,7 @@ import core.DamagesManager;
 import core.InventoryManager;
 import engine.GameClock;
 import engine.GameState;
+import engine.SimRandom;
 import engine.Tickable;
 import models.Product;
 import structures.ArrayStack;
@@ -17,17 +18,21 @@ public class DeliveryManager implements Tickable {
     Product[][] inboundManifest = new Product[7][];
     private InventoryManager manager;
     private DamagesManager damagesManager;
+    private SimRandom simRandom;
     private GameState state;
     private GameClock clock;
     private DeliveryTruck deliveryTruck;
+    private final Random inboundTick;
     int arrivalTick;
 
-    public DeliveryManager(InventoryManager manager, DamagesManager damagesManager, GameState state, GameClock clock, DeliveryTruck deliveryTruck) {
+    public DeliveryManager(InventoryManager manager, DamagesManager damagesManager, GameState state, GameClock clock, DeliveryTruck deliveryTruck, SimRandom simRandom) {
         this.manager = manager;
         this.damagesManager = damagesManager;
         this.state = state;
         this.clock = clock;
         this.deliveryTruck = deliveryTruck;
+        this.simRandom = simRandom;
+        this.inboundTick = simRandom.getDelivery();
         arrivalTick = -1;
     }
 
@@ -82,7 +87,7 @@ public class DeliveryManager implements Tickable {
             System.out.println("No Cargo for Today!");
         }
         // Create inbound truck and load it with the scheduled slot cargo
-        DeliveryTruck scheduledTruck = new DeliveryTruck(manager, damagesManager, state);
+        DeliveryTruck scheduledTruck = new DeliveryTruck(manager, damagesManager, state, simRandom);
         for ( int i = 0; i < getScheduledManifestSize(inboundManifest, 0); i++) {
             scheduledTruck.loadTruck(inboundManifest[0][i]);
         }
@@ -111,11 +116,10 @@ public class DeliveryManager implements Tickable {
 
     // Method for determining the tick in which inboundTruck arrives at dock based on truck tiers.
     public int resolveInboundArrival() {
-        Random randomInt = new Random();
         if (UpgradeManager.getTruckTier() == 1) {
-            return randomInt.nextInt(45, 150);
+            return inboundTick.nextInt(45, 150);
         } else if (UpgradeManager.getTruckTier() == 2) {
-            return randomInt.nextInt(30, 95);
+            return inboundTick.nextInt(30, 95);
         }
         throw new RuntimeException("Illegal Truck Tier");
     }

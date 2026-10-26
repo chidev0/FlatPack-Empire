@@ -3,6 +3,9 @@ package engine;
 import java.math.BigDecimal;
 
 public class GameState {
+
+    private long gameSeed;
+
     private GameStatus GAME_STATUS = GameStatus.RUNNING;
     private String TRUCK_STATUS = "Idle";
 
@@ -109,4 +112,13 @@ public class GameState {
     public void setCurrentCustomers(int CURRENT_CUSTOMERS_IN_STORE) {
         this.CURRENT_CUSTOMERS_IN_STORE = CURRENT_CUSTOMERS_IN_STORE;
     }
+
+    public long getGameSeed() {
+        return gameSeed;
+    }
+
+    public void setGameSeed(long seed) {
+        this.gameSeed = seed;
+    }
+
 }

@@ -2,6 +2,8 @@ package engine.commands;
 
 import core.CheckoutManager;
 import engine.GameState;
+import engine.commands.core.PauseCommand;
+import engine.commands.core.ResumeCommand;
 import engine.commands.core.TimeCommand;
 import engine.commands.store.InfoCommand;
 import engine.commands.store.LaneCommand;
@@ -26,6 +28,8 @@ public class CommandBootstrapper {
         registry.add(new TimeCommand());
         registry.add(new InfoCommand(uiState));
         registry.add(new LaneCommand(uiState, gameState, checkoutManager, eventBuffer));
+        registry.add(new PauseCommand(gameState));
+        registry.add(new ResumeCommand(gameState));
         return registry;
     }
 }

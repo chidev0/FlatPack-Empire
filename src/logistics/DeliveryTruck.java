@@ -2,9 +2,7 @@ package logistics;
 
 import core.DamagesManager;
 import core.InventoryManager;
-import engine.GameState;
-import engine.TaskScheduler;
-import engine.Tickable;
+import engine.*;
 import exceptions.CapacityExceededException;
 import exceptions.EmptyStructureException;
 import exceptions.TruckNotAtDockException;
@@ -30,12 +28,14 @@ public class DeliveryTruck implements Tickable {
     int inventoryCount = 0;
     boolean truckAtDock = false;
     TaskScheduler taskScheduler;
+    Random damageOdds;
 
-    public DeliveryTruck(InventoryManager manager, DamagesManager damageController, GameState state) {
+    public DeliveryTruck(InventoryManager manager, DamagesManager damageController, GameState state, SimRandom simRandom) {
         this.inventoryController = manager;
         this.damageController = damageController;
         this.state = state;
         this.truckManifest = new UnloadManifest();
+        this.damageOdds = simRandom.getDamage();
         // Logic for determining features (Truck size, Damage chance) based on Tier (Default: 1)
         this.truckTier = state.getCurrentTruckTier();
         if (truckTier == 1) {
@@ -112,7 +112,6 @@ public class DeliveryTruck implements Tickable {
 
     // Method for calculating damage chance based on tier modifiers.
     public boolean isDamaged() {
-        Random damageOdds = new Random();
         double damageRoll = damageOdds.nextDouble(0, 100);
         if (truckTier < 1 || truckTier > 2) {
             throw new RuntimeException("Illegal Truck Tier");

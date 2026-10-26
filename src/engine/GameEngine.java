@@ -5,6 +5,7 @@ import core.InventoryManager;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class GameEngine {
 
@@ -12,14 +13,16 @@ public class GameEngine {
     private final InventoryManager manager;
     private final DamagesManager damages;
     private final GameClock time;
+    private final SimRandom simRandom;
     List<Tickable> gameSystems = new ArrayList<>();
     List<Tickable> pausedSystems = new ArrayList<>();
 
-    public GameEngine(GameState gameState, InventoryManager manager, DamagesManager damages, GameClock time) {
+    public GameEngine(GameState gameState, InventoryManager manager, DamagesManager damages, GameClock time, SimRandom simRandom) {
         scottsville = gameState;
         this.manager = manager;
         this.damages = damages;
         this.time = time;
+        this.simRandom = simRandom;
     }
 
     public void registerSystem(Tickable system) {
@@ -69,7 +72,12 @@ public class GameEngine {
         }
     }
 
-
+    public void stepSimulation() {
+        time.advance();
+        for (Tickable i : gameSystems) {
+            i.tick(scottsville);
+        }
+    }
 
 
 }

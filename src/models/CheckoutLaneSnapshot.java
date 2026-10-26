@@ -21,6 +21,11 @@ public class CheckoutLaneSnapshot {
         this.laneStatus = laneStatus;
     }
 
+    public CheckoutLaneSnapshot(int laneNumber, boolean isLaneProcessing) {
+        this.laneNumber = laneNumber;
+        this.isLaneProcessing = isLaneProcessing;
+    }
+
     public int getItemsProcessed() {
         return itemsProcessed;
     }

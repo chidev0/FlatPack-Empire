@@ -1,10 +1,7 @@
 package core;
 
 import customer.CustomerManager;
-import engine.GameClock;
-import engine.GameState;
-import engine.GameStatus;
-import engine.Tickable;
+import engine.*;
 import models.Day;
 import ui.Printer;
 
@@ -17,12 +14,13 @@ public class DayManager implements Tickable {
     private GameClock clock;
     private GameState state;
     private ArrayList<Day> dayList = new ArrayList<>();
-    private Random randomizer = new Random();
+    private final Random randomizer;
     private Day currentDay;
 
-    public DayManager(GameClock clock, GameState state) {
+    public DayManager(GameClock clock, GameState state, SimRandom simRandom) {
         this.state = state;
         this.clock = clock;
+        this.randomizer = simRandom.getEconomy();
         currentDay = new Day(1);
         currentDay.setStartingBalance(state.getCURRENT_BALANCE());
         currentDay.setRevenueGoal(calculateRevenue());

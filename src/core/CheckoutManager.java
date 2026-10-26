@@ -1,5 +1,6 @@
 package core;
 import engine.GameState;
+import engine.SimRandom;
 import engine.Tickable;
 import models.CheckoutLane;
 import models.CheckoutLaneSnapshot;
@@ -17,23 +18,25 @@ public class CheckoutManager implements Tickable {
     private final RevenueManager accountant;
     private EventBuffer eventBuffer;
     private DayManager dayManager;
+    private final SimRandom simRandom;
 
-    public CheckoutManager(GameState state, InventoryManager manager, RevenueManager accountant, EventBuffer eventBuffer, DayManager dayManager) {
+    public CheckoutManager(GameState state, InventoryManager manager, RevenueManager accountant, EventBuffer eventBuffer, DayManager dayManager, SimRandom simRandom) {
         this.state = state;
         this.manager = manager;
         this.accountant = accountant;
         this.eventBuffer = eventBuffer;
         this.dayManager = dayManager;
+        this.simRandom = simRandom;
         initializeCheckout();
     }
 
 
     public void initializeCheckout() {
-        CheckoutLane laneOne = new CheckoutLane(manager, accountant, 1, eventBuffer, state);
+        CheckoutLane laneOne = new CheckoutLane(manager, accountant,1, eventBuffer, state, simRandom);
         activeLanes.add(laneOne);
         if (state.getCurrentCheckoutLanes() > 1) {
             for (int i = 1; i < state.getCurrentCheckoutLanes(); i++) {
-                activeLanes.add(new CheckoutLane(manager, accountant, i + 1, eventBuffer, state));
+                activeLanes.add(new CheckoutLane(manager, accountant,i + 1, eventBuffer, state, simRandom));
             }
         }
     }
@@ -71,7 +74,8 @@ public class CheckoutManager implements Tickable {
     public CheckoutLaneSnapshot buildLaneSnapshot(int laneNumber) {
         try {
             CheckoutLane lane = getLaneByNumber(laneNumber);
-            return new CheckoutLaneSnapshot(laneNumber, lane.getItemsProcessed(), lane.getItemsRemaining(), lane.getTicksUntilNextItemProcessed(), lane.getLaneTransaction().getTotal(), !lane.isAwaitingCustomer(), lane.laneStatus());
+            if (lane.currentlyProcessingCustomer()) return new CheckoutLaneSnapshot(laneNumber, lane.getItemsProcessed(), lane.getItemsRemaining(), lane.getTicksUntilNextItemProcessed(), lane.getLaneTransaction().getTotal(), !lane.isAwaitingCustomer(), lane.laneStatus());
+            else return new CheckoutLaneSnapshot(laneNumber, false);
         } catch (RuntimeException e) {
             throw new RuntimeException(e);
         }

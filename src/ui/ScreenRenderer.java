@@ -135,8 +135,8 @@ public class ScreenRenderer {
         } else {
             activePanel.append("Processing customer");
             activePanel.append("\n" + laneSnapshot.getItemsProcessed() + " / " + laneSnapshot.getItemsRemaining());
-            activePanel.append("Current total: $" + laneSnapshot.getTransactionTotal());
-            activePanel.append("Ticks until Next Scan: " + laneSnapshot.getTicksUntilNextScan());
+            activePanel.append("\nCurrent total: $" + laneSnapshot.getTransactionTotal());
+            activePanel.append("\n Ticks until Next Scan: " + laneSnapshot.getTicksUntilNextScan());
         }
 
 

@@ -3,6 +3,7 @@ package models;
 import core.InventoryManager;
 import core.RevenueManager;
 import engine.GameState;
+import engine.SimRandom;
 import engine.Tickable;
 import products.ProductColor;
 import products.ProductModel;
@@ -30,20 +31,21 @@ public class CheckoutLane {
     private int cartSize;
     private TransactionReceipt laneTransaction;
     private Customer currentCustomer;
-    private Random checkoutRandomizer = new Random();
+    private Random checkoutRandomizer;
     private int ticksUntilNextItemProcessed;
     private int laneNumber;
     private Product currentProduct;
     private EventBuffer eventBuffer;
     private boolean currentlyProcessingCustomer;
 
-    public CheckoutLane(InventoryManager manager, RevenueManager accountant, int laneNumber, EventBuffer eventBuffer, GameState state) {
+    public CheckoutLane(InventoryManager manager, RevenueManager accountant, int laneNumber, EventBuffer eventBuffer, GameState state, SimRandom simRandom) {
         this.manager = manager;
         this.accountant = accountant;
         this.lane = new ArrayQueue<>();
         this.laneNumber = laneNumber;
         this.eventBuffer = eventBuffer;
         this.state = state;
+        this.checkoutRandomizer = simRandom.getCheckout();
     }
 
 
