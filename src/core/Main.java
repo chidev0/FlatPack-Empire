@@ -27,7 +27,7 @@ public class Main {
         CommandDispatcher commandDispatcher = new CommandDispatcher(uiState, registry, eventBuffer);
         CommandQueue queue = new CommandQueue(uiState, commandDispatcher, eventBuffer);
         CommandParser parser = new CommandParser(queue, eventBuffer, registry);
-        InputListener input = new InputListener(parser);
+        InputListener input = new InputListener(parser, uiState);
         ScreenRenderer screenRenderer = new ScreenRenderer(Scottsville, uiState, manager, eventBuffer, damageControl, input, checkoutManager, dayManager, taskScheduler);
         DeliveryTruck truck = new DeliveryTruck(manager, damageControl, Scottsville, simRandom);
         DeliveryManager truckManager = new DeliveryManager(manager, damageControl, Scottsville, clock, truck, simRandom);

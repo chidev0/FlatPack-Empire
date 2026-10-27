@@ -18,15 +18,21 @@ public class InputListener implements Runnable{
     private CommandParser parser;
     private StringBuilder currentInput = new StringBuilder();
     private Attributes original;
+    private UIState uiState;
 
-    public InputListener(CommandParser parser) throws IOException {
+    public InputListener(CommandParser parser, UIState uiState) throws IOException {
         this.parser = parser;
+        this.uiState = uiState;
     }
 
     public void run() {
         try {
             Attributes original = terminal.enterRawMode();
             while (true) {
+                if (uiState.getCurrentScreenMode() == UIState.ScreenMode.MAIN_MENU) {
+
+                }
+
                 if (processingCommand) continue;
                 try {
                     int ch = reader.read(SimConfig.SIMULATION_SPEED);

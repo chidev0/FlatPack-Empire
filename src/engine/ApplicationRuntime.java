@@ -3,6 +3,7 @@ package engine;
 import engine.commands.ApplicationStatus;
 import engine.commands.CommandQueue;
 import ui.ConsoleNarrator;
+import ui.MainMenuRenderer;
 
 public class ApplicationRuntime {
     private GameEngine gameEngine;
@@ -11,19 +12,23 @@ public class ApplicationRuntime {
     private ConsoleNarrator consoleNarrator;
     private ApplicationStatus applicationStatus;
     private boolean isInitializing;
+    private MainMenuRenderer mainMenu;
 
-    public ApplicationRuntime(GameEngine gameEngine, CommandQueue queue, ConsoleNarrator consoleNarrator, GameState gameState) {
+    public ApplicationRuntime(GameEngine gameEngine, CommandQueue queue, ConsoleNarrator consoleNarrator, GameState gameState, MainMenuRenderer mainMenu) {
         this.gameEngine = gameEngine;
         this.gameState = gameState;
         this.queue = queue;
         this.consoleNarrator = consoleNarrator;
         this.applicationStatus = ApplicationStatus.INITIALIZING;
         this.isInitializing = true;
+        this.mainMenu = mainMenu;
     }
 
     public void run() {
         if (isInitializing) {
-            this.applicationStatus = ApplicationStatus.RUNNING;
+            this.applicationStatus = ApplicationStatus.MAIN_MENU;
+            mainMenu.load();
+
             this.isInitializing = false;
         }
         while (applicationStatus != ApplicationStatus.SHUTTING_DOWN) {
