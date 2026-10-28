@@ -13,15 +13,17 @@ public class Main {
     public static void main(String[] args) throws IOException {
         GameState Scottsville = new GameState();
         SimRandom simRandom = new SimRandom(Scottsville);
+        GameClock clock = new GameClock(Scottsville);
+        MainMenuRenderer mainMenu = new MainMenuRenderer();
+        UIState uiState = new UIState();
+        EventBuffer eventBuffer = new EventBuffer();
+
         RevenueManager revenueManager = new RevenueManager(Scottsville);
         InventoryManager manager = new InventoryManager();
         DamagesManager damageControl = new DamagesManager();
         TaskScheduler taskScheduler = new TaskScheduler();
-        GameClock clock = new GameClock(Scottsville);
         DayManager dayManager = new DayManager(clock, Scottsville, simRandom);
-        EventBuffer eventBuffer = new EventBuffer();
         CheckoutManager checkoutManager = new CheckoutManager(Scottsville, manager, revenueManager, eventBuffer, dayManager, simRandom);
-        UIState uiState = new UIState();
         CommandBootstrapper commandBootstrapper = new CommandBootstrapper(uiState, Scottsville, checkoutManager, eventBuffer);
         CommandRegistry registry = commandBootstrapper.createDefaultRegistry();
         CommandDispatcher commandDispatcher = new CommandDispatcher(uiState, registry, eventBuffer);
@@ -29,6 +31,8 @@ public class Main {
         CommandParser parser = new CommandParser(queue, eventBuffer, registry);
         InputListener input = new InputListener(parser, uiState);
         ScreenRenderer screenRenderer = new ScreenRenderer(Scottsville, uiState, manager, eventBuffer, damageControl, input, checkoutManager, dayManager, taskScheduler);
+        GameEngine engine = new GameEngine(Scottsville, manager, damageControl, clock, simRandom);
+        ApplicationRuntime runtime = new ApplicationRuntime(engine, queue, screenRenderer, Scottsville, mainMenu, input);
         DeliveryTruck truck = new DeliveryTruck(manager, damageControl, Scottsville, simRandom);
         DeliveryManager truckManager = new DeliveryManager(manager, damageControl, Scottsville, clock, truck, simRandom);
         CustomerManager customerManager = new CustomerManager(Scottsville, manager, checkoutManager, eventBuffer,taskScheduler, dayManager, clock, simRandom);
@@ -37,7 +41,6 @@ public class Main {
 
         ConsoleNarrator.bootSequence();
 
-        GameEngine engine = new GameEngine(Scottsville, manager, damageControl, clock, simRandom);
         engine.registerSystem(dayManager);
         engine.registerSystem(truck);
         engine.registerSystem(truckManager);
@@ -45,7 +48,6 @@ public class Main {
         engine.registerSystem(taskScheduler);
         engine.registerSystem(checkoutManager);
 
-        ApplicationRuntime runtime = new ApplicationRuntime(engine, queue, consoleNarrator, Scottsville);
 
         simConfig.initializeStore();
         Thread commandHandler = new Thread(input);

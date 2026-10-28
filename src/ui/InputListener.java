@@ -17,12 +17,17 @@ public class InputListener implements Runnable{
     private static boolean processingCommand = false;
     private CommandParser parser;
     private StringBuilder currentInput = new StringBuilder();
+    private StringBuilder seed = new StringBuilder();
     private Attributes original;
     private UIState uiState;
+    private Boolean awaitScreenRender;
+    private Boolean awaitSeedTransition;
 
     public InputListener(CommandParser parser, UIState uiState) throws IOException {
         this.parser = parser;
         this.uiState = uiState;
+        this.awaitScreenRender = false;
+        this.awaitSeedTransition = false;
     }
 
     public void run() {
@@ -30,26 +35,31 @@ public class InputListener implements Runnable{
             Attributes original = terminal.enterRawMode();
             while (true) {
                 if (uiState.getCurrentScreenMode() == UIState.ScreenMode.MAIN_MENU) {
-
+                UIState.ScreenMode currentScreen = uiState.getCurrentScreenMode();
+                if (currentScreen.equals(UIState.ScreenMode.MAIN_MENU)) {
+                    processMainMenuInput();
+                    } else if (currentScreen == UIState.ScreenMode.SEED_ENTRY) {
+                        processSeedEntry();
                 }
-
-                if (processingCommand) continue;
-                try {
-                    int ch = reader.read(SimConfig.SIMULATION_SPEED);
-                    if (ch == -2) continue;
-                    else if (ch == '\r' || ch == '\n') {
-                        processingCommand = true;
-                    } else if (ch == -1) break;
-                    else if (ch == 127 || ch == 8) {
-                        if (!currentInput.isEmpty()) {
-                            currentInput.setLength(currentInput.length() - 1);
+                } else if (uiState.getCurrentScreenMode() == UIState.ScreenMode.IN_GAME) {
+                    if (processingCommand) continue;
+                    try {
+                        int ch = reader.read(SimConfig.SIMULATION_SPEED);
+                        if (ch == -2) continue;
+                        else if (ch == '\r' || ch == '\n') {
+                            processingCommand = true;
+                        } else if (ch == -1) break;
+                        else if (ch == 127 || ch == 8) {
+                            if (!currentInput.isEmpty()) {
+                                currentInput.setLength(currentInput.length() - 1);
+                            }
+                        } else {
+                            currentInput.append((char) ch);
                         }
-                    } else {
-                        currentInput.append((char) ch);
-                    }
 
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
                 try {
                     if (processingCommand) {
@@ -72,6 +82,42 @@ public class InputListener implements Runnable{
         } catch (IOException ignored) {}
     }
 
+    public void processMainMenuInput() {
+        try {
+            int ch = reader.read(SimConfig.SIMULATION_SPEED);
+            if (ch == '1') {
+            this.awaitScreenRender = true;
+            } else if(ch == '2') {
+                this.uiState.setCurrentScreenMode(UIState.ScreenMode.SEED_ENTRY);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void processSeedEntry() {
+        while (!awaitSeedTransition) {
+            try {
+                int ch = reader.read(SimConfig.SIMULATION_SPEED);
+                if (ch == '\r' || ch == '\n') {
+
+                    awaitScreenRender = true;
+                } else if (ch == 127 || ch == 8) {
+                    seed.setLength(seed.length() - 1);
+                } else {
+                    seed.append((char) ch);
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+        }
+    }
+
+    public void processGameInput() {
+
+    }
+
     public static boolean isProcessingCommand() {
         return processingCommand;
     }
@@ -83,5 +129,9 @@ public class InputListener implements Runnable{
 
     public StringBuilder getCurrentInput() {
         return currentInput;
+    }
+
+    public boolean getAwaitScreenRender() {
+        return awaitScreenRender;
     }
 }
